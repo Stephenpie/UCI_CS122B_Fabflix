@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,8 +27,8 @@ public class StarServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
-        String loginUser = "mytestuser";
-        String loginPasswd = "mypassword";
+        String loginUser = "root";
+        String loginPasswd = "fuko_yui94";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
@@ -45,7 +48,10 @@ public class StarServlet extends HttpServlet {
         		// declare statement
         		Statement statement = connection.createStatement();
         		// prepare query
-        		String query = "SELECT * from stars limit 10";
+        		String query = "SELECT * from genres, genres_in_movies, movies, ratings, stars, stars_in_movies "
+        		        + "WHERE genres.id = genres_in_movies.genreId AND movies.id = stars_in_movies.movieId AND "
+        		        + "stars.id = stars_in_movies.starId AND ratings.movieId = movies.id AND "
+        		        + "movies.id = genres_in_movies.movieId limit 20";
         		// execute query
         		ResultSet resultSet = statement.executeQuery(query);
 
@@ -56,22 +62,46 @@ public class StarServlet extends HttpServlet {
         		
         		// add table header row
         		out.println("<tr>");
-        		out.println("<td>id</td>");
-        		out.println("<td>name</td>");
-        		out.println("<td>birth year</td>");
+        		out.println("<td>title</td>");
+        		out.println("<td>year</td>");
+        		out.println("<td>director</td>");
+        		out.println("<td>list of genres</td>");
+        		out.println("<td>list of stars</td>");
+        		out.println("<td>rating</td>");
         		out.println("</tr>");
         		
         		// add a row for every star result
+        		HashMap<String, HashSet<String>> genreMap = new HashMap<>();
+        		HashMap<String, HashSet<String>> starMap = new HashMap<>();
         		while (resultSet.next()) {
         			// get a star from result set
-        			String starID = resultSet.getString("id");
-        			String starName = resultSet.getString("name");
-        			String birthYear = resultSet.getString("birthyear");
+        			String title = resultSet.getString("title");
+        			int year = resultSet.getInt("year");
+        			String director = resultSet.getString("director");
+//        			ArrayList<String> listOfGenres = new ArrayList<>();
+        			String genre = resultSet.getString("name");
+        			if (genreMap.containsKey(title)) {
+        			    genreMap.get(title).add(genre);
+        			} else {
+        			    HashSet<String> genreSet = new HashSet<>();
+        			    genreSet.add(genre);
+        			    genreMap.put(title, genreSet);
+        			}
+        		
+        			String star = resultSet.getString("");
+        			if (starMap.containsKey(title)) {
+        			    starMap.get(title).add(star);
+        			}
+        			String listOfStars = resultSet.getString("stars");
+        			Float rating = resultSet.getFloat("rating");
         			
         			out.println("<tr>");
-        			out.println("<td>" + starID + "</td>");
-        			out.println("<td>" + starName + "</td>");
-        			out.println("<td>" + birthYear + "</td>");
+        			out.println("<td>" + title + "</td>");
+        			out.println("<td>" + year + "</td>");
+        			out.println("<td>" + director + "</td>");
+        			out.println("<td>" + listOfGenres + "</td>");
+        			out.println("<td>" + listOfStars + "</td>");
+        			out.println("<td>" + rating + "</td>");
         			out.println("</tr>");
         		}
         		
