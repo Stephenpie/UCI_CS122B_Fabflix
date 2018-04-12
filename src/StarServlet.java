@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // this annotation maps this Java Servlet Class to a URL
-@WebServlet("/stars")
+@WebServlet("/movielist")
 public class StarServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -28,7 +27,7 @@ public class StarServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
         String loginUser = "root";
-        String loginPasswd = "password";
+        String loginPasswd = "fuko_yui94";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
@@ -79,7 +78,7 @@ public class StarServlet extends HttpServlet {
         			int year = resultSet.getInt("year");
         			String director = resultSet.getString("director");
 //        			ArrayList<String> listOfGenres = new ArrayList<>();
-        			String genre = resultSet.getString("name");
+        			String genre = resultSet.getString("genres.name");
         			if (genreMap.containsKey(title)) {
         			    genreMap.get(title).add(genre);
         			} else {
@@ -87,20 +86,24 @@ public class StarServlet extends HttpServlet {
         			    genreSet.add(genre);
         			    genreMap.put(title, genreSet);
         			}
-        		
-        			String star = resultSet.getString("");
-        			if (starMap.containsKey(title)) {
-        			    starMap.get(title).add(star);
-        			}
-        			String listOfStars = resultSet.getString("stars");
+        			
+        			String star = resultSet.getString("stars.name");
+                    if (starMap.containsKey(title)) {
+                        starMap.get(title).add(star);
+                    } else {
+                        HashSet<String> starSet = new HashSet<>();
+                        starSet.add(star);
+                        starMap.put(title, starSet);
+                    }
+
         			Float rating = resultSet.getFloat("rating");
         			
         			out.println("<tr>");
         			out.println("<td>" + title + "</td>");
         			out.println("<td>" + year + "</td>");
         			out.println("<td>" + director + "</td>");
-        			out.println("<td>" + listOfGenres + "</td>");
-        			out.println("<td>" + listOfStars + "</td>");
+        			out.println("<td>" + genreMap.get(genre) + "</td>");
+        			out.println("<td>" + starMap.get(star) + "</td>");
         			out.println("<td>" + rating + "</td>");
         			out.println("</tr>");
         		}
@@ -132,7 +135,7 @@ public class StarServlet extends HttpServlet {
         		out.print("</body>");
         }
         
-        out.println("</html>");
+        out.println("</html>"); 
         out.close();
         
 	}
