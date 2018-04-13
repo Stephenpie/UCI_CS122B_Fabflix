@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // this annotation maps this Java Servlet Class to a URL
-@WebServlet("/movielist")
+@WebServlet(urlPatterns = "/movielist")
 public class StarServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -25,7 +25,7 @@ public class StarServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
         String loginUser = "root";
-        String loginPasswd = "password";
+        String loginPasswd = "fuko_yui94";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
