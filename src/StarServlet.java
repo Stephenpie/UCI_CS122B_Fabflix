@@ -47,15 +47,15 @@ public class StarServlet extends HttpServlet {
         		// declare statement
         		Statement statement = connection.createStatement();
         		// prepare query
-        		String query = "SELECT * from genres, genres_in_movies, movies, ratings, stars, stars_in_movies "
-        		        + "WHERE genres.id = genres_in_movies.genreId AND movies.id = stars_in_movies.movieId AND "
-        		        + "stars.id = stars_in_movies.starId AND ratings.movieId = movies.id AND "
-        		        + "movies.id = genres_in_movies.movieId limit 20";
+        		String query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars, r.rating "
+        		        + " from genres g, genres_in_movies gm, movies m, ratings r, stars s, stars_in_movies sm "
+                      + "WHERE g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND r.movieId = m.id AND m.id = gm.movieId "
+                      + "GROUP BY m.id, r.rating ORDER BY r.rating DESC limit 20";
         		// execute query
         		ResultSet resultSet = statement.executeQuery(query);
 
         		out.println("<body>");
-        		out.println("<h1>MovieDB Stars</h1>");
+        		out.println("<h1>Movie List</h1>");
         		
         		out.println("<table border>");
         		
@@ -70,40 +70,21 @@ public class StarServlet extends HttpServlet {
         		out.println("</tr>");
         		
         		// add a row for every star result
-        		HashMap<String, HashSet<String>> genreMap = new HashMap<>();
-        		HashMap<String, HashSet<String>> starMap = new HashMap<>();
         		while (resultSet.next()) {
         			// get a star from result set
         			String title = resultSet.getString("title");
         			int year = resultSet.getInt("year");
         			String director = resultSet.getString("director");
-//        			ArrayList<String> listOfGenres = new ArrayList<>();
-        			String genre = resultSet.getString("genres.name");
-        			if (genreMap.containsKey(title)) {
-        			    genreMap.get(title).add(genre);
-        			} else {
-        			    HashSet<String> genreSet = new HashSet<>();
-        			    genreSet.add(genre);
-        			    genreMap.put(title, genreSet);
-        			}
-        			
-        			String star = resultSet.getString("stars.name");
-                    if (starMap.containsKey(title)) {
-                        starMap.get(title).add(star);
-                    } else {
-                        HashSet<String> starSet = new HashSet<>();
-                        starSet.add(star);
-                        starMap.put(title, starSet);
-                    }
-
+        			String genres = resultSet.getString("genres");
+        			String stars = resultSet.getString("stars");
         			Float rating = resultSet.getFloat("rating");
         			
         			out.println("<tr>");
         			out.println("<td>" + title + "</td>");
         			out.println("<td>" + year + "</td>");
         			out.println("<td>" + director + "</td>");
-        			out.println("<td>" + genreMap.get(genre) + "</td>");
-        			out.println("<td>" + starMap.get(star) + "</td>");
+        			out.println("<td>" + genres + "</td>");
+        			out.println("<td>" + stars + "</td>");
         			out.println("<td>" + rating + "</td>");
         			out.println("</tr>");
         		}
