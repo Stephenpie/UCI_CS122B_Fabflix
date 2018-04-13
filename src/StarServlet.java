@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // this annotation maps this Java Servlet Class to a URL
-@WebServlet("/movielist")
+@WebServlet(urlPatterns = "/movielist")
 public class StarServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
