@@ -57,7 +57,7 @@ public class StarServlet extends HttpServlet {
         		out.println("<h1><center>Movie List</center></h1>");
         		
         		out.println("<div class=\"container\">");
-        		out.println("<table class=\"table table-bordered table-hover\">");
+        		out.println("<table class=\"table table-bordered table-hover table-striped\">");
         		
         		// add table header row
         		out.println("<thead>");
