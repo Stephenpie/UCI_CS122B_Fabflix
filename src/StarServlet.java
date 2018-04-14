@@ -26,7 +26,7 @@ public class StarServlet extends HttpServlet {
         // change this to your own mysql username and password
 
         String loginUser = "root";
-        String loginPasswd = "password";
+        String loginPasswd = "fuko_yui94";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
@@ -55,7 +55,8 @@ public class StarServlet extends HttpServlet {
         		ResultSet resultSet = statement.executeQuery(query);
 
         		out.println("<body>");
-        		out.println("<h1><center>Movie List</center></h1>");
+        		out.println("<div class=\"pageBackground\">");
+        		out.println("<h1>Movie List</h1>");
         		
         		out.println("<div class=\"container\">");
         		out.println("<table class=\"table table-bordered table-hover table-striped\">");
@@ -73,6 +74,7 @@ public class StarServlet extends HttpServlet {
         		out.println("</tr>");
         		
         		out.println("</thead>");
+        		out.println("</div>");
         		out.println("<tbody>");
         		// add a row for every star result
         		while (resultSet.next()) {
@@ -96,6 +98,9 @@ public class StarServlet extends HttpServlet {
         		out.println("<tbody>");
         		out.println("</table>");
         		out.println("</div>");
+        		
+        		out.println("<div class=\"box\"><button id=\"back\">Go Back</button></div>");
+        		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
         		resultSet.close();
