@@ -24,6 +24,7 @@ public class StarServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
+
         String loginUser = "root";
         String loginPasswd = "password";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
@@ -35,9 +36,10 @@ public class StarServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         out.println("<html>");
-        out.println("<head><title>Fabflix</title></head>");
-        
-        
+        out.println("<head><title>Fabflix</title>");
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
+        out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
+        out.println("</head>");
         try {
         		Class.forName("com.mysql.jdbc.Driver").newInstance();
         		// create database connection
@@ -53,20 +55,25 @@ public class StarServlet extends HttpServlet {
         		ResultSet resultSet = statement.executeQuery(query);
 
         		out.println("<body>");
-        		out.println("<h1>Movie List</h1>");
+        		out.println("<h1><center>Movie List</center></h1>");
         		
-        		out.println("<table border>");
+        		out.println("<div class=\"container\">");
+        		out.println("<table class=\"table table-bordered table-hover table-striped\">");
         		
         		// add table header row
+        		out.println("<thead>");
+        		
         		out.println("<tr>");
-        		out.println("<td>title</td>");
-        		out.println("<td>year</td>");
-        		out.println("<td>director</td>");
-        		out.println("<td>list of genres</td>");
-        		out.println("<td>list of stars</td>");
-        		out.println("<td>rating</td>");
+        		out.println("<th>title</th>");
+        		out.println("<th>year</th>");
+        		out.println("<th>director</th>");
+        		out.println("<th>list of genres</th>");
+        		out.println("<th>list of stars</th>");
+        		out.println("<th>rating</th>");
         		out.println("</tr>");
         		
+        		out.println("</thead>");
+        		out.println("<tbody>");
         		// add a row for every star result
         		while (resultSet.next()) {
         			// get a star from result set
@@ -86,9 +93,9 @@ public class StarServlet extends HttpServlet {
         			out.println("<td>" + rating + "</td>");
         			out.println("</tr>");
         		}
-        		
+        		out.println("<tbody>");
         		out.println("</table>");
-        		
+        		out.println("</div>");
         		out.println("</body>");
         		
         		resultSet.close();

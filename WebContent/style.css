@@ -1,0 +1,13 @@
+.indexBackground {
+	/* The image used */
+   	background-image: url("background.jpg");
+   
+   	/* Full height */
+    height: 800px; 
+
+	/* Center and scale the image nicely */
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
