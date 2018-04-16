@@ -1,5 +1,3 @@
-
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -24,6 +22,7 @@ public class StarServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
+
         String loginUser = "user1";
         String loginPasswd = "password";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb1";
@@ -54,6 +53,7 @@ public class StarServlet extends HttpServlet {
         		ResultSet resultSet = statement.executeQuery(query);
 
         		out.println("<body>");
+        		out.println("<div class=\"pageBackground\">");
         		out.println("<h1><center>Movie List</center></h1>");
         		
         		out.println("<div class=\"container\">");
@@ -63,15 +63,16 @@ public class StarServlet extends HttpServlet {
         		out.println("<thead>");
         		
         		out.println("<tr>");
-        		out.println("<th>title</th>");
-        		out.println("<th>year</th>");
-        		out.println("<th>director</th>");
-        		out.println("<th>list of genres</th>");
-        		out.println("<th>list of stars</th>");
-        		out.println("<th>rating</th>");
+        		out.println("<th>Title</th>");
+        		out.println("<th>Year</th>");
+        		out.println("<th>Director</th>");
+        		out.println("<th>List of genres</th>");
+        		out.println("<th>List of stars</th>");
+        		out.println("<th>Rating</th>");
         		out.println("</tr>");
         		
         		out.println("</thead>");
+        		out.println("</div>");
         		out.println("<tbody>");
         		// add a row for every star result
         		while (resultSet.next()) {
@@ -95,6 +96,9 @@ public class StarServlet extends HttpServlet {
         		out.println("<tbody>");
         		out.println("</table>");
         		out.println("</div>");
+        		
+        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
+        		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
         		resultSet.close();
