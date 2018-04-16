@@ -26,7 +26,7 @@ public class StarServlet extends HttpServlet {
         // change this to your own mysql username and password
 
         String loginUser = "root";
-        String loginPasswd = "fuko_yui94";
+        String loginPasswd = "password";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
@@ -99,7 +99,7 @@ public class StarServlet extends HttpServlet {
         		out.println("</table>");
         		out.println("</div>");
         		
-        		out.println("<div class=\"box\"><button id=\"back\">Go Back</button></div>");
+        		out.println("<div class=\"box\"><button id=\"back\" class=\"btn btn-info btn-rounded\">Go Back</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
