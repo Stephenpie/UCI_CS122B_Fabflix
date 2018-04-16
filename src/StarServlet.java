@@ -99,7 +99,7 @@ public class StarServlet extends HttpServlet {
         		out.println("</table>");
         		out.println("</div>");
         		
-        		out.println("<div class=\"box\"><button id=\"back\" class=\"btn btn-info btn-rounded\">Go Back</button></div>");
+        		out.println("<div class=\"box\"><button id=\"back\" class=\"btn btn-info\">Go Back</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
