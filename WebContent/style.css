@@ -11,3 +11,27 @@
 	background-size: cover;
 }
 
+.pageBackground {
+	background-color: #FFF9F7;
+}
+
+h1 {
+    text-align: center;
+    font-family: "Arial Black", Gadget, sans-serif !important;
+    color: #FF927C !important;
+}
+
+p {
+	font-family: "Arial Black", Gadget, sans-serif;
+}
+
+th {
+	text-transform: capitalize;
+	background-color: #FEEDE7;
+}
+
+.box {
+	text-align: center;
+	padding-bottom: 15px;
+}
+
