@@ -26,7 +26,7 @@ public class StarServlet extends HttpServlet {
         // change this to your own mysql username and password
 
         String loginUser = "root";
-        String loginPasswd = "password";
+        String loginPasswd = "tangwang";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
