@@ -23,9 +23,9 @@ public class StarServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
 
-        String loginUser = "user1";
-        String loginPasswd = "password";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb1";
+        String loginUser = "root";
+        String loginPasswd = "tangwang";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
         response.setContentType("text/html"); 
@@ -54,7 +54,7 @@ public class StarServlet extends HttpServlet {
 
         		out.println("<body>");
         		out.println("<div class=\"pageBackground\">");
-        		out.println("<h1><center>Movie List</center></h1>");
+        		out.println("<h1>Movie List</h1>");
         		
         		out.println("<div class=\"container\">");
         		out.println("<table class=\"table table-bordered table-hover table-striped\">");
@@ -97,7 +97,7 @@ public class StarServlet extends HttpServlet {
         		out.println("</table>");
         		out.println("</div>");
         		
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
+        		out.println("<div class=\"box\"><button id=\"back\" class=\"btn btn-info\">Go Back</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
