@@ -1,11 +1,25 @@
 function handleSearch(value) {
-	window.location.href = "search?query=" + value;
+	window.location.href = "search?query=" + value + "&numOfMovies=25";
 }
 
 // bind pressing the button to a handler function
 document.getElementById('search').onclick = function() { 
 	handleSearch($('#query').val()) 
 };
+
+function handleShow(value, selectObj) {
+	 // get the index of the selected option 
+	 var idx = selectObj.selectedIndex; 
+	 // get the value of the selected option 
+	 var num = selectObj.options[idx].value;
+	 window.location.href = "search?query=" + value + "&numOfMovies=" + num;
+}
+
+document.getElementById('myselect').onchange = function() { 
+	handleShow(decodeURIComponent($.urlParam('query')), $("#myselect option:selected").val()) 
+};
+
+
 
 function sortTable(n, m) {
 	  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
