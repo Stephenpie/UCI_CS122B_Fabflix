@@ -24,12 +24,15 @@ public class SingleStarPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
 
-        String loginUser = "user1";
-        String loginPasswd = "password";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb1";
+        String loginUser = "root";
+        String loginPasswd = "tangwang";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
         response.setContentType("text/html"); 
+//        response.setContentType("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
 
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
@@ -58,8 +61,8 @@ public class SingleStarPage extends HttpServlet {
         		ResultSet resultSet = statement.executeQuery(Query);
 
         		out.println("<body>");
+        		out.println("<h1> Star Profile: "+ starName +"</h1>");
         		out.println("<div class=\"pageBackground\">");
-        		out.println("<h1><center>Movie List</center></h1>");
         		
         		out.println("<select><option value='10'>10</option><option value='15'>15</option><option value='20'>20</option><option value='25'>25</option></select>");
         		
@@ -108,8 +111,8 @@ public class SingleStarPage extends HttpServlet {
         		out.println("</table>");
 
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
+        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		

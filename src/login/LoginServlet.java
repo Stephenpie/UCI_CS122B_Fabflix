@@ -26,9 +26,9 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        String loginUser = "user1";
-        String loginPasswd = "password";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb1";
+        String loginUser = "root";
+        String loginPasswd = "tangwang";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         try {
 	        Class.forName("com.mysql.jdbc.Driver").newInstance();
