@@ -1,3 +1,4 @@
+package mainPage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -12,31 +13,35 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // this annotation maps this Java Servlet Class to a URL
-@WebServlet(urlPatterns = "/movielist")
-public class StarServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/movies")
+public class SingleMoviePage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public StarServlet() {
+    public SingleMoviePage() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
 
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+        String loginUser = "user1";
+        String loginPasswd = "password";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb1";
 		
         // set response mime type
         response.setContentType("text/html"); 
 
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
+        
+        // get the parameter in GET
+        String movieName = request.getParameter("movie");
 
         out.println("<html>");
         out.println("<head><title>Fabflix</title>");
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
+        out.println("<script type=\"text/javascript\" src=\"index.js\"></script>");
         out.println("</head>");
         try {
         		Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -45,59 +50,85 @@ public class StarServlet extends HttpServlet {
         		// declare statement
         		Statement statement = connection.createStatement();
         		// prepare query
-        		String query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars, r.rating "
-        		        + " from genres g, genres_in_movies gm, movies m, ratings r, stars s, stars_in_movies sm "
-                      + "WHERE g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND r.movieId = m.id AND m.id = gm.movieId "
-                      + "GROUP BY m.id, r.rating ORDER BY r.rating DESC limit 20";
+        		String Query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
+        		        + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
+                        + "WHERE m.title = '" + movieName + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
+                        + "GROUP BY m.id";
+        		
         		// execute query
-        		ResultSet resultSet = statement.executeQuery(query);
+        		ResultSet resultSet = statement.executeQuery(Query);
 
         		out.println("<body>");
         		out.println("<div class=\"pageBackground\">");
-        		out.println("<h1>Movie List</h1>");
+        		out.println("<h1><center>Movie List</center></h1>");
+        		
+        		out.println("<select><option value='10'>10</option><option value='15'>15</option><option value='20'>20</option><option value='25'>25</option></select>");
         		
         		out.println("<div class=\"container\">");
-        		out.println("<table class=\"table table-bordered table-hover table-striped\">");
+        		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
         		
         		// add table header row
         		out.println("<thead>");
         		
-        		out.println("<tr>");
         		out.println("<th>Title</th>");
         		out.println("<th>Year</th>");
         		out.println("<th>Director</th>");
         		out.println("<th>List of genres</th>");
         		out.println("<th>List of stars</th>");
-        		out.println("<th>Rating</th>");
-        		out.println("</tr>");
-        		
+
         		out.println("</thead>");
         		out.println("</div>");
+        		out.println("<div>");
         		out.println("<tbody>");
         		// add a row for every star result
         		while (resultSet.next()) {
         			// get a star from result set
         			String title = resultSet.getString("title");
-        			int year = resultSet.getInt("year");
+        			String year = resultSet.getString("year");
         			String director = resultSet.getString("director");
         			String genres = resultSet.getString("genres");
         			String stars = resultSet.getString("stars");
-        			Float rating = resultSet.getFloat("rating");
         			
         			out.println("<tr>");
         			out.println("<td>" + title + "</td>");
         			out.println("<td>" + year + "</td>");
         			out.println("<td>" + director + "</td>");
-        			out.println("<td>" + genres + "</td>");
-        			out.println("<td>" + stars + "</td>");
-        			out.println("<td>" + rating + "</td>");
+
+        			// For list of genres
+        			out.print("<td>");
+        			String[] listOfGenres = genres.split(",");
+        			StringBuilder sb_genre = new StringBuilder();
+        			for (String s : listOfGenres) {
+        				sb_genre.append("<a href='search?query=" + s.trim() + "'>"+ s.trim() + "</a>");
+        				sb_genre.append(", ");
+        			}
+        			sb_genre.deleteCharAt(sb_genre.length() - 1);
+        			sb_genre.deleteCharAt(sb_genre.length() - 1);
+        			out.print(sb_genre.toString());
+        			out.println("</td>");
+        			
+        			// For list of stars
+        			out.print("<td>");
+        			String[] listOfStars = stars.split(",");
+        			StringBuilder sb_star = new StringBuilder();
+        			for (String s : listOfStars) {
+        				sb_star.append("<a href='stars?star=" + s.trim() + "'>"+ s.trim() + "</a>");
+        				sb_star.append(", ");
+        			}
+        			sb_star.deleteCharAt(sb_star.length() - 1);
+        			sb_star.deleteCharAt(sb_star.length() - 1);
+        			out.print(sb_star.toString());
+        			out.println("</td>");
+        			
         			out.println("</tr>");
         		}
-        		out.println("<tbody>");
-        		out.println("</table>");
+        		out.println("</tbody>");
         		out.println("</div>");
+        		out.println("</table>");	
         		
-        		out.println("<div class=\"box\"><button id=\"back\" class=\"btn btn-info\">Go Back</button></div>");
+        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
+        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
+        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
