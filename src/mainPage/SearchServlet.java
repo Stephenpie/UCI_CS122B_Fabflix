@@ -87,9 +87,12 @@ public class SearchServlet extends HttpServlet {
         					+ "</select>");
         		*/
         		out.print("<p>Result per page: ");
-        		out.print("<a href='search?query=" + query + "&numOfMovies=25'>" + "25 | </a>");
-        		out.print("<a href='search?query=" + query + "&numOfMovies=20'>" + "20 | </a>");
-        		out.print("<a href='search?query=" + query + "&numOfMovies=15'>" + "15 | </a>");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=25'>" + "25</a>");
+                out.print(" | ");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=20'>" + "20</a>");
+                out.print(" | ");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=15'>" + "15</a>");
+                out.print(" | ");
         		out.print("<a href='search?query=" + query + "&numOfMovies=10'>" + "10</a>");
         		out.println("</p>");
         		

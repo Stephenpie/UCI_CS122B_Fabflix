@@ -95,10 +95,23 @@ public class BrowsingServlet extends HttpServlet {
                             + "</select>");
                 */
                 out.print("<p>Result per page: ");
-//                out.print("<a href='search?query=" + query + "&numOfMovies=25'>" + "25 | </a>");
-//                out.print("<a href='search?query=" + query + "&numOfMovies=20'>" + "20 | </a>");
-//                out.print("<a href='search?query=" + query + "&numOfMovies=15'>" + "15 | </a>");
-//                out.print("<a href='search?query=" + query + "&numOfMovies=10'>" + "10</a>");
+                if (genre != null) {
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=25'>" + "25</a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=20'>" + "20</a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=15'>" + "15</a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=10'>" + "10</a>");
+                } else {
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=25'>" + "25</a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=20'>" + "20</a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=15'>" + "15</a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=10'>" + "10</a>");
+                }
                 out.println("</p>");
                 
                 out.println("<div class=\"container\">");
