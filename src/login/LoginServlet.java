@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.io.IOException;
 
 //
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
