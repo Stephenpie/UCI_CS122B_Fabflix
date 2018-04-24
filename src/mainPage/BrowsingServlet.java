@@ -73,19 +73,14 @@ public class BrowsingServlet extends HttpServlet {
                 }
                 
                 if (!sort.equals("null")) {
-        		    System.out.println(sort);
         		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
-        		        sort = "m.title";
-        		        query += " ORDER BY " + sort + " ASC" + " LIMIT " + limit + " OFFSET " + offset;;        		        
+        		        query += " ORDER BY m.title ASC" + " LIMIT " + limit + " OFFSET " + offset;;        		        
         		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
-                        sort = "m.title";
-        		        query += " ORDER BY " + sort + " DESC" + " LIMIT " + limit + " OFFSET " + offset;;
+        		        query += " ORDER BY m.title DESC" + " LIMIT " + limit + " OFFSET " + offset;;
         		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
-                        sort = "r.rating";
-        		        query += " ORDER BY " + sort + " ASC" + " LIMIT " + limit + " OFFSET " + offset;;
+        		        query += " ORDER BY r.rating ASC" + " LIMIT " + limit + " OFFSET " + offset;;
         		    } else {
-                        sort = "r.rating";
-        		        query += " ORDER BY " + sort + " DESC" + " LIMIT " + limit + " OFFSET " + offset;;
+        		        query += " ORDER BY r.rating DESC" + " LIMIT " + limit + " OFFSET " + offset;;
         		    }
         		}
                 
