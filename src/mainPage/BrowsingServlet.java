@@ -61,16 +61,33 @@ public class BrowsingServlet extends HttpServlet {
                 String query = null;
                 
                 if (genre != null) {
-                    query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars, r.rating "
-                        + " from genres g, genres_in_movies gm, movies m, ratings r, stars s, stars_in_movies sm "
-                      + "WHERE g.name = '" + genre + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND r.movieId = m.id AND m.id = gm.movieId "
-                      + "GROUP BY m.id, r.rating LIMIT " + limit + " OFFSET " + offset;
+                	query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars, r.rating "
+                            + " from genres g, genres_in_movies gm, movies m, ratings r, stars s, stars_in_movies sm "
+                          + "WHERE g.name = '" + genre + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND r.movieId = m.id AND m.id = gm.movieId "
+                          + "GROUP BY m.id, r.rating";
                 } else {
-                    query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars, r.rating "
+                	query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars, r.rating "
                             + " from genres g, genres_in_movies gm, movies m, ratings r, stars s, stars_in_movies sm "
                             + "WHERE m.title LIKE '" + prefix + "%' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND r.movieId = m.id AND m.id = gm.movieId "
-                            + "GROUP BY m.id, r.rating LIMIT " + limit + " OFFSET " + offset;
+                            + "GROUP BY m.id, r.rating";
                 }
+                
+                if (!sort.equals("null")) {
+        		    System.out.println(sort);
+        		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
+        		        sort = "m.title";
+        		        query += " ORDER BY " + sort + " ASC" + " LIMIT " + limit + " OFFSET " + offset;;        		        
+        		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
+                        sort = "m.title";
+        		        query += " ORDER BY " + sort + " DESC" + " LIMIT " + limit + " OFFSET " + offset;;
+        		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
+                        sort = "r.rating";
+        		        query += " ORDER BY " + sort + " ASC" + " LIMIT " + limit + " OFFSET " + offset;;
+        		    } else {
+                        sort = "r.rating";
+        		        query += " ORDER BY " + sort + " DESC" + " LIMIT " + limit + " OFFSET " + offset;;
+        		    }
+        		}
                 
                 // execute query
                 ResultSet resultSet = statement.executeQuery(query);
@@ -78,16 +95,7 @@ public class BrowsingServlet extends HttpServlet {
                 out.println("<body>");
                 out.println("<div class=\"pageBackground\">");
                 out.println("<h1>Movie List</h1>");
-                
-                /*
-                out.println("<select onchange=\"handleShow(" + query + ", this);\"" + ">"
-                            + "<option value=\"empty\">Select a num</option>"
-                            + "<option value=\"25\">25</option>"
-                            + "<option value=\"20\">20</option>"
-                            + "<option value=\"15\">15</option>"
-                            + "<option value=\"10\">10</option>" 
-                            + "</select>");
-                */
+
                 out.print("<p>Result per page: ");
                 if (genre != null) {
                     out.print("<a href='browse?genre=" + genre + "&numOfMovies=25&page=1&sortby=" + sort + "'>" + "25</a>");
@@ -132,14 +140,12 @@ public class BrowsingServlet extends HttpServlet {
                 // add table header row
                 out.println("<thead>");
                 
-//                out.println("<th>Title<span onclick=\"sortTable(0, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(0, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
                 out.println("<th>Title</th>");
                 out.println("<th>Year</th>");
                 out.println("<th>Director</th>");
                 out.println("<th>List of genres</th>");
                 out.println("<th>List of stars</th>");
                 out.println("<th>Rating</th>");
-//                out.println("<th>Rating<span onclick=\"sortTable(5, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(5, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
                 
                 out.println("</thead>");
                 out.println("</div>");

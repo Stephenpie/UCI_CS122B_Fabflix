@@ -113,15 +113,6 @@ public class SearchServlet extends HttpServlet {
         		out.println("<div class=\"pageBackground\">");
         		out.println("<h1>Movie List</h1>");
         		
-        		/*
-        		out.println("<select onchange=\"handleShow(" + query + ", this);\"" + ">"
-        					+ "<option value=\"empty\">Select a num</option>"
-        					+ "<option value=\"25\">25</option>"
-        					+ "<option value=\"20\">20</option>"
-        					+ "<option value=\"15\">15</option>"
-        					+ "<option value=\"10\">10</option>" 
-        					+ "</select>");
-        		*/
         		out.print("<p>Result per page: ");
         		out.print("<a href='search?query=" + query + "&numOfMovies=25&page=1&sortby=" + sort + "'>" + "25</a>");
                 out.print(" | ");
@@ -147,14 +138,12 @@ public class SearchServlet extends HttpServlet {
         		// add table header row
         		out.println("<thead>");
         		
-//        		out.println("<th>Title<span onclick=\"sortTable(0, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(0, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
         		out.println("<th>Title</th>");
         		out.println("<th>Year</th>");
         		out.println("<th>Director</th>");
         		out.println("<th>List of genres</th>");
         		out.println("<th>List of stars</th>");
         		out.println("<th>Rating</th>");
-//        		out.println("<th>Rating<span onclick=\"sortTable(5, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(5, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
         		
         		out.println("</thead>");
         		out.println("</div>");

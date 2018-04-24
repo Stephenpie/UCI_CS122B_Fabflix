@@ -17,15 +17,3 @@ window.onload = function(){
 		handleSearch($('#query').val()) 
 	}
 };
-
-//function handleShow(value, selectObj) {
-//	 // get the index of the selected option 
-//	 var idx = selectObj.selectedIndex; 
-//	 // get the value of the selected option 
-//	 var num = selectObj.options[idx].value;
-//	 window.location.href = "search?query=" + value + "&numOfMovies=" + num;
-//}
-//
-//document.getElementById('myselect').onchange = function() { 
-//	handleShow(decodeURIComponent($.urlParam('query')), $("#myselect option:selected").val()) 
-//};
