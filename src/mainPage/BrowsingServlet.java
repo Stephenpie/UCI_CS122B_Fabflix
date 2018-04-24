@@ -42,14 +42,8 @@ public class BrowsingServlet extends HttpServlet {
         String genre = request.getParameter("genre");
         String prefix = request.getParameter("prefix");
         String limit = request.getParameter("numOfMovies");
-        String offset = request.getParameter("offset");
-        
-        if (limit == null) {
-            limit = "25";
-        }
-        if (offset == null) {
-            offset = "0";
-        }
+        String offset = Integer.toString((Integer.parseInt(request.getParameter("page")) - 1) * Integer.parseInt(limit));
+        String sort = request.getParameter("sortby");
         
         out.println("<html>");
         out.println("<head><title>Fabflix</title>");
@@ -83,7 +77,7 @@ public class BrowsingServlet extends HttpServlet {
 
                 out.println("<body>");
                 out.println("<div class=\"pageBackground\">");
-                out.println("<h1><center>Movie List</center></h1>");
+                out.println("<h1>Movie List</h1>");
                 
                 /*
                 out.println("<select onchange=\"handleShow(" + query + ", this);\"" + ">"
@@ -96,21 +90,39 @@ public class BrowsingServlet extends HttpServlet {
                 */
                 out.print("<p>Result per page: ");
                 if (genre != null) {
-                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=25'>" + "25</a>");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=25&page=1&sortby=" + sort + "'>" + "25</a>");
                     out.print(" | ");
-                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=20'>" + "20</a>");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=20&page=1&sortby=" + sort + "'>" + "20</a>");
                     out.print(" | ");
-                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=15'>" + "15</a>");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=15&page=1&sortby=" + sort + "'>" + "15</a>");
                     out.print(" | ");
-                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=10'>" + "10</a>");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=10&page=1&sortby=" + sort + "'>" + "10</a>");
+                    
+                    out.print("<p>Sort by: ");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=" + limit + "&page=1&sortby=titledesc'>Title<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=" + limit + "&page=1&sortby=titleasc'>Title<span class=\"glyphicon glyphicon-triangle-top\"></span></a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?genre=" + genre + "&numOfMovies=" + limit + "&page=1&sortby=ratingdesc'>Rating<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>");
+                    out.print(" | ");
+                    out.println("<a href='browse?genre=" + genre + "&numOfMovies=" + limit + "&page=1&sortby=ratingasc'>Rating<span class=\"glyphicon glyphicon-triangle-top\"></span></a></p>");
                 } else {
-                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=25'>" + "25</a>");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=25&page=1&sortby=" + sort + "'>" + "25</a>");
                     out.print(" | ");
-                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=20'>" + "20</a>");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=20&page=1&sortby=" + sort + "'>" + "20</a>");
                     out.print(" | ");
-                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=15'>" + "15</a>");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=15&page=1&sortby=" + sort + "'>" + "15</a>");
                     out.print(" | ");
-                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=10'>" + "10</a>");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=10&page=1&sortby=" + sort + "'>" + "10</a>");
+                    
+                    out.print("<p>Sort by: ");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=1&sortby=titledesc'>Title<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=1&sortby=titleasc'>Title<span class=\"glyphicon glyphicon-triangle-top\"></span></a>");
+                    out.print(" | ");
+                    out.print("<a href='browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=1&sortby=ratingdesc'>Rating<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>");
+                    out.print(" | ");
+                    out.println("<a href='browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=1&sortby=ratingasc'>Rating<span class=\"glyphicon glyphicon-triangle-top\"></span></a></p>");
                 }
                 out.println("</p>");
                 
@@ -120,14 +132,14 @@ public class BrowsingServlet extends HttpServlet {
                 // add table header row
                 out.println("<thead>");
                 
-                out.println("<th>Title<span onclick=\"sortTable(0, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(0, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
-                
+//                out.println("<th>Title<span onclick=\"sortTable(0, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(0, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
+                out.println("<th>Title</th>");
                 out.println("<th>Year</th>");
                 out.println("<th>Director</th>");
                 out.println("<th>List of genres</th>");
                 out.println("<th>List of stars</th>");
-                out.println("<th>Rating<span onclick=\"sortTable(5, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(5, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
-                //out.println("</tr>");
+                out.println("<th>Rating</th>");
+//                out.println("<th>Rating<span onclick=\"sortTable(5, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(5, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
                 
                 out.println("</thead>");
                 out.println("</div>");

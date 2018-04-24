@@ -41,14 +41,10 @@ public class SearchServlet extends HttpServlet {
         // get the parameter in GET
         String query = request.getParameter("query");
         String limit = request.getParameter("numOfMovies");
-        String offset = request.getParameter("offset");
+        String offset = Integer.toString((Integer.parseInt(request.getParameter("page")) - 1) * Integer.parseInt(limit));
+        String sort = request.getParameter("sortby");
         
-        if (limit == null) {
-        	limit = "25";
-        }
-        if (offset == null) {
-        	offset = "0";
-        }
+        System.out.println(sort);
         
         out.println("<html>");
         out.println("<head><title>Fabflix</title>");
@@ -63,19 +59,59 @@ public class SearchServlet extends HttpServlet {
         		// declare statement
         		Statement statement = connection.createStatement();
         		// prepare query
-        		String Query = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
-        				+ "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+        		String mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+                        + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
                         + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
                         + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
-                      	+ "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
-                      	+ " LIMIT " + limit + " OFFSET " + offset;
+                        + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+                        + " LIMIT " + limit + " OFFSET " + offset;
+        		if (!sort.equals("null")) {
+        		    System.out.println(sort);
+        		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
+        		        sort = "t2.title";
+        		        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+            				+ "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+                          	+ "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+                          	+ " ORDER BY " + sort + " ASC LIMIT " + limit + " OFFSET " + offset;
+        		        System.out.println(mqlQuery);
+        		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
+                        sort = "t2.title";
+                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+                            + " ORDER BY " + sort + " DESC LIMIT " + limit + " OFFSET " + offset;
+                        System.out.println(mqlQuery);
+        		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
+                        sort = "r.rating";
+                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+                            + " ORDER BY " + sort + " ASC LIMIT " + limit + " OFFSET " + offset;
+                        System.out.println(mqlQuery);
+        		    } else {
+                        sort = "r.rating";
+                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+                            + " ORDER BY " + sort + " DESC LIMIT " + limit + " OFFSET " + offset;
+                        System.out.println(mqlQuery);
+        		    }
+        		}
         		
         		// execute query
-        		ResultSet resultSet = statement.executeQuery(Query);
+        		ResultSet resultSet = statement.executeQuery(mqlQuery);
 
         		out.println("<body>");
         		out.println("<div class=\"pageBackground\">");
-        		out.println("<h1><center>Movie List</center></h1>");
+        		out.println("<h1>Movie List</h1>");
         		
         		/*
         		out.println("<select onchange=\"handleShow(" + query + ", this);\"" + ">"
@@ -87,14 +123,23 @@ public class SearchServlet extends HttpServlet {
         					+ "</select>");
         		*/
         		out.print("<p>Result per page: ");
-        		out.print("<a href='search?query=" + query + "&numOfMovies=25'>" + "25</a>");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=25&page=1&sortby=" + sort + "'>" + "25</a>");
                 out.print(" | ");
-        		out.print("<a href='search?query=" + query + "&numOfMovies=20'>" + "20</a>");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=20&page=1&sortby=" + sort + "'>" + "20</a>");
                 out.print(" | ");
-        		out.print("<a href='search?query=" + query + "&numOfMovies=15'>" + "15</a>");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=15&page=1&sortby=" + sort + "'>" + "15</a>");
                 out.print(" | ");
-        		out.print("<a href='search?query=" + query + "&numOfMovies=10'>" + "10</a>");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=10&page=1&sortby=" + sort + "'>" + "10</a>");
         		out.println("</p>");
+        		
+        		out.print("<p>Sort by: ");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=" + limit + "&page=1&sortby=titledesc'>Title<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>");
+        		out.print(" | ");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=" + limit + "&page=1&sortby=titleasc'>Title<span class=\"glyphicon glyphicon-triangle-top\"></span></a>");
+        		out.print(" | ");
+        		out.print("<a href='search?query=" + query + "&numOfMovies=" + limit + "&page=1&sortby=ratingdesc'>Rating<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>");
+        		out.print(" | ");
+        		out.println("<a href='search?query=" + query + "&numOfMovies=" + limit + "&page=1&sortby=ratingasc'>Rating<span class=\"glyphicon glyphicon-triangle-top\"></span></a></p>");
         		
         		out.println("<div class=\"container\">");
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
@@ -102,14 +147,14 @@ public class SearchServlet extends HttpServlet {
         		// add table header row
         		out.println("<thead>");
         		
-        		out.println("<th>Title<span onclick=\"sortTable(0, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(0, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
-        		
+//        		out.println("<th>Title<span onclick=\"sortTable(0, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(0, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
+        		out.println("<th>Title</th>");
         		out.println("<th>Year</th>");
         		out.println("<th>Director</th>");
         		out.println("<th>List of genres</th>");
         		out.println("<th>List of stars</th>");
-        		out.println("<th>Rating<span onclick=\"sortTable(5, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(5, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
-        		//out.println("</tr>");
+        		out.println("<th>Rating</th>");
+//        		out.println("<th>Rating<span onclick=\"sortTable(5, 0)\" class=\"glyphicon glyphicon-triangle-bottom\"></span><span onclick=\"sortTable(5, 1)\" class=\"glyphicon glyphicon-triangle-top\"></span></th>");
         		
         		out.println("</thead>");
         		out.println("</div>");
@@ -150,7 +195,9 @@ public class SearchServlet extends HttpServlet {
         		out.println("</div>");
         		out.println("</table>");
         		
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
+//        		if (!offset.equals("0")) {
+        		    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
+//        		}
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");

@@ -102,7 +102,7 @@ public class SingleMoviePage extends HttpServlet {
         			String[] listOfGenres = genres.split(",");
         			StringBuilder sb_genre = new StringBuilder();
         			for (String s : listOfGenres) {
-        				sb_genre.append("<a href='search?query=" + s.trim() + "'>"+ s.trim() + "</a>");
+        				sb_genre.append("<a href='browse?genre=" + s.trim() + "'>"+ s.trim() + "</a>");
         				sb_genre.append(", ");
         			}
         			sb_genre.deleteCharAt(sb_genre.length() - 1);
@@ -129,8 +129,8 @@ public class SingleMoviePage extends HttpServlet {
         		out.println("</div>");
         		out.println("</table>");	
         		
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
+//        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
+//        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
