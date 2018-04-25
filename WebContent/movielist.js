@@ -59,8 +59,5 @@ document.getElementById('next').onclick = function() {
 	}
 };
 
-//function func(movieTitle) {
-//	var item = movieTitle;
-//	window.location.href = "cart?act=update&item=" + item + "&qty=" + $('#'+ id).val();
-//};
+
 

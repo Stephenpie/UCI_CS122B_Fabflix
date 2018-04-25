@@ -83,15 +83,18 @@ public class CartServlet extends HttpServlet {
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");
                     out.print("<td><input type=\"text\" id=\"qty" + id + "\" placeholder=\""+ cart.get(movieTitle) +"\">");
-                    out.print("<button onclick=\"func("+ movieTitle + ")\">Update</button><button class=\"delete\">Delete</button></td>");
+                    
+                    // javascript needs us add ' when using variable
+                    out.print("<button onclick=\"func('" + movieTitle + "', 'qty" + id + "')\">Update</button><button class=\"delete\">Delete</button></td>");
+
                     out.println("</tr>");
                     id++;
                 }
             }
         }
-        out.println("<script>function func() {window.alert(\"hello\");} </script>");
-        out.println("<script>function func(movieTitle) {var item = movieTitle; window.location.href = \"cart?act=update&item=\" + item + \"&qty=\";}</script>");
-
+        // This Line is important!!!
+        out.println("<script>function func(movieTitle, qtyId) {var qty = document.getElementById(qtyId).value; window.location.href = \"cart?act=update&item=\" + movieTitle + \"&qty=\" + qty;}</script>");
+        
         out.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
         out.println("</body></html>");
     }
