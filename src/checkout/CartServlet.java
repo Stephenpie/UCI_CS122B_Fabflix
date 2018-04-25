@@ -32,7 +32,7 @@ public class CartServlet extends HttpServlet {
         String item = request.getParameter("item");
         String qty = request.getParameter("qty");
         if (qty == null) {
-            qty = "0";
+            qty = "1";
         }
 
         response.setContentType("text/html");
@@ -43,7 +43,8 @@ public class CartServlet extends HttpServlet {
         String title = "Shopping Cart";
         String docType =
                 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
-        out.println(String.format("%s<html>\n<head><title>%s</title></head>\n<body bgcolor=\"#FDF5E6\">\n<h1>%s</h1>", docType, title, title));
+        out.println(String.format("%s<html>\n<head><title>%s</title><script type=\"text/javascript\" src=\"movielist.js\"></script></head>\n<body bgcolor=\"#FDF5E6\">\n<h1>%s</h1>", docType, title, title));
+        //out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
 
         // In order to prevent multiple clients, requests from altering previousItems ArrayList at the same time, we lock the ArrayList while updating
         synchronized (cart) {
@@ -51,7 +52,7 @@ public class CartServlet extends HttpServlet {
             if (act != null && act.equals("add")) {
                 if (item != null) {
                     int count = cart.getOrDefault(item, Integer.parseInt(qty));
-                    cart.put(item, ++count); // Add the new item to the previousItems ArrayList
+                    cart.put(item, count); // Add the new item to the previousItems ArrayList
                 }
             } else if (act != null && act.equals("update")) {
                 int count = Integer.parseInt(qty);
@@ -76,20 +77,22 @@ public class CartServlet extends HttpServlet {
                 out.println("<div>");
                 out.println("<tbody>");
                 
-                out.print("<div class=\"update\"");
-                for (Object movieTitle : cart.keySet()) {
+                int id = 0;
+                for (String movieTitle : cart.keySet()) {
                     out.println("<tr>");
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");
-                    out.print("<td><input type=\"text\" id=\"qty\" placeholder=\""+ cart.get(movieTitle) +"\" >");
-                    out.print("<button id=\"update\">Update</button><button class=\"delete\">Delete</button></td>");
+                    out.print("<td><input type=\"text\" id=\"qty" + id + "\" placeholder=\""+ cart.get(movieTitle) +"\">");
+                    out.print("<button onclick=\"func("+ movieTitle + ")\">Update</button><button class=\"delete\">Delete</button></td>");
                     out.println("</tr>");
+                    id++;
                 }
-                out.print("</div>");
             }
         }
+        out.println("<script>function func() {window.alert(\"hello\");} </script>");
+        out.println("<script>function func(movieTitle) {var item = movieTitle; window.location.href = \"cart?act=update&item=\" + item + \"&qty=\";}</script>");
 
-        out.println("<script src=\"movielist.js\"></script>");
+        out.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
         out.println("</body></html>");
     }
 }
