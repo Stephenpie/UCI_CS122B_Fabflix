@@ -58,3 +58,9 @@ document.getElementById('next').onclick = function() {
 		window.location.href = "index.html";
 	}
 };
+
+document.getElementsByClassName('update').onclick = function() { 
+	window.alert("hello");
+	var item = getUrlParameter('item');
+	window.location.href = "cart?act=update&item=" + item + "qty=" + $('#qty').val();
+}

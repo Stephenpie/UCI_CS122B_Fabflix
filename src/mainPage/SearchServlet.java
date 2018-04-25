@@ -68,7 +68,6 @@ public class SearchServlet extends HttpServlet {
         		if (!sort.equals("null")) {
         		    System.out.println(sort);
         		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
-//        		        sort = "t2.title";
         		        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
             				+ "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
                             + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
@@ -77,7 +76,6 @@ public class SearchServlet extends HttpServlet {
                           	+ " ORDER BY t2.title ASC LIMIT " + limit + " OFFSET " + offset;
         		        System.out.println(mqlQuery);
         		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
-//                        sort = "t2.title";
                         mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
                             + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
                             + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
@@ -86,7 +84,6 @@ public class SearchServlet extends HttpServlet {
                             + " ORDER BY t2.title DESC LIMIT " + limit + " OFFSET " + offset;
                         System.out.println(mqlQuery);
         		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
-//                        sort = "r.rating";
                         mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
                             + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
                             + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
@@ -95,7 +92,6 @@ public class SearchServlet extends HttpServlet {
                             + " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + offset;
                         System.out.println(mqlQuery);
         		    } else {
-//                        sort = "r.rating";
                         mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
                             + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
                             + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
