@@ -32,7 +32,7 @@ public class CartServlet extends HttpServlet {
         String item = request.getParameter("item");
         String qty = request.getParameter("qty");
         if (qty == null) {
-            qty = "1";
+            qty = "0";
         }
 
         response.setContentType("text/html");
@@ -50,7 +50,7 @@ public class CartServlet extends HttpServlet {
             System.out.println(cart.size());
             if (act != null && act.equals("add")) {
                 if (item != null) {
-                    int count = Integer.parseInt(qty);
+                    int count = cart.getOrDefault(item, Integer.parseInt(qty));
                     cart.put(item, ++count); // Add the new item to the previousItems ArrayList
                 }
             } else if (act != null && act.equals("update")) {
