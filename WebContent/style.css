@@ -1,3 +1,9 @@
+.inner-wrapper {
+  display:table-cell;
+  vertical-align:middle;
+  padding:15px;
+}
+
 .indexBackground {
 	/* The image used */
    	background-image: url("background.jpg");

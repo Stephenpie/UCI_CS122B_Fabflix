@@ -59,5 +59,16 @@ document.getElementById('next').onclick = function() {
 	}
 };
 
+function updateItem(movieTitle, qtyId) {
+	var qty = document.getElementById(qtyId).value;
+	if (qty <= 0) {
+		window.alert("Invalid quantity!");
+	} else {
+		window.location.href = "cart?act=update&item=" + movieTitle + "&qty=" + qty;
+	}
+}
 
-
+function deleteItem(movieTitle) {
+	window.alert("Will be deleted!");
+	window.location.href = "cart?act=delete&item=" + movieTitle;
+}

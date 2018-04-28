@@ -31,9 +31,9 @@ public class CartServlet extends HttpServlet {
         String act = request.getParameter("act");
         String item = request.getParameter("item");
         String qty = request.getParameter("qty");
-        if (qty == null) {
-            qty = "1";
-        }
+//        if (qty == null) {
+//            qty = "1";
+//        }
 
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
@@ -43,20 +43,29 @@ public class CartServlet extends HttpServlet {
         String title = "Shopping Cart";
         String docType =
                 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
-        out.println(String.format("%s<html>\n<head><title>%s</title><script type=\"text/javascript\" src=\"movielist.js\"></script></head>\n<body bgcolor=\"#FDF5E6\">\n<h1>%s</h1>", docType, title, title));
+        out.println(String.format("%s<html>\n<head><title>%s</title>", docType, title));
+        out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
+        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
+        out.println(String.format("<script src=\"movielist.js\"></script></head>\n<body bgcolor=\"#FDF5E6\">\n<h1>%s</h1>", title));
         //out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
 
         // In order to prevent multiple clients, requests from altering previousItems ArrayList at the same time, we lock the ArrayList while updating
         synchronized (cart) {
             System.out.println(cart.size());
-            if (act != null && act.equals("add")) {
+            if (act != null && act.equals("add") && qty != null) {
                 if (item != null) {
                     int count = cart.getOrDefault(item, Integer.parseInt(qty));
                     cart.put(item, count); // Add the new item to the previousItems ArrayList
                 }
-            } else if (act != null && act.equals("update")) {
+            } else if (act != null && act.equals("add") && qty == null) {
+                int count = cart.getOrDefault(item, 0);
+                System.out.println(count);
+                cart.put(item, ++count);
+            } else if (act != null && act.equals("update") && qty != null) {
                 int count = Integer.parseInt(qty);
                 cart.put(item, count);
+            } else if (act != null && act.equals("delete")) {
+                cart.remove(item);
             }
 
             // Display the current previousItems ArrayList
@@ -82,10 +91,11 @@ public class CartServlet extends HttpServlet {
                     out.println("<tr>");
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");
-                    out.print("<td><input type=\"text\" id=\"qty" + id + "\" placeholder=\""+ cart.get(movieTitle) +"\">");
+                    out.print("<td><input type=\"text\" id=\"qty" + id + "\" value=\""+ cart.get(movieTitle) +"\">");
                     
                     // javascript needs us add ' when using variable
-                    out.print("<button onclick=\"func('" + movieTitle + "', 'qty" + id + "')\">Update</button><button class=\"delete\">Delete</button></td>");
+                    out.print("<button class=\"btn btn-info\" id=\"update\" onclick=\"updateItem('" + movieTitle + "', 'qty" + id + "')\">Update</button>");
+                    out.print("<button class=\"btn btn-info\" id=\"delete\" onclick=\"deleteItem('" + movieTitle + "')\">Delete</button></td>");
 
                     out.println("</tr>");
                     id++;
@@ -93,7 +103,7 @@ public class CartServlet extends HttpServlet {
             }
         }
         // This Line is important!!!
-        out.println("<script>function func(movieTitle, qtyId) {var qty = document.getElementById(qtyId).value; window.location.href = \"cart?act=update&item=\" + movieTitle + \"&qty=\" + qty;}</script>");
+//        out.println("<script>function func(movieTitle, qtyId) {var qty = document.getElementById(qtyId).value; window.location.href = \"cart?act=update&item=\" + movieTitle + \"&qty=\" + qty;}</script>");
         
         out.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
         out.println("</body></html>");

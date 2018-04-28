@@ -50,6 +50,7 @@ public class BrowsingServlet extends HttpServlet {
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
         out.println("<script type=\"text/javascript\" src=\"index.js\"></script>");
+        out.println("<script src=\"movielist.js\"></script>");
         out.println("</head>");
         try {
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -186,7 +187,6 @@ public class BrowsingServlet extends HttpServlet {
                 out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
                 out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
                 out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
-                out.println("<script src=\"movielist.js\"></script>");
                 out.println("</body>");
                 
                 resultSet.close();
