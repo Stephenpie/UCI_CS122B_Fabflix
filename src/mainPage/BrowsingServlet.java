@@ -184,7 +184,14 @@ public class BrowsingServlet extends HttpServlet {
                 out.println("</div>");
                 out.println("</table>");
                 
-                out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+                //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+
+                if (!offset.equals("0")) {
+                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+        		} else {
+                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+        		}
+                //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
                 //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
                 //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
                 out.println("<script src=\"movielist.js\"></script>");

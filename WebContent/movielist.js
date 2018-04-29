@@ -18,6 +18,26 @@ document.getElementById('back').onclick = function() {
 	window.location.href = "index.html";
 };
 
+document.getElementById('next').onclick = function() {
+	
+	var query = getUrlParameter('query');
+	var genre = getUrlParameter('genre');
+	var prefix = getUrlParameter('prefix');
+	var limit = getUrlParameter('numOfMovies');
+	var offset = parseInt(getUrlParameter('page')) + 1;
+	var sort = getUrlParameter('sortby');
+	if (query != null) {
+		window.location.href = "search?query=" + query + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+	} else if (genre != null) {
+		window.location.href = "browse?genre=" + genre + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+	} else if (prefix != null) {
+		window.location.href = "browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+	} else {
+		window.alert("Something went wrong. Back to the main page.");
+		window.location.href = "index.html";
+	}
+};
+
 document.getElementById('prev').onclick = function() {
 	var query = getUrlParameter('query');
 	var genre = getUrlParameter('genre');
@@ -40,24 +60,7 @@ document.getElementById('prev').onclick = function() {
 	}
 };
 
-document.getElementById('next').onclick = function() { 
-	var query = getUrlParameter('query');
-	var genre = getUrlParameter('genre');
-	var prefix = getUrlParameter('prefix');
-	var limit = getUrlParameter('numOfMovies');
-	var offset = parseInt(getUrlParameter('page')) + 1;
-	var sort = getUrlParameter('sortby');
-	if (query != null) {
-		window.location.href = "search?query=" + query + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else if (genre != null) {
-		window.location.href = "browse?genre=" + genre + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else if (prefix != null) {
-		window.location.href = "browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else {
-		window.alert("Something went wrong. Back to the main page.");
-		window.location.href = "index.html";
-	}
-};
+
 
 function updateItem(movieTitle, qtyId) {
 	var qty = document.getElementById(qtyId).value;
