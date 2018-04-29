@@ -18,7 +18,7 @@ import com.google.gson.JsonObject;
 
 import login.User;
 
-@WebServlet(name = "CheckoutServlet", urlPatterns = {"/checkout", "/confirmation"})
+@WebServlet(name = "CheckoutServlet", urlPatterns = "/checkout")
 public class CheckoutServlet extends HttpServlet{
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(); // Get a instance of current session on the request
@@ -132,7 +132,7 @@ public class CheckoutServlet extends HttpServlet{
             out.println("<body>");
             out.println("<div class=\"col-md-4 col-md-offset-4\">");
             out.println("<h2 class=\"text-center\">Checkout</h2>");
-            out.println("<form id=\"checkout_form\" method=\"post\" action=\"confimation\">");
+            out.println("<form id=\"checkout_form\" method=\"post\" action=\"confirmation\">");
             out.println("<label><b>First name</b></label><input class=\"form-control\" type=\"text\" value=" + firstname + " name=\"firstname\">");
             out.println("<br><label><b>Last name</b></label><input class=\"form-control\" type=\"text\" value=" + lastname + " name=\"lastname\">");
             out.println("<br><label><b>Credit Card</b></label><input class=\"form-control\" type=\"text\" value=" + creditcard + " name=\"creditcard\">");
