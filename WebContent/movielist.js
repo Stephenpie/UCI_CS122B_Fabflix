@@ -72,3 +72,7 @@ function deleteItem(movieTitle) {
 	window.alert("Will be deleted!");
 	window.location.href = "cart?act=delete&item=" + movieTitle;
 };
+
+function checkout() {
+	window.location.href = "checkout";
+}

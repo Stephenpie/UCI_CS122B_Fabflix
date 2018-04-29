@@ -102,7 +102,18 @@ public class CartServlet extends HttpServlet {
                 }
             }
         }
-        out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\">Checkout</button></div>");
+        out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button></div>");
+//        out.println("<script src=\"movielist.js\"></script>");
+//        } else {
+//            out.println("<div class=\"col-md-4 col-md-offset-4\">");
+//            out.println("<h2 class=\"text-center\">Checkout</h2>");
+//            out.println("<form id=\"checkout_form\" method=\"post\" action=\"#\">");
+//            out.println("<label><b>First name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter first name\" name=\"firstname\">");
+//            out.println("<br><label><b>Last name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter last name\" name=\"lastname\">");
+//            out.println("<br><label><b>Password</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter credit card\" name=\"creditcard\">");
+//            out.println("<br><label><b>Expiration Date</b></label><input class=\"form-control\" type=\"date\" placeholder=\"Expiration date\" name=\"expiration\">");
+//            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"Submit Order\"></form></div>");
+//        }
         out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
         out.println("<script src=\"movielist.js\"></script>");
         // This Line is important!!!
