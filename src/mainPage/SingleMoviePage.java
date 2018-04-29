@@ -64,9 +64,7 @@ public class SingleMoviePage extends HttpServlet {
         		out.println("<body>");
         		out.println("<h1> Movie Info: "+ movieName +"</h1>");
         		out.println("<div class=\"pageBackground\">");
-        		
-        		out.println("<select><option value='10'>10</option><option value='15'>15</option><option value='20'>20</option><option value='25'>25</option></select>");
-        		
+        		        		
         		out.println("<div class=\"container\">");
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
         		
@@ -102,7 +100,7 @@ public class SingleMoviePage extends HttpServlet {
         			String[] listOfGenres = genres.split(",");
         			StringBuilder sb_genre = new StringBuilder();
         			for (String s : listOfGenres) {
-        				sb_genre.append("<a href='browse?genre=" + s.trim() + "'>"+ s.trim() + "</a>");
+        				sb_genre.append("<a href='browse?genre=" + s.trim().toLowerCase() + "&numOfMovies=25&page=1&sortby=null'>"+ s.trim() + "</a>");
         				sb_genre.append(", ");
         			}
         			sb_genre.deleteCharAt(sb_genre.length() - 1);
@@ -115,7 +113,7 @@ public class SingleMoviePage extends HttpServlet {
         			String[] listOfStars = stars.split(",");
         			StringBuilder sb_star = new StringBuilder();
         			for (String s : listOfStars) {
-        				sb_star.append("<a href='stars?star=" + s.trim() + "'>"+ s.trim() + "</a>");
+        				sb_star.append("<a href='stars?star=" + s.trim().toLowerCase() + "'>"+ s.trim() + "</a>");
         				sb_star.append(", ");
         			}
         			sb_star.deleteCharAt(sb_star.length() - 1);
