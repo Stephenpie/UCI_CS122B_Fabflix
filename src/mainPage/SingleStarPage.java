@@ -63,9 +63,7 @@ public class SingleStarPage extends HttpServlet {
         		out.println("<body>");
         		out.println("<h1> Star Profile: "+ starName +"</h1>");
         		out.println("<div class=\"pageBackground\">");
-        		
-        		out.println("<select><option value='10'>10</option><option value='15'>15</option><option value='20'>20</option><option value='25'>25</option></select>");
-        		
+        		        		
         		out.println("<div class=\"container\">");
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
         		
@@ -112,7 +110,7 @@ public class SingleStarPage extends HttpServlet {
 
 //        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
 //        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
+        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
