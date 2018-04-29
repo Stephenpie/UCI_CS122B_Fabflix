@@ -36,12 +36,13 @@ public class CheckoutServlet extends HttpServlet{
         out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
         out.println("</head>");
         
+        out.println("<body>");
         out.println("<div class=\"col-md-4 col-md-offset-4\">");
         out.println("<h2 class=\"text-center\">Checkout</h2>");
-        out.println("<form id=\"checkout_form\" method=\"post\" action=\"#\">");
+        out.println("<form id=\"checkout_form\" method=\"post\" action=\"\">");
         out.println("<label><b>First name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter first name\" name=\"firstname\">");
         out.println("<br><label><b>Last name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter last name\" name=\"lastname\">");
-        out.println("<br><label><b>Credit Card</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter credit card\" name=\"creditcard\">");
+        out.println("<br><label><b>Credit Card</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter credit card\" name=\"creditcard\">");
         out.println("<br><label><b>Expiration Date</b></label><input class=\"form-control\" type=\"date\" placeholder=\"Expiration date\" name=\"expiration\">");
         out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"Submit Order\"></form></div>");
         
@@ -51,6 +52,21 @@ public class CheckoutServlet extends HttpServlet{
     }
     
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	HttpSession session = request.getSession(); // Get a instance of current session on the request
+        HashMap<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("cart");
+        
+        response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        
+        out.println("<html>");
+        out.println("<head><title>Fabflix</title>");
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
+        out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
+        out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
+        out.println("</head>");
+        
         String firstname = request.getParameter("firstname");
         String lastname = request.getParameter("lastname");
         String creditcard = request.getParameter("creditcard");
@@ -97,9 +113,9 @@ public class CheckoutServlet extends HttpServlet{
                 JsonObject responseJsonObject = new JsonObject();
                 responseJsonObject.addProperty("status", "fail");
                 
-                query = "SELECT * FROM creditcards c WHERE c.id = " + creditcard;
+                query = "SELECT * FROM creditcards c WHERE c.id = '" + creditcard + "'";
                 resultSet = statement.executeQuery(query);
-                response.getWriter().write(responseJsonObject.toString());
+                
                 if (!resultSet.next()) {
                     responseJsonObject.addProperty("message", "Credit card not exist");
                 } else {
@@ -111,7 +127,13 @@ public class CheckoutServlet extends HttpServlet{
                         responseJsonObject.addProperty("message", "Expiration date not correct!");
                     }
                 }
+                response.getWriter().write(responseJsonObject.toString());
             }
+            out.println("<body>");
+            out.println("<div id=\"checkout_error_message\"></div>");
+            out.println("<script src=\"checkout.js\"></script>");
+            out.println("</body></html>");
+            
         } catch (Exception e) {
             /*
              * After you deploy the WAR file through tomcat manager webpage,
