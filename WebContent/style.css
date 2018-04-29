@@ -1,3 +1,7 @@
+.loginBackgroundColor {
+	background-color: #FFF9F7;
+}
+
 .inner-wrapper {
   display:table-cell;
   vertical-align:middle;
