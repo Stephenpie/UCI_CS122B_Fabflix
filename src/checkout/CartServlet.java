@@ -45,8 +45,8 @@ public class CartServlet extends HttpServlet {
                 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
         out.println(String.format("%s<html>\n<head><title>%s</title>", docType, title));
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
-        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
-        out.println(String.format("<script src=\"movielist.js\"></script></head>\n<body bgcolor=\"#FDF5E6\">\n<h1>%s</h1>", title));
+        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script></head>");
+        out.println(String.format("<body bgcolor=\"#FDF5E6\">\n<h1>%s</h1>", title));
         //out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
 
         // In order to prevent multiple clients, requests from altering previousItems ArrayList at the same time, we lock the ArrayList while updating
@@ -102,6 +102,9 @@ public class CartServlet extends HttpServlet {
                 }
             }
         }
+        out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\">Checkout</button></div>");
+        out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
+        out.println("<script src=\"movielist.js\"></script>");
         // This Line is important!!!
 //        out.println("<script>function func(movieTitle, qtyId) {var qty = document.getElementById(qtyId).value; window.location.href = \"cart?act=update&item=\" + movieTitle + \"&qty=\" + qty;}</script>");
         

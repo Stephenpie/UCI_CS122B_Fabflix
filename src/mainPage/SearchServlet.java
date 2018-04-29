@@ -185,6 +185,7 @@ public class SearchServlet extends HttpServlet {
 //        		}
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
+        		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
         		resultSet.close();

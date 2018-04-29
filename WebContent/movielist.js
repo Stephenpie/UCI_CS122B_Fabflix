@@ -66,9 +66,9 @@ function updateItem(movieTitle, qtyId) {
 	} else {
 		window.location.href = "cart?act=update&item=" + movieTitle + "&qty=" + qty;
 	}
-}
+};
 
 function deleteItem(movieTitle) {
 	window.alert("Will be deleted!");
 	window.location.href = "cart?act=delete&item=" + movieTitle;
-}
+};
