@@ -59,47 +59,59 @@ public class SearchServlet extends HttpServlet {
         		// declare statement
         		Statement statement = connection.createStatement();
         		// prepare query
-        		String mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
-                        + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
-                        + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
-                        + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
-                        + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
-                        + " LIMIT " + limit + " OFFSET " + offset;
+//        		String mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+//                        + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+//                        + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+//                        + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+//                        + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+//                        + " LIMIT " + limit + " OFFSET " + offset;
+        		String mqlQuery = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT t2.id, t2.title, "
+        		        + "t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars FROM genres g, genres_in_movies gm, "
+        		        + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
+        		        + "FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId GROUP BY m.id) t1 WHERE "
+        		        + "t1.title LIKE '%" + query + "%' OR t1.year = '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + 
+        		        query + "%') t2 WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId";
         		if (!sort.equals("null")) {
         		    System.out.println(sort);
         		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
-        		        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
-            				+ "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
-                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
-                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
-                          	+ "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
-                          	+ " ORDER BY t2.title ASC LIMIT " + limit + " OFFSET " + offset;
+//        		        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+//            				+ "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+//                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+//                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+//                          	+ "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+//                          	+ " ORDER BY t2.title ASC LIMIT " + limit + " OFFSET " + offset;
+        		        mqlQuery += " ORDER BY m.title ASC LIMIT " + limit + " OFFSET " + offset;
         		        System.out.println(mqlQuery);
         		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
-                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
-                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
-                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
-                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
-                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
-                            + " ORDER BY t2.title DESC LIMIT " + limit + " OFFSET " + offset;
+//                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+//                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+//                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+//                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+//                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+//                            + " ORDER BY t2.title DESC LIMIT " + limit + " OFFSET " + offset;
+        		        mqlQuery += " ORDER BY m.title DESC LIMIT " + limit + " OFFSET " + offset;
                         System.out.println(mqlQuery);
         		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
-                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
-                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
-                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
-                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
-                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
-                            + " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + offset;
+//                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+//                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+//                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+//                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+//                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+//                            + " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + offset;
+        		        mqlQuery += " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + offset;
                         System.out.println(mqlQuery);
         		    } else {
-                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
-                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
-                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
-                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
-                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
-                            + " ORDER BY r.rating DESC LIMIT " + limit + " OFFSET " + offset;
+//                        mqlQuery = "SELECT t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars, r.rating FROM ratings r, genres g, genres_in_movies gm, "
+//                            + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+//                            + " FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId "
+//                            + "GROUP BY m.id) t1 WHERE t1.title LIKE '%" + query + "%' OR t1.year LIKE '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + query + "%') t2 "
+//                            + "WHERE r.movieId = t2.id AND g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id, r.rating"
+//                            + " ORDER BY r.rating DESC LIMIT " + limit + " OFFSET " + offset;
+        		        mqlQuery += " ORDER BY r.rating DESC LIMIT " + limit + " OFFSET " + offset;
                         System.out.println(mqlQuery);
         		    }
+        		} else {
+        		    mqlQuery += " LIMIT " + limit + " OFFSET " + offset;
         		}
         		
         		// execute query
