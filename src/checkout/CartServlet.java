@@ -104,7 +104,9 @@ public class CartServlet extends HttpServlet {
                 }
             }
         }
-        out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button></div>");
+        if (cart.size() != 0) {
+            out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button></div>");
+        }
 //        out.println("<script src=\"movielist.js\"></script>");
 //        } else {
 //            out.println("<div class=\"col-md-4 col-md-offset-4\">");
@@ -116,7 +118,7 @@ public class CartServlet extends HttpServlet {
 //            out.println("<br><label><b>Expiration Date</b></label><input class=\"form-control\" type=\"date\" placeholder=\"Expiration date\" name=\"expiration\">");
 //            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"Submit Order\"></form></div>");
 //        }
-        out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
+        out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         out.println("<script src=\"movielist.js\"></script>");
         // This Line is important!!!
 //        out.println("<script>function func(movieTitle, qtyId) {var qty = document.getElementById(qtyId).value; window.location.href = \"cart?act=update&item=\" + movieTitle + \"&qty=\" + qty;}</script>");

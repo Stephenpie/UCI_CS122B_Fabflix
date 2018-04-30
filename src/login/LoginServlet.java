@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
 			Statement statement = connection.createStatement();
 			// prepare query
 						
-			String query = "SELECT c.email, c.password FROM customers c WHERE c.email = "+ "'" + username + "'" + " AND c.password = " + "'" + password + "'";
+			String query = "SELECT c.id, c.email, c.password FROM customers c WHERE c.email = "+ "'" + username + "'" + " AND c.password = " + "'" + password + "'";
 			// execute query
     		ResultSet resultSet = statement.executeQuery(query);
     		
@@ -50,7 +50,8 @@ public class LoginServlet extends HttpServlet {
 	            // Login success:
 	
 	            // set this user into the session
-	            request.getSession().setAttribute("user", new User(username, password));
+	            String userID = resultSet.getString("id");
+	            request.getSession().setAttribute("user", new User(username, password, userID));
 	
 	            JsonObject responseJsonObject = new JsonObject();
 	            responseJsonObject.addProperty("status", "success");
