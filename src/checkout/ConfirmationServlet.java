@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 
@@ -14,9 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import login.User;
-import java.util.Date;
 
-@WebServlet(name = "CheckoutServlet", urlPatterns = "/confirmation")
+@WebServlet(name = "ConfirmationServlet", urlPatterns = "/confirmation")
 public class ConfirmationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -28,6 +26,12 @@ public class ConfirmationServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
+        out.println("<html>");
+        out.println("<head><title>Fabflix</title>");
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
+        out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
+        out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
+        out.println("</head>");
         
         String loginUser = "root";
         String loginPasswd = "tangwang";
@@ -42,17 +46,47 @@ public class ConfirmationServlet extends HttpServlet {
             // prepare query
                         
             String userID = ((User) session.getAttribute("user")).getUserID();
+            
+            out.println("<body>");
+            out.println("<h2 class=\"text-center\">Confirmation</h2>");
+            out.println("<div class=\"container\">");
+            out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
+            
+            // add table header row
+            out.println("<thead>");
+            
+            out.println("<th>Sale ID</th>");
+            out.println("<th>Movie Title</th>");
+            out.println("<th>Price</th>");
+            out.println("<th>Qty</th>");
+            out.println("</thead>");
+            out.println("</div>");
+            out.println("<div>");
+            out.println("<tbody>");
         
             for (String movie : cart.keySet()) {
+                String movieID = movie.split(":")[0];
+                String movieTitle = movie.split(":")[1];
                 for (int i = 0; i < cart.get(movie); i++) {
-                    String movieID = movie.split(":")[0];
-                    String movieTitle = movie.split(":")[1];
-
-                    String query = String.format("INSERT INTO sales VALUES({}, {}, CURDATE());", userID, movieID);
+                    String query = "INSERT INTO sales (customerId, movieId, saleDate) VALUES('" + userID + "', '" + movieID + "', CURDATE());";
                     System.out.println(query);
                     int result = statement.executeUpdate(query);
                 }
+                out.println("<tr>");
+                out.print("<td>" + movieTitle + "</td>");
+                out.print("<td>FREE</td>");
+                out.print("<td>" + cart.get(movie) + "</td>");
+                out.println("</tr>");
             }
+            out.println("</tbody>");
+            out.println("</div>");
+            out.println("</table>");
+            out.println("</div>");
+            
+            out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+            out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
+            out.println("</body></html>");
+            
         } catch (Exception e) {
             /*
              * After you deploy the WAR file through tomcat manager webpage,
