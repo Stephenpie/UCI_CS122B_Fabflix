@@ -67,7 +67,7 @@ public class SingleStarPage extends HttpServlet {
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
         		
         		// For checkout out button
-    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"cart()\">Check Out</button></td>");
+    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"viewCart()\">Go to Cart</button></td>");
         		
         		// add table header row
         		out.println("<thead>");

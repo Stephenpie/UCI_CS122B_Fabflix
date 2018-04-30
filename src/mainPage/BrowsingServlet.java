@@ -142,7 +142,7 @@ public class BrowsingServlet extends HttpServlet {
                 out.println("</p>");
                 
                 // For checkout out button
-    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"cart()\">Check Out</button></td>");
+    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"viewCart()\">Go to Cart</button></td>");
 
                 
                 out.println("<div class=\"container\">");

@@ -84,6 +84,6 @@ function checkout() {
 	window.location.href = "checkout";
 };
 
-function cart() {
+function viewCart() {
 	window.location.href = "cart";
 };
