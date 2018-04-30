@@ -1,3 +1,21 @@
+.margin {
+	margin-top: 30px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.content {
+	background-color: white;
+	opacity: 0.5;
+	color: black;
+	font-family: 'Raleway', sans-serif;
+	text-align: center;
+}
+
+#inputBox {
+	text-align:center
+}
+
 #disabled {
     opacity: 0;
 }

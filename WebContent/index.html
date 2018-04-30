@@ -8,93 +8,144 @@
 		content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>fabflix</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
-    
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
     <!--  Using Bootstrap -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	
     <!-- Using jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+	<style>
+		a {
+    		color: black;
+    		font-family: 'Raleway', sans-serif;
+    		font-weight: bold;
+		}
+	</style>
 </head>
 
 <body>
 	<div class="indexBackground">
-	    <p class="text-center"><font size="6">FabFlix<br><br></font></p>
-    	
-    	<input type="text" id="query" placeholder="Click here to search a movie..." >
-    	<button id="search">Search</button>
-    	
-    	<div class="genre">
-    	   <p>Browse by Movie Genre</p>
-    	   <ul>
-    	       <li><a href=browse?genre=action&numOfMovies=25&page=1&sortby=null>Action</a></li>
-    	       <li><a href=browse?genre=adult&numOfMovies=25&page=1&sortby=null>Adult</a></li>
-    	       <li><a href=browse?genre=adventure&numOfMovies=25&page=1&sortby=null>Adventure</a></li>
-    	       <li><a href=browse?genre=animation&numOfMovies=25&page=1&sortby=null>Animation</a></li>
-    	       <li><a href=browse?genre=biography&numOfMovies=25&page=1&sortby=null>Biography</a></li>
-    	       <li><a href=browse?genre=comedy&numOfMovies=25&page=1&sortby=null>Comedy</a></li>
-    	       <li><a href=browse?genre=crime&numOfMovies=25&page=1&sortby=null>Crime</a></li>
-    	       <li><a href=browse?genre=documentary&numOfMovies=25&page=1&sortby=null>Documentary</a></li>
-    	       <li><a href=browse?genre=drama&numOfMovies=25&page=1&sortby=null>Drama</a></li>
-    	       <li><a href=browse?genre=family&numOfMovies=25&page=1&sortby=null>Family</a></li>
-    	       <li><a href=browse?genre=fantasy&numOfMovies=25&page=1&sortby=null>Fantasy</a></li>
-    	       <li><a href=browse?genre=history&numOfMovies=25&page=1&sortby=null>History</a></li>
-    	       <li><a href=browse?genre=horror&numOfMovies=25&page=1&sortby=null>Horror</a></li>
-    	       <li><a href=browse?genre=music&numOfMovies=25&page=1&sortby=null>Music</a></li>
-    	       <li><a href=browse?genre=musical&numOfMovies=25&page=1&sortby=null>Musical</a></li>
-    	       <li><a href=browse?genre=mystery&numOfMovies=25&page=1&sortby=null>Mystery</a></li>
-    	       <li><a href=browse?genre=reality-tv&numOfMovies=25&page=1&sortby=null>Reality-TV</a></li>
-    	       <li><a href=browse?genre=romance&numOfMovies=25&page=1&sortby=null>Romance</a></li>
-    	       <li><a href=browse?genre=sci-fi&numOfMovies=25&page=1&sortby=null>Sci-Fi</a></li>
-    	       <li><a href=browse?genre=sport&numOfMovies=25&page=1&sortby=null>Sport</a></li>
-    	       <li><a href=browse?genre=thriller&numOfMovies=25&page=1&sortby=null>Thriller</a></li>
-    	       <li><a href=browse?genre=war&numOfMovies=25&page=1&sortby=null>War</a></li>
-    	       <li><a href=browse?genre=western&numOfMovies=25&page=1&sortby=null>Western</a></li>
-    	   </ul>
+	    
+    	<!--  
+    	<div id="form-group inputBox">
+	    	<input class="form-control" type="text" id="query" placeholder="Click here to search a movie..." >
+	    	<button id="search">Search</button>
     	</div>
+    	-->
     	
-    	<div class="initial">
-           <p>Browse by Movie Title</p>
-           <ul>
-               <li><a href=browse?prefix=0&numOfMovies=25&page=1&sortby=null>0</a></li>
-               <li><a href=browse?prefix=1&numOfMovies=25&page=1&sortby=null>1</a></li>
-               <li><a href=browse?prefix=2&numOfMovies=25&page=1&sortby=null>2</a></li>
-               <li><a href=browse?prefix=3&numOfMovies=25&page=1&sortby=null>3</a></li>
-               <li><a href=browse?prefix=4&numOfMovies=25&page=1&sortby=null>4</a></li>
-               <li><a href=browse?prefix=5&numOfMovies=25&page=1&sortby=null>5</a></li>
-               <li><a href=browse?prefix=6&numOfMovies=25&page=1&sortby=null>6</a></li>
-               <li><a href=browse?prefix=7&numOfMovies=25&page=1&sortby=null>7</a></li>
-               <li><a href=browse?prefix=8&numOfMovies=25&page=1&sortby=null>8</a></li>
-               <li><a href=browse?prefix=9&numOfMovies=25&page=1&sortby=null>9</a></li>
-               <li><a href=browse?prefix=a&numOfMovies=25&page=1&sortby=null>A</a></li>
-               <li><a href=browse?prefix=b&numOfMovies=25&page=1&sortby=null>B</a></li>
-               <li><a href=browse?prefix=c&numOfMovies=25&page=1&sortby=null>C</a></li>
-               <li><a href=browse?prefix=d&numOfMovies=25&page=1&sortby=null>D</a></li>
-               <li><a href=browse?prefix=e&numOfMovies=25&page=1&sortby=null>E</a></li>
-               <li><a href=browse?prefix=f&numOfMovies=25&page=1&sortby=null>F</a></li>
-               <li><a href=browse?prefix=g&numOfMovies=25&page=1&sortby=null>G</a></li>
-               <li><a href=browse?prefix=h&numOfMovies=25&page=1&sortby=null>H</a></li>
-               <li><a href=browse?prefix=i&numOfMovies=25&page=1&sortby=null>I</a></li>
-               <li><a href=browse?prefix=j&numOfMovies=25&page=1&sortby=null>J</a></li>
-               <li><a href=browse?prefix=k&numOfMovies=25&page=1&sortby=null>K</a></li>
-               <li><a href=browse?prefix=l&numOfMovies=25&page=1&sortby=null>L</a></li>
-               <li><a href=browse?prefix=m&numOfMovies=25&page=1&sortby=null>M</a></li>
-               <li><a href=browse?prefix=n&numOfMovies=25&page=1&sortby=null>N</a></li>
-               <li><a href=browse?prefix=o&numOfMovies=25&page=1&sortby=null>O</a></li>
-               <li><a href=browse?prefix=p&numOfMovies=25&page=1&sortby=null>P</a></li>
-               <li><a href=browse?prefix=q&numOfMovies=25&page=1&sortby=null>Q</a></li>
-               <li><a href=browse?prefix=r&numOfMovies=25&page=1&sortby=null>R</a></li>
-               <li><a href=browse?prefix=s&numOfMovies=25&page=1&sortby=null>S</a></li>
-               <li><a href=browse?prefix=t&numOfMovies=25&page=1&sortby=null>T</a></li>
-               <li><a href=browse?prefix=u&numOfMovies=25&page=1&sortby=null>U</a></li>
-               <li><a href=browse?prefix=v&numOfMovies=25&page=1&sortby=null>V</a></li>
-               <li><a href=browse?prefix=w&numOfMovies=25&page=1&sortby=null>W</a></li>
-               <li><a href=browse?prefix=x&numOfMovies=25&page=1&sortby=null>X</a></li>
-               <li><a href=browse?prefix=y&numOfMovies=25&page=1&sortby=null>Y</a></li>
-               <li><a href=browse?prefix=z&numOfMovies=25&page=1&sortby=null>Z</a></li>
-           </ul>
-        </div>
+    	<font size="6"><center>FabFlix</center></font>
+	    <div class="input-group col-xs-2">
+		    <input type="text" class="form-control" placeholder="Search a movie..." id="query">
+		    <div class="input-group-btn">
+		      <button id="search" class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+		    </div>	
+	   	</div>
+	   	
+		
+    	<div class="row">
+    		<div class="col-sm-6 margin">
+    			<div class="content genre">
+	    	   		<p>Browse by Movie Genre</p>
+	    
+			    	   <table class="table table-bordered">
+						    <tbody>
+						      <tr>
+						        <td><a href=browse?genre=action&numOfMovies=25&page=1&sortby=null>Action</a></td>
+						        <td><a href=browse?genre=adult&numOfMovies=25&page=1&sortby=null>Adult</a></td>
+						        <td><a href=browse?genre=adventure&numOfMovies=25&page=1&sortby=null>Adventure</a></td>
+						        <td><a href=browse?genre=animation&numOfMovies=25&page=1&sortby=null>Animation</a></td>
+						        <td><a href=browse?genre=biography&numOfMovies=25&page=1&sortby=null>Biography</a></td>
+						        <td><a href=browse?genre=comedy&numOfMovies=25&page=1&sortby=null>Comedy</a></td>
+						      </tr>
+						      <tr>
+						        <td><a href=browse?genre=crime&numOfMovies=25&page=1&sortby=null>Crime</a></td>
+						        <td><a href=browse?genre=documentary&numOfMovies=25&page=1&sortby=null>Documentary</a></td>
+						        <td><a href=browse?genre=drama&numOfMovies=25&page=1&sortby=null>Drama</a></td>
+						        <td><a href=browse?genre=family&numOfMovies=25&page=1&sortby=null>Family</a></td>
+						        <td><a href=browse?genre=fantasy&numOfMovies=25&page=1&sortby=null>Fantasy</a></td>
+						        <td><a href=browse?genre=history&numOfMovies=25&page=1&sortby=null>History</a></td>
+						      </tr>
+						      <tr>
+						        <td><a href=browse?genre=horror&numOfMovies=25&page=1&sortby=null>Horror</a></td>
+						        <td><a href=browse?genre=music&numOfMovies=25&page=1&sortby=null>Music</a></td>
+						        <td><a href=browse?genre=musical&numOfMovies=25&page=1&sortby=null>Musical</a></td>
+						        <td><a href=browse?genre=mystery&numOfMovies=25&page=1&sortby=null>Mystery</a></td>
+						        <td><a href=browse?genre=reality-tv&numOfMovies=25&page=1&sortby=null>Reality-TV</a></td>
+						        <td><a href=browse?genre=romance&numOfMovies=25&page=1&sortby=null>Romance</a></td>
+						      </tr>
+						      <tr>
+						        <td><a href=browse?genre=sci-fi&numOfMovies=25&page=1&sortby=null>Sci-Fi</a></td>
+						        <td><a href=browse?genre=sport&numOfMovies=25&page=1&sortby=null>Sport</a></td>
+						        <td><a href=browse?genre=thriller&numOfMovies=25&page=1&sortby=null>Thriller</a></td>
+						        <td><a href=browse?genre=war&numOfMovies=25&page=1&sortby=null>War</a></td>
+						        <td><a href=browse?genre=western&numOfMovies=25&page=1&sortby=null>Western</a></td>
+						      </tr>
+						    </tbody>
+						</table>
+    				</div>
+    			</div>
+    			<div class="col-sm-6 margin">
+    				<div class="content initial">
+           				<p>Browse by Movie Title</p>
+           
+			           <table class="table table-bordered">
+						    <tbody>
+						      <tr>
+						        <td><a href=browse?prefix=0&numOfMovies=25&page=1&sortby=null>0</a></td>
+						        <td><a href=browse?prefix=1&numOfMovies=25&page=1&sortby=null>1</a></td>
+						        <td><a href=browse?prefix=2&numOfMovies=25&page=1&sortby=null>2</a></td>
+						        <td><a href=browse?prefix=3&numOfMovies=25&page=1&sortby=null>3</a></td>
+						        <td><a href=browse?prefix=4&numOfMovies=25&page=1&sortby=null>4</a></td>
+						        <td><a href=browse?prefix=5&numOfMovies=25&page=1&sortby=null>5</a></td>
+						      </tr>
+						      <tr>
+						        <td><a href=browse?prefix=6&numOfMovies=25&page=1&sortby=null>6</a></td>
+						        <td><a href=browse?prefix=7&numOfMovies=25&page=1&sortby=null>7</a></td>
+						        <td><a href=browse?prefix=8&numOfMovies=25&page=1&sortby=null>8</a></td>
+						        <td><a href=browse?prefix=9&numOfMovies=25&page=1&sortby=null>9</a></td>
+						        <td><a href=browse?prefix=a&numOfMovies=25&page=1&sortby=null>A</a></td>
+						        <td><a href=browse?prefix=b&numOfMovies=25&page=1&sortby=null>B</a></td>
+						      </tr>
+						      <tr>
+						        <td><a href=browse?prefix=c&numOfMovies=25&page=1&sortby=null>C</a></td>
+						        <td><a href=browse?prefix=d&numOfMovies=25&page=1&sortby=null>D</a></td>
+						        <td><a href=browse?prefix=e&numOfMovies=25&page=1&sortby=null>E</a></td>
+						        <td><a href=browse?prefix=f&numOfMovies=25&page=1&sortby=null>F</a></td>
+						        <td><a href=browse?prefix=g&numOfMovies=25&page=1&sortby=null>G</a></td>
+						        <td><a href=browse?prefix=h&numOfMovies=25&page=1&sortby=null>H</a></td>
+						      </tr>
+						      <tr>
+						        <td><a href=browse?prefix=i&numOfMovies=25&page=1&sortby=null>I</a></td>
+						        <td><a href=browse?prefix=j&numOfMovies=25&page=1&sortby=null>J</a></td>
+						        <td><a href=browse?prefix=k&numOfMovies=25&page=1&sortby=null>K</a></td>
+						        <td><a href=browse?prefix=l&numOfMovies=25&page=1&sortby=null>L</a></td>
+						        <td><a href=browse?prefix=m&numOfMovies=25&page=1&sortby=null>M</a></td>
+						        <td><a href=browse?prefix=n&numOfMovies=25&page=1&sortby=null>N</a></td>
+						      </tr>
+						      <tr>
+						        <td><a href=browse?prefix=o&numOfMovies=25&page=1&sortby=null>O</a></td>
+						        <td><a href=browse?prefix=p&numOfMovies=25&page=1&sortby=null>P</a></td>
+						        <td><a href=browse?prefix=q&numOfMovies=25&page=1&sortby=null>Q</a></td>
+						        <td><a href=browse?prefix=r&numOfMovies=25&page=1&sortby=null>R</a></td>
+						        <td><a href=browse?prefix=s&numOfMovies=25&page=1&sortby=null>S</a></td>
+						        <td><a href=browse?prefix=t&numOfMovies=25&page=1&sortby=null>T</a></td>
+						      </tr>
+						      <tr>			        
+						        <td><a href=browse?prefix=u&numOfMovies=25&page=1&sortby=null>U</a></td>
+						        <td><a href=browse?prefix=v&numOfMovies=25&page=1&sortby=null>V</a></td>
+						        <td><a href=browse?prefix=w&numOfMovies=25&page=1&sortby=null>W</a></td>
+						        <td><a href=browse?prefix=x&numOfMovies=25&page=1&sortby=null>X</a></td>
+						        <td><a href=browse?prefix=y&numOfMovies=25&page=1&sortby=null>Y</a></td>
+						        <td><a href=browse?prefix=z&numOfMovies=25&page=1&sortby=null>Z</a></td>
+						      </tr>
+						    </tbody>
+						</table>
+        			</div>
+    			</div>
+    	</div>
+    		   	
     </div>
+			
     
     <script src="index.js"></script>
     
