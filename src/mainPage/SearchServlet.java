@@ -42,8 +42,8 @@ public class SearchServlet extends HttpServlet {
         String limit = request.getParameter("numOfMovies");
         String offset = Integer.toString((Integer.parseInt(request.getParameter("page")) - 1) * Integer.parseInt(limit));
         String sort = request.getParameter("sortby");
+        String nextOffset = Integer.toString(Integer.parseInt(request.getParameter("page")) * Integer.parseInt(limit));
         
-        System.out.println(sort);
         
         out.println("<html>");
         out.println("<head><title>Fabflix</title>");
@@ -51,7 +51,7 @@ public class SearchServlet extends HttpServlet {
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
         out.println("<script type=\"text/javascript\" src=\"index.js\"></script>");
-        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
+//        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</head>");
         try {
         		Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -66,23 +66,30 @@ public class SearchServlet extends HttpServlet {
         		        + "FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId GROUP BY m.id) t1 WHERE "
         		        + "t1.title LIKE '%" + query + "%' OR t1.year = '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + 
         		        query + "%') t2 WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId";
+        		String checkQuery = mqlQuery;
         		if (!sort.equals("null")) {
         		    System.out.println(sort);
         		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
         		        mqlQuery += " ORDER BY m.title ASC LIMIT " + limit + " OFFSET " + offset;
+        		        checkQuery += " ORDER BY m.title ASC LIMIT " + limit + " OFFSET " + nextOffset;
         		        System.out.println(mqlQuery);
         		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
         		        mqlQuery += " ORDER BY m.title DESC LIMIT " + limit + " OFFSET " + offset;
+        		        checkQuery += " ORDER BY m.title DESC LIMIT " + limit + " OFFSET " + nextOffset;
                         System.out.println(mqlQuery);
         		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
         		        mqlQuery += " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + offset;
+        		        checkQuery += " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + nextOffset;
                         System.out.println(mqlQuery);
         		    } else {
         		        mqlQuery += " ORDER BY r.rating DESC LIMIT " + limit + " OFFSET " + offset;
+        		        checkQuery += " ORDER BY r.rating DESC LIMIT " + limit + " OFFSET " + nextOffset;
                         System.out.println(mqlQuery);
         		    }
         		} else {
         		    mqlQuery += " LIMIT " + limit + " OFFSET " + offset;
+        		    checkQuery += " LIMIT " + limit + " OFFSET " + nextOffset;
+        		    System.out.println(mqlQuery);
         		}
         		
         		// execute query
@@ -172,12 +179,22 @@ public class SearchServlet extends HttpServlet {
         		out.println("</div>");
         		out.println("</table>");
         		
-                if (!offset.equals("0")) {
-                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-        		} else {
-                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+//                if (!offset.equals("0")) {
+//                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+//        		} else {
+//                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+//        		}
+        		ResultSet nextPage = statement.executeQuery(checkQuery);
+        		
+        		out.println("<div class=\"box\">");
+        		if (!offset.equals("0")) {
+        		    out.println("<button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button>");
         		}
-                
+        		if (nextPage.next()) {
+        		    out.println("<button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button>");
+        		}
+        		
+                out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
