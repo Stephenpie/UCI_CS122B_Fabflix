@@ -18,45 +18,47 @@ document.getElementById('back').onclick = function() {
 	window.location.href = "index.html";
 };
 
-document.getElementById('next').onclick = function() {
-	
-	var query = getUrlParameter('query');
-	var genre = getUrlParameter('genre');
-	var prefix = getUrlParameter('prefix');
-	var limit = getUrlParameter('numOfMovies');
-	var offset = parseInt(getUrlParameter('page')) + 1;
-	var sort = getUrlParameter('sortby');
-	if (query != null) {
-		window.location.href = "search?query=" + query + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else if (genre != null) {
-		window.location.href = "browse?genre=" + genre + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else if (prefix != null) {
-		window.location.href = "browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else {
-		window.alert("Something went wrong. Back to the main page.");
-		window.location.href = "index.html";
+var nextButton = document.getElementById('next');
+if (nextButton) { 
+	nextButton.onclick = function() {
+		var query = getUrlParameter('query');
+		var genre = getUrlParameter('genre');
+		var prefix = getUrlParameter('prefix');
+		var limit = getUrlParameter('numOfMovies');
+		var offset = parseInt(getUrlParameter('page')) + 1;
+		var sort = getUrlParameter('sortby');
+		if (query != null) {
+			window.location.href = "search?query=" + query + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+		} else if (genre != null) {
+			window.location.href = "browse?genre=" + genre + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+		} else if (prefix != null) {
+			window.location.href = "browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+		} else {
+			window.alert("Something went wrong. Back to the main page.");
+			window.location.href = "index.html";
+		}
 	}
 };
 
-document.getElementById('prev').onclick = function() {
-	var query = getUrlParameter('query');
-	var genre = getUrlParameter('genre');
-	var prefix = getUrlParameter('prefix');
-	var limit = getUrlParameter('numOfMovies');
-	var sort = getUrlParameter('sortby');
-	var offset = parseInt(getUrlParameter('page')) - 1;
-	if (offset <= 0) {
-		offset = 1;
-	}
-	if (query != null) {
-		window.location.href = "search?query=" + query + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else if (genre != null) {
-		window.location.href = "browse?genre=" + genre + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else if (prefix != null) {
-		window.location.href = "browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
-	} else {
-		window.alert("Something went wrong. Back to the main page.");
-		window.location.href = "index.html";
+var prevButton = document.getElementById('prev');
+if (prevButton) {
+	prevButton.onclick = function() {
+		var query = getUrlParameter('query');
+		var genre = getUrlParameter('genre');
+		var prefix = getUrlParameter('prefix');
+		var limit = getUrlParameter('numOfMovies');
+		var sort = getUrlParameter('sortby');
+		var offset = parseInt(getUrlParameter('page')) - 1;
+		if (query != null) {
+			window.location.href = "search?query=" + query + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+		} else if (genre != null) {
+			window.location.href = "browse?genre=" + genre + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+		} else if (prefix != null) {
+			window.location.href = "browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+		} else {
+			window.alert("Something went wrong. Back to the main page.");
+			window.location.href = "index.html";
+		}
 	}
 };
 
