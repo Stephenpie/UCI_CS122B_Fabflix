@@ -62,18 +62,18 @@ document.getElementById('prev').onclick = function() {
 
 
 
-function updateItem(movieTitle, qtyId) {
+function updateItem(movie, qtyId) {
 	var qty = document.getElementById(qtyId).value;
 	if (qty <= 0) {
 		window.alert("Invalid quantity!");
 	} else {
-		window.location.href = "cart?act=update&item=" + movieTitle + "&qty=" + qty;
+		window.location.href = "cart?act=update&item=" + movie + "&qty=" + qty;
 	}
 };
 
-function deleteItem(movieTitle) {
+function deleteItem(movie) {
 	window.alert("Will be deleted!");
-	window.location.href = "cart?act=delete&item=" + movieTitle;
+	window.location.href = "cart?act=delete&item=" + movie;
 };
 
 function addToCart(movie) {

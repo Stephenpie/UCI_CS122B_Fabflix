@@ -189,7 +189,7 @@ public class SearchServlet extends HttpServlet {
         			out.println("</td>");
         			
         			out.println("<td>" + rating + "</td>");
-        			String movie = movieID + ": " + title;
+        			String movie = movieID + ":" + title;
         			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
 
         			out.println("</tr>");

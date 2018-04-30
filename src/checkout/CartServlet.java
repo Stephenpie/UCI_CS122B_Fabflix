@@ -87,15 +87,17 @@ public class CartServlet extends HttpServlet {
                 out.println("<tbody>");
                 
                 int id = 0;
-                for (String movieTitle : cart.keySet()) {
+                for (String movie : cart.keySet()) {
                     out.println("<tr>");
+                    String movieTitle = movie.split(":")[1];
+                    System.out.println(movieTitle);
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");
-                    out.print("<td><input type=\"text\" id=\"qty" + id + "\" value=\""+ cart.get(movieTitle) +"\">");
+                    out.print("<td><input type=\"text\" id=\"qty" + id + "\" value=\""+ cart.get(movie) +"\">");
                     
                     // javascript needs us add ' when using variable
-                    out.print("<button class=\"btn btn-info\" id=\"update\" onclick=\"updateItem('" + movieTitle + "', 'qty" + id + "')\">Update</button>");
-                    out.print("<button class=\"btn btn-info\" id=\"delete\" onclick=\"deleteItem('" + movieTitle + "')\">Delete</button></td>");
+                    out.print("<button class=\"btn btn-info\" id=\"update\" onclick=\"updateItem('" + movie + "', 'qty" + id + "')\">Update</button>");
+                    out.print("<button class=\"btn btn-info\" id=\"delete\" onclick=\"deleteItem('" + movie + "')\">Delete</button></td>");
 
                     out.println("</tr>");
                     id++;
