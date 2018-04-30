@@ -51,6 +51,7 @@ public class SearchServlet extends HttpServlet {
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
         out.println("<script type=\"text/javascript\" src=\"index.js\"></script>");
+        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</head>");
         try {
         		Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -152,6 +153,7 @@ public class SearchServlet extends HttpServlet {
         		out.println("<th>List of genres</th>");
         		out.println("<th>List of stars</th>");
         		out.println("<th>Rating</th>");
+        		out.println("<th></th>");
         		
         		out.println("</thead>");
         		out.println("</div>");
@@ -160,6 +162,7 @@ public class SearchServlet extends HttpServlet {
         		// add a row for every star result
         		while (resultSet.next()) {
         			// get a star from result set
+        			String movieID = resultSet.getString("id");
         			String title = resultSet.getString("title");
         			int year = resultSet.getInt("year");
         			String director = resultSet.getString("director");
@@ -186,6 +189,9 @@ public class SearchServlet extends HttpServlet {
         			out.println("</td>");
         			
         			out.println("<td>" + rating + "</td>");
+        			String movie = movieID + ": " + title;
+        			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
+
         			out.println("</tr>");
         		}
         		out.println("</tbody>");

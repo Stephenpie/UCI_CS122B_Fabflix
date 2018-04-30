@@ -76,6 +76,10 @@ function deleteItem(movieTitle) {
 	window.location.href = "cart?act=delete&item=" + movieTitle;
 };
 
+function addToCart(movie) {
+	window.location.href = "cart?act=add&item=" + movie;
+};
+
 function checkout() {
 	window.location.href = "checkout";
-}
+};

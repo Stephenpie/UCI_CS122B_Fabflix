@@ -153,12 +153,14 @@ public class BrowsingServlet extends HttpServlet {
                 out.println("<th>List of genres</th>");
                 out.println("<th>List of stars</th>");
                 out.println("<th>Rating</th>");
+                out.println("<th></th>");
                 
                 out.println("</thead>");
                 out.println("</div>");
                 out.println("<div>");
                 out.println("<tbody>");
                 // add a row for every star result
+                int i = 0;
                 while (resultSet.next()) {
                     // get a star from result set
                     String title = resultSet.getString("title");
@@ -187,6 +189,7 @@ public class BrowsingServlet extends HttpServlet {
                     out.println("</td>");
                     
                     out.println("<td>" + rating + "</td>");
+        			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + i + "')\">Add to Cart</button></td>");
                     out.println("</tr>");
                 }
                 out.println("</tbody>");
