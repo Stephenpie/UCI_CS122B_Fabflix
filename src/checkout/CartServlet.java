@@ -13,6 +13,7 @@ import java.util.HashMap;
 @WebServlet(name = "CartServlet", urlPatterns = "/cart")
 
 public class CartServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) throws IOException {
 
@@ -26,14 +27,9 @@ public class CartServlet extends HttpServlet {
 
         }
 
-//        String newItem = request.getParameter("add"); // Get parameter that sent by GET request url
-//        String prevItem = request.getParameter("update");
         String act = request.getParameter("act");
         String item = request.getParameter("item");
         String qty = request.getParameter("qty");
-//        if (qty == null) {
-//            qty = "1";
-//        }
 
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
@@ -44,10 +40,12 @@ public class CartServlet extends HttpServlet {
         String docType =
                 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n";
         out.println(String.format("%s<html>\n<head><title>%s</title>", docType, title));
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
-        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script></head>");
-        out.println(String.format("<body bgcolor=\"#FDF5E6\">\n<h1>%s</h1>", title));
-        //out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
+        out.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
+        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
+
+        out.println(String.format("</head><body bgcolor=\"#FDF5E6\">\n<h1>%s</h1>", title));
 
         // In order to prevent multiple clients, requests from altering previousItems ArrayList at the same time, we lock the ArrayList while updating
         synchronized (cart) {
@@ -81,6 +79,7 @@ public class CartServlet extends HttpServlet {
                 out.println("<th>Movie Title</th>");
                 out.println("<th>Price</th>");
                 out.println("<th>Qty</th>");
+                out.println("<th></th>");
                 out.println("</thead>");
                 out.println("</div>");
                 out.println("<div>");
@@ -93,37 +92,27 @@ public class CartServlet extends HttpServlet {
                     System.out.println(movieTitle);
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");
-                    out.print("<td><input type=\"text\" id=\"qty" + id + "\" value=\""+ cart.get(movie) +"\">");
+                    out.print("<td><input type=\"text\" id=\"qty" + id + "\" value=\""+ cart.get(movie) +"\"></td>");
                     
                     // javascript needs us add ' when using variable
-                    out.print("<button class=\"btn btn-info\" id=\"update\" onclick=\"updateItem('" + movie + "', 'qty" + id + "')\">Update</button>");
+                    out.print("<td><button class=\"btn btn-info\" id=\"update\" onclick=\"updateItem('" + movie + "', 'qty" + id + "')\">Update</button>");
                     out.print("<button class=\"btn btn-info\" id=\"delete\" onclick=\"deleteItem('" + movie + "')\">Delete</button></td>");
 
                     out.println("</tr>");
                     id++;
                 }
+                out.println("</tbody>");
+                out.println("</div>");
+                out.println("</table>");
+                out.println("</div>");
             }
         }
+        	
         if (cart.size() != 0) {
-            out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button></div>");
+        	out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button>");
         }
-//        out.println("<script src=\"movielist.js\"></script>");
-//        } else {
-//            out.println("<div class=\"col-md-4 col-md-offset-4\">");
-//            out.println("<h2 class=\"text-center\">Checkout</h2>");
-//            out.println("<form id=\"checkout_form\" method=\"post\" action=\"#\">");
-//            out.println("<label><b>First name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter first name\" name=\"firstname\">");
-//            out.println("<br><label><b>Last name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter last name\" name=\"lastname\">");
-//            out.println("<br><label><b>Password</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter credit card\" name=\"creditcard\">");
-//            out.println("<br><label><b>Expiration Date</b></label><input class=\"form-control\" type=\"date\" placeholder=\"Expiration date\" name=\"expiration\">");
-//            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"Submit Order\"></form></div>");
-//        }
-        out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-        out.println("<script src=\"movielist.js\"></script>");
-        // This Line is important!!!
-//        out.println("<script>function func(movieTitle, qtyId) {var qty = document.getElementById(qtyId).value; window.location.href = \"cart?act=update&item=\" + movieTitle + \"&qty=\" + qty;}</script>");
-        
-        out.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
+        out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</body></html>");
     }
 }

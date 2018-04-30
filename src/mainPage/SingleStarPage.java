@@ -30,7 +30,6 @@ public class SingleStarPage extends HttpServlet {
 		
         // set response mime type
         response.setContentType("text/html"); 
-//        response.setContentType("UTF-8");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
@@ -66,6 +65,9 @@ public class SingleStarPage extends HttpServlet {
         		        		
         		out.println("<div class=\"container\">");
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
+        		
+        		// For checkout out button
+    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"cart()\">Check Out</button></td>");
         		
         		// add table header row
         		out.println("<thead>");
@@ -108,8 +110,6 @@ public class SingleStarPage extends HttpServlet {
         		out.println("</div>");
         		out.println("</table>");
 
-//        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
-//        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
@@ -139,8 +139,5 @@ public class SingleStarPage extends HttpServlet {
         
         out.println("</html>"); 
         out.close();
-        
 	}
-
-
 }

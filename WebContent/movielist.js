@@ -83,3 +83,7 @@ function addToCart(movie) {
 function checkout() {
 	window.location.href = "checkout";
 };
+
+function cart() {
+	window.location.href = "cart";
+};

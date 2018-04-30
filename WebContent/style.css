@@ -24,6 +24,17 @@
 	margin: 50px;
 }
 
+#checkout {
+ margin: 50px;
+}
+
+#update {
+ margin-right: 50px;
+ margin-top: auto;
+ margin-bottom: auto;
+ margin-left: auto;
+}
+
 .loginBackgroundColor {
 	background-color: #FFF9F7;
 }

@@ -20,6 +20,8 @@ import login.User;
 
 @WebServlet(name = "CheckoutServlet", urlPatterns = "/checkout")
 public class CheckoutServlet extends HttpServlet{
+	private static final long serialVersionUID = 1L;
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(); // Get a instance of current session on the request
         HashMap<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("cart");

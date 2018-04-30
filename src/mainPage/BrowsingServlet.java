@@ -31,7 +31,6 @@ public class BrowsingServlet extends HttpServlet {
         // set response mime type
         response.setContentType("text/html"); 
         
-//        response.setContentType("UTF-8");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
@@ -53,6 +52,7 @@ public class BrowsingServlet extends HttpServlet {
         out.println("<script src=\"movielist.js\"></script>");
         out.println("</head>");
         try {
+
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
                 // create database connection
                 Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
@@ -141,6 +141,10 @@ public class BrowsingServlet extends HttpServlet {
                 }
                 out.println("</p>");
                 
+                // For checkout out button
+    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"cart()\">Check Out</button></td>");
+
+                
                 out.println("<div class=\"container\">");
                 out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
                 
@@ -197,16 +201,12 @@ public class BrowsingServlet extends HttpServlet {
                 out.println("</div>");
                 out.println("</table>");
                 
-                //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-
                 if (!offset.equals("0")) {
                     out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		} else {
                     out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		}
-                //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-                //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
-                //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+
                 out.println("<script src=\"movielist.js\"></script>");
                 out.println("</body>");
                 
@@ -235,8 +235,5 @@ public class BrowsingServlet extends HttpServlet {
         
         out.println("</html>"); 
         out.close();
-        
     }
-
-
 }

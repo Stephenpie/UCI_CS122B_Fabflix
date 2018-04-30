@@ -31,7 +31,6 @@ public class SearchServlet extends HttpServlet {
         // set response mime type
         response.setContentType("text/html"); 
         
-//        response.setContentType("UTF-8");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
@@ -48,6 +47,7 @@ public class SearchServlet extends HttpServlet {
         
         out.println("<html>");
         out.println("<head><title>Fabflix</title>");
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
         out.println("<script type=\"text/javascript\" src=\"index.js\"></script>");
@@ -144,6 +144,10 @@ public class SearchServlet extends HttpServlet {
         		out.println("<div class=\"container\">");
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
         		
+        		// For checkout out button
+    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"cart()\">Check Out</button></td>");
+        		
+        		
         		// add table header row
         		out.println("<thead>");
         		
@@ -198,19 +202,12 @@ public class SearchServlet extends HttpServlet {
         		out.println("</div>");
         		out.println("</table>");
         		
-                //out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
                 if (!offset.equals("0")) {
                     out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		} else {
                     out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		}
-                /*
-        		if (!offset.equals("0")) {
-        		    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
-        		}
-        		*/
-        		//out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
-        		//out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+                
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
@@ -239,8 +236,5 @@ public class SearchServlet extends HttpServlet {
         
         out.println("</html>"); 
         out.close();
-        
 	}
-
-
 }

@@ -30,7 +30,6 @@ public class SingleMoviePage extends HttpServlet {
 		
         // set response mime type
         response.setContentType("text/html"); 
-//        response.setContentType("UTF-8");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
@@ -53,7 +52,7 @@ public class SingleMoviePage extends HttpServlet {
         		// declare statement
         		Statement statement = connection.createStatement();
         		// prepare query
-        		String Query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
+        		String Query = "SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
         		        + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
                         + "WHERE m.title = '" + movieName + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                         + "GROUP BY m.id";
@@ -68,6 +67,9 @@ public class SingleMoviePage extends HttpServlet {
         		out.println("<div class=\"container\">");
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
         		
+        		// For checkout out button
+    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"cart()\">Check Out</button></td>");
+        		
         		// add table header row
         		out.println("<thead>");
         		
@@ -76,6 +78,7 @@ public class SingleMoviePage extends HttpServlet {
         		out.println("<th>Director</th>");
         		out.println("<th>List of genres</th>");
         		out.println("<th>List of stars</th>");
+        		out.println("<th></th>");
 
         		out.println("</thead>");
         		out.println("</div>");
@@ -89,6 +92,7 @@ public class SingleMoviePage extends HttpServlet {
         			String director = resultSet.getString("director");
         			String genres = resultSet.getString("genres");
         			String stars = resultSet.getString("stars");
+        			String movieID = resultSet.getString("id");
         			
         			out.println("<tr>");
         			out.println("<td>" + title + "</td>");
@@ -121,14 +125,16 @@ public class SingleMoviePage extends HttpServlet {
         			out.print(sb_star.toString());
         			out.println("</td>");
         			
+
+        			String movie = movieID + ":" + title;
+        			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
         			out.println("</tr>");
         		}
+        		
         		out.println("</tbody>");
         		out.println("</div>");
         		out.println("</table>");	
         		
-//        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
-//        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
         		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
@@ -155,11 +161,7 @@ public class SingleMoviePage extends HttpServlet {
         		out.println("</p>");
         		out.print("</body>");
         }
-        
         out.println("</html>"); 
         out.close();
-        
 	}
-
-
 }
