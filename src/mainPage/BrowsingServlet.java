@@ -139,15 +139,13 @@ public class BrowsingServlet extends HttpServlet {
                     out.print(" | ");
                     out.println("<a href='browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=1&sortby=ratingasc'>Rating<span class=\"glyphicon glyphicon-triangle-top\"></span></a></p>");
                 }
-                out.println("</p>");
-                
-                // For checkout out button
-    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"viewCart()\">Go to Cart</button></td>");
-
-                
+                                
                 out.println("<div class=\"container\">");
                 out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
                 
+                // For checkout out button
+    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"viewCart()\">Go to Cart</button></td>");
+    			
                 // add table header row
                 out.println("<thead>");
                 
