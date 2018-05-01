@@ -141,7 +141,9 @@ public class SearchServlet extends HttpServlet {
         		out.println("<div>"); // container
         		out.println("<tbody>");
         		// add a row for every star result
+        		int count = 0;
         		while (resultSet.next()) {
+        		    count++;
         			// get a star from result set
         			String movieID = resultSet.getString("id");
         			String title = resultSet.getString("title");
