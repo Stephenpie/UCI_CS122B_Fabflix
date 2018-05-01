@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 
@@ -64,15 +65,25 @@ public class ConfirmationServlet extends HttpServlet {
             out.println("<div>");
             out.println("<tbody>");
         
+            String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = '" + userID + "'";
+            ResultSet rid = statement.executeQuery(query);
+            int id = 0;
+            if (rid.next()) {
+                id = Integer.parseInt(rid.getString("id"));
+            }
             for (String movie : cart.keySet()) {
+                id++;
                 String movieID = movie.split(":")[0];
                 String movieTitle = movie.split(":")[1];
+                String saleID = "";
                 for (int i = 0; i < cart.get(movie); i++) {
-                    String query = "INSERT INTO sales (customerId, movieId, saleDate) VALUES('" + userID + "', '" + movieID + "', CURDATE());";
+                    query = "INSERT INTO sales (customerId, movieId, saleDate) VALUES('" + userID + "', '" + movieID + "', CURDATE());";
                     System.out.println(query);
                     int result = statement.executeUpdate(query);
+                    saleID += (id + ", ");
                 }
                 out.println("<tr>");
+                out.print("<td>" + saleID.substring(0, saleID.length() - 2) + "</td>");
                 out.print("<td>" + movieTitle + "</td>");
                 out.print("<td>FREE</td>");
                 out.print("<td>" + cart.get(movie) + "</td>");
@@ -86,6 +97,11 @@ public class ConfirmationServlet extends HttpServlet {
             out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
             out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
             out.println("</body></html>");
+            
+            cart = new HashMap<String, Integer>();
+            rid.close();
+            statement.close();
+            connection.close();
             
         } catch (Exception e) {
             /*

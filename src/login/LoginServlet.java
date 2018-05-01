@@ -73,6 +73,9 @@ public class LoginServlet extends HttpServlet {
 	            */
 	            response.getWriter().write(responseJsonObject.toString());
 	        }
+	        resultSet.close();
+	        statement.close();
+            connection.close();
         } catch (Exception e) {
         	/*
     		 * After you deploy the WAR file through tomcat manager webpage,
