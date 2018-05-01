@@ -157,11 +157,12 @@
 						</table>
         			</div>
     			</div>
+    			
     			<div class="col-lg-4">
     				<div class = "content">
     					<p>Advanced Search</p>
     					<table>
-    					<form id="advancedSearch" method="get" action="advanceSearch">
+    					<form id="advancedSearch" method="get" action="advanced">
 	    					<label><b>Title</b></label>
 	    					<input class="form-control" type="text" placeholder="Enter Movie Title" name="title">
 	    					<br>
@@ -172,8 +173,11 @@
 	    					<input class="form-control" type="text" placeholder="Enter Director" name="director">
 	    					<br>
 	    					<label><b>Star's Name</b></label>
-	    					<input class="form-control" type="text" placeholder="Enter Star's Name" name="starName">
+	    					<input class="form-control" type="text" placeholder="Enter Star's Name" name="star">
 	    					<br>
+	    					<input type="hidden" name="numOfMovies" value="25" />
+	    					<input type="hidden" name="page" value="1" />
+	    					<input type="hidden" name="sortby" value="null" />
 	    					<input class="btn btn-info" type="submit" value="Advanced Search">
 						</form>
 						</table>

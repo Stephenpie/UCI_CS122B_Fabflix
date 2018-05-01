@@ -88,7 +88,6 @@ function updateItem(movie, qtyId) {
 };
 
 function deleteItem(movie) {
-	window.alert("Will be deleted!");
 	window.location.href = "cart?act=delete&item=" + movie;
 };
 

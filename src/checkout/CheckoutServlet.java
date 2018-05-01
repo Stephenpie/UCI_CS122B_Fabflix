@@ -16,8 +16,6 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.JsonObject;
 
-import login.User;
-
 @WebServlet(name = "CheckoutServlet", urlPatterns = "/checkout")
 public class CheckoutServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
