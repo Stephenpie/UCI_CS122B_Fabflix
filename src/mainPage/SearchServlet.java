@@ -88,7 +88,7 @@ public class SearchServlet extends HttpServlet {
         		    }
         		} else {
         		    mqlQuery += " LIMIT " + limit + " OFFSET " + offset;
-        		    checkQuery += " LIMIT " + limit + " OFFSET " + nextOffset;
+        		    checkQuery += " LIMIT 1" + " OFFSET " + nextOffset;
         		    System.out.println(mqlQuery);
         		}
         		
@@ -141,9 +141,7 @@ public class SearchServlet extends HttpServlet {
         		out.println("<div>"); // container
         		out.println("<tbody>");
         		// add a row for every star result
-        		int count = 0;
         		while (resultSet.next()) {
-        		    count++;
         			// get a star from result set
         			String movieID = resultSet.getString("id");
         			String title = resultSet.getString("title");
@@ -181,11 +179,6 @@ public class SearchServlet extends HttpServlet {
         		out.println("</div>");
         		out.println("</table>");
         		
-//                if (!offset.equals("0")) {
-//                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-//        		} else {
-//                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-//        		}
         		ResultSet nextPage = statement.executeQuery(checkQuery);
         		
         		out.println("<div class=\"box\">");

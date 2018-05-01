@@ -43,6 +43,7 @@ public class BrowsingServlet extends HttpServlet {
         String limit = request.getParameter("numOfMovies");
         String offset = Integer.toString((Integer.parseInt(request.getParameter("page")) - 1) * Integer.parseInt(limit));
         String sort = request.getParameter("sortby");
+        String nextOffset = Integer.toString(Integer.parseInt(request.getParameter("page")) * Integer.parseInt(limit));
         
         out.println("<html>");
         out.println("<head><title>Fabflix</title>");
@@ -59,41 +60,37 @@ public class BrowsingServlet extends HttpServlet {
                 // declare statement
                 Statement statement = connection.createStatement();
                 // prepare query
-                String query = null;
-                
+                String query = "";
                 if (genre != null) {
-//                	query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars, r.rating "
-//                            + " from genres g, genres_in_movies gm, movies m, ratings r, stars s, stars_in_movies sm "
-//                          + "WHERE g.name = '" + genre + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND r.movieId = m.id AND m.id = gm.movieId "
-//                          + "GROUP BY m.id, r.rating";
                     query = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
                             + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
                           + "WHERE g.name = '" + genre + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                           + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId";
-                    System.out.println(query);
                 } else {
-//                	query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars, r.rating "
-//                            + " from genres g, genres_in_movies gm, movies m, ratings r, stars s, stars_in_movies sm "
-//                            + "WHERE m.title LIKE '" + prefix + "%' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND r.movieId = m.id AND m.id = gm.movieId "
-//                            + "GROUP BY m.id, r.rating";
                     query = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
                             + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
                             + "WHERE m.title LIKE '" + prefix + "%' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                             + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId";
                 }
+                String checkQuery = query;
                 
                 if (!sort.equals("null")) {
         		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
-        		        query += " ORDER BY m.title ASC" + " LIMIT " + limit + " OFFSET " + offset;        		        
+        		        query += " ORDER BY m.title ASC" + " LIMIT " + limit + " OFFSET " + offset; 
+        		        checkQuery += " ORDER BY m.title ASC" + " LIMIT " + limit + " OFFSET " + nextOffset; 
         		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
         		        query += " ORDER BY m.title DESC" + " LIMIT " + limit + " OFFSET " + offset;
+        		        checkQuery += " ORDER BY m.title DESC" + " LIMIT " + limit + " OFFSET " + nextOffset;
         		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
         		        query += " ORDER BY r.rating ASC" + " LIMIT " + limit + " OFFSET " + offset;
+        		        checkQuery += " ORDER BY r.rating ASC" + " LIMIT " + limit + " OFFSET " + nextOffset;
         		    } else {
         		        query += " ORDER BY r.rating DESC" + " LIMIT " + limit + " OFFSET " + offset;
+        		        checkQuery += " ORDER BY r.rating DESC" + " LIMIT " + limit + " OFFSET " + nextOffset;
         		    }
         		} else {
         			query += " LIMIT " + limit + " OFFSET " + offset;
+        			checkQuery += " LIMIT " + limit + " OFFSET " + nextOffset;
         		}
                 
                 // execute query
@@ -199,12 +196,17 @@ public class BrowsingServlet extends HttpServlet {
                 out.println("</div>");
                 out.println("</table>");
                 
+                ResultSet nextPage = statement.executeQuery(checkQuery);
+                
+                out.println("<div class=\"box\">");
                 if (!offset.equals("0")) {
-                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-        		} else {
-                    out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-        		}
+                    out.println("<button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button>");
+                }
+                if (nextPage.next()) {
+                    out.println("<button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button>");
+                }
 
+                out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
                 out.println("<script src=\"movielist.js\"></script>");
                 out.println("</body>");
                 
