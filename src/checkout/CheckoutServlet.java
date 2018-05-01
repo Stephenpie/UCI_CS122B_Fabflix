@@ -35,6 +35,7 @@ public class CheckoutServlet extends HttpServlet{
         out.println("<head><title>Fabflix</title>");
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
+        out.println("<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>");
         out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
         out.println("</head>");
         
@@ -62,12 +63,12 @@ public class CheckoutServlet extends HttpServlet{
         request.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         
-        out.println("<html>");
-        out.println("<head><title>Fabflix</title>");
-        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
-        out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
-        out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
-        out.println("</head>");
+//        out.println("<html>");
+//        out.println("<head><title>Fabflix</title>");
+//        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
+//        out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
+//        out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
+//        out.println("</head>");
         
         String firstname = request.getParameter("firstname");
         String lastname = request.getParameter("lastname");
@@ -100,10 +101,6 @@ public class CheckoutServlet extends HttpServlet{
             */
             
             if (resultSet.next()) {
-                // Login success:
-    
-                // set this user into the session
-//                request.getSession().setAttribute("user", new User(username, password));
     
                 JsonObject responseJsonObject = new JsonObject();
                 responseJsonObject.addProperty("status", "success");
@@ -131,19 +128,19 @@ public class CheckoutServlet extends HttpServlet{
                 }
                 response.getWriter().write(responseJsonObject.toString());
             }
-            out.println("<body>");
-            out.println("<div class=\"col-md-4 col-md-offset-4\">");
-            out.println("<h2 class=\"text-center\">Checkout</h2>");
-            out.println("<form id=\"checkout_form\" method=\"post\" action=\"confirmation\">");
-            out.println("<label><b>First name</b></label><input class=\"form-control\" type=\"text\" value=" + firstname + " name=\"firstname\">");
-            out.println("<br><label><b>Last name</b></label><input class=\"form-control\" type=\"text\" value=" + lastname + " name=\"lastname\">");
-            out.println("<br><label><b>Credit Card</b></label><input class=\"form-control\" type=\"text\" value=" + creditcard + " name=\"creditcard\">");
-            out.println("<br><label><b>Expiration Date</b></label><input class=\"form-control\" type=\"date\" value=" + expirationDate + " name=\"expiration\">");
-            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"Submit Order\"></form></div>");
-            
-            out.println("<div id=\"checkout_error_message\"></div>");
-            out.println("<script src=\"checkout.js\"></script>");
-            out.println("</body></html>");
+//            out.println("<body>");
+//            out.println("<div class=\"col-md-4 col-md-offset-4\">");
+//            out.println("<h2 class=\"text-center\">Checkout</h2>");
+//            out.println("<form id=\"checkout_form\" method=\"post\" action=\"confirmation\">");
+//            out.println("<label><b>First name</b></label><input class=\"form-control\" type=\"text\" value=" + firstname + " name=\"firstname\">");
+//            out.println("<br><label><b>Last name</b></label><input class=\"form-control\" type=\"text\" value=" + lastname + " name=\"lastname\">");
+//            out.println("<br><label><b>Credit Card</b></label><input class=\"form-control\" type=\"text\" value=" + creditcard + " name=\"creditcard\">");
+//            out.println("<br><label><b>Expiration Date</b></label><input class=\"form-control\" type=\"date\" value=" + expirationDate + " name=\"expiration\">");
+//            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"Submit Order\"></form></div>");
+//            
+//            out.println("<div id=\"checkout_error_message\"></div>");
+//            out.println("<script src=\"checkout.js\"></script>");
+//            out.println("</body></html>");
             
         } catch (Exception e) {
             /*
