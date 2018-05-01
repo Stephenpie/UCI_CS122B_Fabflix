@@ -35,7 +35,7 @@ public class CheckoutServlet extends HttpServlet{
         out.println("<head><title>Fabflix</title>");
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
-        out.println("<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>");
+        out.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>");
         out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
         out.println("</head>");
         
