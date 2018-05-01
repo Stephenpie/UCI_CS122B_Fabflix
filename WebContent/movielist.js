@@ -14,9 +14,23 @@ var getUrlParameter = function getUrlParameter(sParam) {
 };
 
 //bind pressing the button to a handler function
-document.getElementById('back').onclick = function() { 
-	window.location.href = "index.html";
-};
+//document.getElementById('back').onclick = function() { 
+//	window.location.href = "index.html";
+//};
+
+var homeButton = document.getElementById('back');
+if (homeButton) {
+	homeButton.onclick = function() {
+		window.location.href = "index.html";
+	}
+}
+
+var homeButton = document.getElementById('home');
+if (homeButton) {
+	homeButton.onclick = function() {
+		window.location.href = "index.html";
+	}
+}
 
 var nextButton = document.getElementById('next');
 if (nextButton) { 

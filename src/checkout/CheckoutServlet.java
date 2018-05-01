@@ -37,6 +37,7 @@ public class CheckoutServlet extends HttpServlet{
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
         out.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>");
         out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
+        out.println("<script src=\"movielist.js\"></script>");
         out.println("</head>");
         
         out.println("<body>");
@@ -47,9 +48,10 @@ public class CheckoutServlet extends HttpServlet{
         out.println("<br><label><b>Last name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter last name\" name=\"lastname\">");
         out.println("<br><label><b>Credit Card</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter credit card\" name=\"creditcard\">");
         out.println("<br><label><b>Expiration Date</b></label><input class=\"form-control\" type=\"date\" placeholder=\"Expiration date\" name=\"expiration\">");
-        out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"Submit Order\"></form></div>");
+        out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"Submit Order\"><button type=\"button\" class=\"btn btn-info\" id=\"home\">Home</button></form></div>");
         
         out.println("<div id=\"checkout_error_message\"></div>");
+        out.println("<script src=\"movielist.js\"></script>");
         out.println("<script src=\"./checkout.js\"></script>");
         out.println("</body></html>");
     }

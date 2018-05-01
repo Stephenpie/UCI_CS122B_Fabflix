@@ -32,6 +32,7 @@ public class ConfirmationServlet extends HttpServlet {
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
         out.println("<script type=\"text/javascript\" src=\"checkout.js\"></script>");
+        out.println("<script src=\"movielist.js\"></script>");
         out.println("</head>");
         
         String loginUser = "root";
@@ -61,8 +62,8 @@ public class ConfirmationServlet extends HttpServlet {
             out.println("<th>Price</th>");
             out.println("<th>Qty</th>");
             out.println("</thead>");
-            out.println("</div>");
-            out.println("<div>");
+            //out.println("</div>");
+            //out.println("<div>");
             out.println("<tbody>");
         
             String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = '" + userID + "'";
@@ -89,12 +90,14 @@ public class ConfirmationServlet extends HttpServlet {
                 out.print("<td>" + cart.get(movie) + "</td>");
                 out.println("</tr>");
             }
+            
             out.println("</tbody>");
-            out.println("</div>");
+            out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+            //out.println("</div>");
             out.println("</table>");
             out.println("</div>");
             
-            out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+            
             out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
             out.println("</body></html>");
             
