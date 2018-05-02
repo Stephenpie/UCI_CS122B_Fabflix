@@ -66,14 +66,8 @@ public class ConfirmationServlet extends HttpServlet {
             //out.println("<div>");
             out.println("<tbody>");
         
-            String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = '" + userID + "'";
-            ResultSet rid = statement.executeQuery(query);
-            int id = 0;
-            if (rid.next()) {
-                id = Integer.parseInt(rid.getString("id"));
-            }
+            String query = "";
             for (String movie : cart.keySet()) {
-                id++;
                 String movieID = movie.split(":")[0];
                 String movieTitle = movie.split(":")[1];
                 String saleID = "";
@@ -81,7 +75,10 @@ public class ConfirmationServlet extends HttpServlet {
                     query = "INSERT INTO sales (customerId, movieId, saleDate) VALUES('" + userID + "', '" + movieID + "', CURDATE());";
                     System.out.println(query);
                     int result = statement.executeUpdate(query);
-                    saleID += (id + ", ");
+                    query = "SELECT LAST_INSERT_ID() AS id;";
+                    ResultSet res = statement.executeQuery(query);
+                    res.next();
+                    saleID += (res.getString("id") + ", ");
                 }
                 out.println("<tr>");
                 out.print("<td>" + saleID.substring(0, saleID.length() - 2) + "</td>");
@@ -102,7 +99,6 @@ public class ConfirmationServlet extends HttpServlet {
             out.println("</body></html>");
             
             cart = new HashMap<String, Integer>();
-            rid.close();
             statement.close();
             connection.close();
             
