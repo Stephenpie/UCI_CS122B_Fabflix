@@ -98,7 +98,7 @@ public class ConfirmationServlet extends HttpServlet {
             out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
             out.println("</body></html>");
             
-            cart = new HashMap<String, Integer>();
+            cart.clear();
             statement.close();
             connection.close();
             

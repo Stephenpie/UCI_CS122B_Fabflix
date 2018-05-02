@@ -6,13 +6,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.HashMap;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.google.gson.JsonObject;
 
@@ -20,10 +18,7 @@ import com.google.gson.JsonObject;
 public class CheckoutServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession(); // Get a instance of current session on the request
-        HashMap<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("cart");
-        
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {        
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
@@ -55,10 +50,7 @@ public class CheckoutServlet extends HttpServlet{
         out.println("</body></html>");
     }
     
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    	HttpSession session = request.getSession(); // Get a instance of current session on the request
-        HashMap<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("cart");
-        
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {        
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
