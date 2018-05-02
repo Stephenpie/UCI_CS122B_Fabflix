@@ -1,3 +1,11 @@
+function validateForm() {
+	var form =  document.forms["advancedSearch"];
+	if (form["title"].value == "" && form["year"].value == "" && form["director"].value == "" && form["star"].value == "") {
+		window.alert("Please enter something to search!");
+		return false;
+	}
+}
+
 // bind pressing enter key to a handler function
 jQuery('#query').keypress(function(event) {
 	// keyCode 13 is the enter key
@@ -18,10 +26,22 @@ window.onload = function(){
 	}
 };
 
-function submitSearchForm(formSubmitEvent) {
-	var url = jQuery("#advancedSearch").serialize();
-	console.log(url);
-	window.location.href = "advanced?" + url + "&numOfMovies=25&page=1&sortby=null&advanced=true";
-}
-
-jQuery("#advancedSearch").submit((event) => submitSearchForm(event));
+//function submitSearchForm(formSubmitEvent) {
+//	var arr = jQuery("#advancedSearch").serializeArray();
+//	var n = 0;
+//	for (i = 0; i < arr; i++) {
+//		if (arr[i] == "") {
+//			n++;
+//		}
+//	}
+//	if (n == 4) {
+//		window.alert("Please enter something to search!");
+//	} else {
+//		var url = jQuery("#advancedSearch").serialize();
+//		console.log(url);
+//	}
+//	
+//	window.location.href = "advanced?" + url + "&numOfMovies=25&page=1&sortby=null&advanced=true";
+//}
+//
+//jQuery("#advancedSearch").submit((event) => submitSearchForm(event));

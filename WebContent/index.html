@@ -161,8 +161,8 @@
     			<div class="col-lg-4">
     				<div class = "content">
     					<p>Advanced Search</p>
-    					<table>
-    					<form id="advancedSearch" method="get" action="advanced">
+<!--     					<table> -->
+    					<form id="advancedSearch" method="get" action="advanced" onsubmit="return validateForm()">
 	    					<label><b>Title</b></label>
 	    					<input class="form-control" type="text" placeholder="Enter Movie Title" name="title">
 	    					<br>
@@ -180,7 +180,7 @@
 	    					<input type="hidden" name="sortby" value="null" />
 	    					<input class="btn btn-info" type="submit" value="Advanced Search">
 						</form>
-						</table>
+<!-- 						</table> -->
     				</div>
     			</div>	
     		</div>   	
