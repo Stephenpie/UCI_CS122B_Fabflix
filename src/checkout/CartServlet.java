@@ -68,7 +68,7 @@ public class CartServlet extends HttpServlet {
 
             // Display the current previousItems ArrayList
             if (cart.size() == 0) {
-                out.println("<i>Empty cart</i>");
+                out.println("<br><br><div id=\"cart\"><center>Empty cart</center></div><br><br>");
             } else {
                 out.println("<div class=\"container\">");
                 out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
@@ -107,11 +107,13 @@ public class CartServlet extends HttpServlet {
                 out.println("</div>");
             }
         }
-        	
+        
         if (cart.size() != 0) {
-        	out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button>");
+        	out.println("<div class=\"box\"><center><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></center></div>");
+        } else {
+        	out.println("<center><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></center>");
         }
-        out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
+        
         out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</body></html>");
     }
