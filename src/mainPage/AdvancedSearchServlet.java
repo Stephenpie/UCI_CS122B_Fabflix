@@ -58,12 +58,37 @@ public class AdvancedSearchServlet extends HttpServlet {
                 // declare statement
                 Statement statement = connection.createStatement();
                 // prepare query
+                
                 String mqlQuery = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT t2.id, t2.title, "
                         + "t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars FROM genres g, genres_in_movies gm, "
                         + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
-                        + "FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId GROUP BY m.id) t1 WHERE "
-                        + "t1.title LIKE '%" + title + "%' AND t1.year = '" + year + "' AND t1.director LIKE '%" + director + "%' AND t1.stars LIKE '%" + 
-                        star + "%') t2 WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId";
+                        + "FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId GROUP BY m.id) t1 WHERE ";
+                if (!title.isEmpty()) {
+                    mqlQuery += "t1.title LIKE '%" + title + "%' ";
+                }
+                if (!year.isEmpty()) {
+                    if (!title.isEmpty()) {
+                        mqlQuery += "AND t1.year = '" + year + "' ";
+                    } else {
+                        mqlQuery += "t1.year = '" + year + "' ";
+                    }
+                }
+                if (!director.isEmpty()) {
+                    if (!title.isEmpty() || !year.isEmpty()) {
+                        mqlQuery += "AND t1.director LIKE '%" + director + "%' ";
+                    } else {
+                        mqlQuery += "t1.director LIKE '%" + director + "%' ";
+                    }
+                }
+                if (!star.isEmpty()) {
+                    if (!title.isEmpty() || !year.isEmpty() || !director.isEmpty()) {
+                        mqlQuery += "AND t1.stars LIKE '%" + star + "%'";
+                    } else {
+                        mqlQuery += "t1.stars LIKE '%" + star + "%'";
+                    }
+                }
+                mqlQuery += ") t2 WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId";
+                
                 String checkQuery = mqlQuery;
                 if (!sort.equals("null")) {
                     System.out.println(sort);

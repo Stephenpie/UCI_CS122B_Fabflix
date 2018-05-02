@@ -19,7 +19,6 @@ window.onload = function(){
 };
 
 function submitSearchForm(formSubmitEvent) {
-	window.alert("hello");
 	var url = jQuery("#advancedSearch").serialize();
 	console.log(url);
 	window.location.href = "advanced?" + url + "&numOfMovies=25&page=1&sortby=null&advanced=true";
