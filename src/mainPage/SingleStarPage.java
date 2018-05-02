@@ -59,9 +59,9 @@ public class SingleStarPage extends HttpServlet {
         		// execute query
         		ResultSet resultSet = statement.executeQuery(Query);
 
-        		out.println("<body>");
+        		out.println("<body class = \"loginBackgroundColor\">");
         		out.println("<h1> Star Profile: "+ starName +"</h1>");
-        		out.println("<div class=\"pageBackground\">");
+        		out.println("<div>");
         		        		
         		out.println("<div class=\"container\">");
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
