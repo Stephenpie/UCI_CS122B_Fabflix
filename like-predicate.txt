@@ -7,4 +7,12 @@ SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating
                                              WHERE t1.title LIKE '%title%' AND t1.year = 'year' AND t1.director LIKE '%director%' AND t1.stars LIKE '%star%') t2 
         WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m 
         LEFT JOIN ratings r 
-        ON m.id = r.movieId LIMIT 25 OFFSET 0;
+        ON m.id = r.movieId LIMIT 25 OFFSET 0;
+------------------------------------------------------------------------------------------------------------------------------------------------
+Above is our query for advanced search.
+Substring matching happens at the table after properly joining movies, stars, and stars_in_movies together.
+
+If the user eners all fields, the following query will be used to do substring matching (like below).
+"WHERE t1.title LIKE '%title%' AND t1.year = 'year' AND t1.director LIKE '%director%' AND t1.stars LIKE '%star%'"
+
+Otherwise, the query will only include the fields that user entered and use 'AND' operator to combine them together. For title, director and star, we use '%title%' to match strings that contains title anywhere. For year, we ask for exactly matching.
