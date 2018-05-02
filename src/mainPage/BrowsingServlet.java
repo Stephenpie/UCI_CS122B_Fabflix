@@ -96,8 +96,8 @@ public class BrowsingServlet extends HttpServlet {
                 // execute query
                 ResultSet resultSet = statement.executeQuery(query);
 
-                out.println("<body>");
-                out.println("<div class=\"pageBackground\">");
+                out.println("<body class=\"loginBackgroundColor\">");
+                out.println("<div>");
                 out.println("<h1>Movie List</h1>");
 
                 out.print("<p>Result per page: ");

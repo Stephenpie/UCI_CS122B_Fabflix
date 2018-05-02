@@ -45,7 +45,7 @@ public class CartServlet extends HttpServlet {
         out.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
         out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
 
-        out.println(String.format("</head><body class = \"loginBackgroundColor\">\n<h1>%s</h1>", title));
+        out.println(String.format("</head><body class=\"loginBackgroundColor\">\n<h1>%s</h1>", title));
 
         // In order to prevent multiple clients, requests from altering previousItems ArrayList at the same time, we lock the ArrayList while updating
         synchronized (cart) {

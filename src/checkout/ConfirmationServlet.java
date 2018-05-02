@@ -49,7 +49,7 @@ public class ConfirmationServlet extends HttpServlet {
                         
             String userID = ((User) session.getAttribute("user")).getUserID();
             
-            out.println("<body>");
+            out.println("<body class=\"loginBackgroundColor\">");
             out.println("<h2 class=\"text-center\">Confirmation</h2>");
             out.println("<div class=\"container\">");
             out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
@@ -62,8 +62,6 @@ public class ConfirmationServlet extends HttpServlet {
             out.println("<th>Price</th>");
             out.println("<th>Qty</th>");
             out.println("</thead>");
-            //out.println("</div>");
-            //out.println("<div>");
             out.println("<tbody>");
         
             String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = '" + userID + "'";
@@ -91,17 +89,15 @@ public class ConfirmationServlet extends HttpServlet {
                 out.println("</tr>");
             }
             
-            out.println("</tbody>");
-            out.println("<button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
-            //out.println("</div>");
+            out.println("</tbody>");            
             out.println("</table>");
             out.println("</div>");
-            
+            out.println("<center><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></center>");
             
             out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
             out.println("</body></html>");
             
-            cart = new HashMap<String, Integer>();
+            cart.clear();
             rid.close();
             statement.close();
             connection.close();

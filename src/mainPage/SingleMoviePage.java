@@ -60,7 +60,7 @@ public class SingleMoviePage extends HttpServlet {
         		// execute query
         		ResultSet resultSet = statement.executeQuery(Query);
 
-        		out.println("<body class = \"loginBackgroundColor\">");
+        		out.println("<body class=\"loginBackgroundColor\">");
         		out.println("<h1> Movie Info: "+ movieName +"</h1>");
         		out.println("<div>");
         		        		
