@@ -107,11 +107,13 @@ public class CartServlet extends HttpServlet {
                 out.println("</div>");
             }
         }
-        	
+        
         if (cart.size() != 0) {
-        	out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button>");
+        	out.println("<div class=\"box\"><center><button type=\"button\" class=\"btn btn-info\" id=\"checkout\" onclick=\"checkout()\">Checkout</button><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></center></div>");
+        } else {
+        	out.println("<center><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></center>");
         }
-        out.println("<center><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></center></div>");
+        
         out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</body></html>");
     }
