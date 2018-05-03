@@ -126,7 +126,7 @@ public class SingleMoviePage extends HttpServlet {
         			out.println("</td>");
         			
 
-        			String movie = movieID + ":" + title;
+        			String movie = movieID + "::" + title;
         			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
         			out.println("</tr>");
         		}

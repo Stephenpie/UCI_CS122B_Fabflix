@@ -88,7 +88,7 @@ public class CartServlet extends HttpServlet {
                 int id = 0;
                 for (String movie : cart.keySet()) {
                     out.println("<tr>");
-                    String movieTitle = movie.split(":")[1];
+                    String movieTitle = movie.split("::")[1];
                     System.out.println(movieTitle);
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");
