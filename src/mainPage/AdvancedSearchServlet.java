@@ -136,13 +136,13 @@ public class AdvancedSearchServlet extends HttpServlet {
                 out.print(String.format("<a href='advanced?title=%s&year=%s&director=%s&star=%s&numOfMovies=%s&page=1&sortby=titledesc'>Title<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>",
                         title, year, director, star, limit));
                 out.print(" | ");
-                out.print(String.format("<a href='advanced?title=%s&year=%s&director=%s&star=%s&numOfMovies=%s&page=1&sortby=titleasc'>Title<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>",
+                out.print(String.format("<a href='advanced?title=%s&year=%s&director=%s&star=%s&numOfMovies=%s&page=1&sortby=titleasc'>Title<span class=\"glyphicon glyphicon-triangle-top\"></span></a>",
                         title, year, director, star, limit));
                 out.print(" | ");
                 out.print(String.format("<a href='advanced?title=%s&year=%s&director=%s&star=%s&numOfMovies=%s&page=1&sortby=ratingdesc'>Rating<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>",
                         title, year, director, star, limit));
                 out.print(" | ");
-                out.print(String.format("<a href='advanced?title=%s&year=%s&director=%s&star=%s&numOfMovies=%s&page=1&sortby=ratingasc'>Rating<span class=\"glyphicon glyphicon-triangle-bottom\"></span></a>",
+                out.print(String.format("<a href='advanced?title=%s&year=%s&director=%s&star=%s&numOfMovies=%s&page=1&sortby=ratingasc'>Rating<span class=\"glyphicon glyphicon-triangle-top\"></span></a>",
                         title, year, director, star, limit));
                 
                 out.println("<div class=\"container\">");
