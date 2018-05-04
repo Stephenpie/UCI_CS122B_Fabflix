@@ -103,6 +103,9 @@ public class CartServlet extends HttpServlet {
                     out.print("<td><input type=\"text\" id=\"qty" + id + "\" value=\""+ cart.get(movie) +"\"></td>");
                     
                     // javascript needs us add ' when using variable
+                    if (movie.contains("&")) {
+                    	movie = movie.replace("&", "@@");
+                    }
                     out.print("<td><button class=\"btn btn-info\" id=\"update\" onclick=\"updateItem('" + movie + "', 'qty" + id + "')\">Update</button>");
                     out.print("<button class=\"btn btn-info\" id=\"delete\" onclick=\"deleteItem('" + movie + "')\">Delete</button></td>");
 
