@@ -197,10 +197,11 @@ public class AdvancedSearchServlet extends HttpServlet {
                     out.println("</td>");
                     
                     out.println("<td>" + rating + "</td>");
-                    String movie = movieID + "::" + title;
+                    String movie = movieID + "::" + mtitle;
                     if (movie.contains("&")) {
                     	movie = movie.replace('&', '@');
                     }
+                    System.out.println("MOVIE: " + movie);
                     out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
 
                     out.println("</tr>");
