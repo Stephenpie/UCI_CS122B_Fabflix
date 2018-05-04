@@ -1,9 +1,69 @@
+#cart {
+	color: black;
+	font-weight: bold;
+}
+
+strong {
+	color: red;
+}
+
+#home {
+	margin: 50px;
+}
+.margin {
+	margin-top: 10px;
+    margin-left: 10x;
+    margin-right: 10px;
+}
+
+.content {
+	background-color: white;
+	opacity: 0.5;
+	color: black;
+	font-family: 'Raleway', sans-serif;
+	text-align: center;
+}
+
+#inputBox {
+	text-align:center
+}
+
+#disabled {
+    opacity: 0;
+}
+
+#next {
+	margin: 50px;
+}
+
+#checkout {
+ margin: 50px;
+}
+
+#update {
+ margin-right: 50px;
+ margin-top: auto;
+ margin-bottom: auto;
+ margin-left: auto;
+}
+
+.loginBackgroundColor {
+	background-color: #FFF9F7;
+}
+
+.inner-wrapper {
+  display:table-cell;
+  vertical-align:middle;
+  padding:15px;
+}
+
 .indexBackground {
 	/* The image used */
    	background-image: url("background.jpg");
    
    	/* Full height */
-    height: 800px; 
+    height: 800px;
+    width: 100%; 
 
 	/* Center and scale the image nicely */
 	background-position: center;
@@ -25,6 +85,10 @@ p {
 	font-family: "Arial Black", Gadget, sans-serif;
 }
 
+div.center {
+	text-align: center;
+}
+
 th {
 	text-transform: capitalize;
 	background-color: #FEEDE7;
@@ -34,7 +98,6 @@ th {
 	text-align: center;
 	padding-bottom: 15px;
 }
-
 
 .arrow-up {
   width: 0; 

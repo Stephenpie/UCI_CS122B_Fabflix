@@ -5,22 +5,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Login to Fablix</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <style>
+		strong {
+			color: red;
+		}
+	</style>
 </head>
-<body>
-<h2>Login to Fablix</h2>
-<!-- Set the method to POST to avoid username/password showing on URL
-     Disable the default action because our JS function will handle it. -->
-<form id="login_form" method="post" action="#">
-    <label><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="username">
-    <br>
-    <label><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="password">
-    <br>
-    <input type="submit" value="Login">
-</form>
+<body class = "loginBackgroundColor">
+<div class="col-md-4 col-md-offset-4">
+	<h2 class="text-center">Login to Fablix</h2>
+	<!-- Set the method to POST to avoid username/password showing on URL
+	     Disable the default action because our JS function will handle it. -->
 
-<div id="login_error_message"></div>
+	<form id="login_form" method="post" action="#">
+	    <label><b>Username</b></label>
+	    <input class="form-control" type="text" placeholder="Enter Username" name="username">
+	    <br>
+	    <label><b>Password</b></label>
+	    <input class="form-control" type="password" placeholder="Enter Password" name="password">
+	    <br>
+	    <input class="btn btn-info" type="submit" value="Login">
+	</form>
+	<br><br>
+	
+	<strong><div id="login_error_message"></div></strong>
+</div>
+
+
+
 
 <!-- include jQuery-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

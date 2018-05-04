@@ -1,0 +1,13 @@
+#form_background {
+    text-align: center;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Roboto';
+    background-color:#dbf5f6;
+    display:inline-block
+}

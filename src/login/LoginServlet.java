@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.io.IOException;
 
 //
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
@@ -26,9 +25,9 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        String loginUser = "user1";
-        String loginPasswd = "password";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb1";
+        String loginUser = "root";
+        String loginPasswd = "tangwang";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         try {
 	        Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -38,7 +37,7 @@ public class LoginServlet extends HttpServlet {
 			Statement statement = connection.createStatement();
 			// prepare query
 						
-			String query = "SELECT c.email, c.password FROM customers c WHERE c.email = "+ "'" + username + "'" + " AND c.password = " + "'" + password + "'";
+			String query = "SELECT c.id, c.email, c.password FROM customers c WHERE c.email = "+ "'" + username + "'" + " AND c.password = " + "'" + password + "'";
 			// execute query
     		ResultSet resultSet = statement.executeQuery(query);
     		
@@ -51,7 +50,8 @@ public class LoginServlet extends HttpServlet {
 	            // Login success:
 	
 	            // set this user into the session
-	            request.getSession().setAttribute("user", new User(username, password));
+	            String userID = resultSet.getString("id");
+	            request.getSession().setAttribute("user", new User(username, password, userID));
 	
 	            JsonObject responseJsonObject = new JsonObject();
 	            responseJsonObject.addProperty("status", "success");
@@ -73,6 +73,9 @@ public class LoginServlet extends HttpServlet {
 	            */
 	            response.getWriter().write(responseJsonObject.toString());
 	        }
+	        resultSet.close();
+	        statement.close();
+            connection.close();
         } catch (Exception e) {
         	/*
     		 * After you deploy the WAR file through tomcat manager webpage,

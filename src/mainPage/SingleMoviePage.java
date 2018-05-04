@@ -24,12 +24,14 @@ public class SingleMoviePage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
 
-        String loginUser = "user1";
-        String loginPasswd = "password";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb1";
+        String loginUser = "root";
+        String loginPasswd = "tangwang";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
         response.setContentType("text/html"); 
+        response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
 
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
@@ -50,7 +52,7 @@ public class SingleMoviePage extends HttpServlet {
         		// declare statement
         		Statement statement = connection.createStatement();
         		// prepare query
-        		String Query = "SELECT m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
+        		String Query = "SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
         		        + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
                         + "WHERE m.title = '" + movieName + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                         + "GROUP BY m.id";
@@ -58,14 +60,15 @@ public class SingleMoviePage extends HttpServlet {
         		// execute query
         		ResultSet resultSet = statement.executeQuery(Query);
 
-        		out.println("<body>");
-        		out.println("<div class=\"pageBackground\">");
-        		out.println("<h1><center>Movie List</center></h1>");
-        		
-        		out.println("<select><option value='10'>10</option><option value='15'>15</option><option value='20'>20</option><option value='25'>25</option></select>");
-        		
+        		out.println("<body class=\"loginBackgroundColor\">");
+        		out.println("<h1> Movie Info: "+ movieName +"</h1>");
+        		out.println("<div>");
+        		        		
         		out.println("<div class=\"container\">");
         		out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
+        		
+        		// For checkout out button
+    			out.println("<button class=\"btn btn-info\" id=\"addTo\" onclick=\"viewCart()\">Go to Cart</button></td>");
         		
         		// add table header row
         		out.println("<thead>");
@@ -75,6 +78,7 @@ public class SingleMoviePage extends HttpServlet {
         		out.println("<th>Director</th>");
         		out.println("<th>List of genres</th>");
         		out.println("<th>List of stars</th>");
+        		out.println("<th></th>");
 
         		out.println("</thead>");
         		out.println("</div>");
@@ -88,6 +92,7 @@ public class SingleMoviePage extends HttpServlet {
         			String director = resultSet.getString("director");
         			String genres = resultSet.getString("genres");
         			String stars = resultSet.getString("stars");
+        			String movieID = resultSet.getString("id");
         			
         			out.println("<tr>");
         			out.println("<td>" + title + "</td>");
@@ -99,7 +104,7 @@ public class SingleMoviePage extends HttpServlet {
         			String[] listOfGenres = genres.split(",");
         			StringBuilder sb_genre = new StringBuilder();
         			for (String s : listOfGenres) {
-        				sb_genre.append("<a href='search?query=" + s.trim() + "'>"+ s.trim() + "</a>");
+        				sb_genre.append("<a href='browse?genre=" + s.trim().toLowerCase() + "&numOfMovies=25&page=1&sortby=null'>"+ s.trim() + "</a>");
         				sb_genre.append(", ");
         			}
         			sb_genre.deleteCharAt(sb_genre.length() - 1);
@@ -112,7 +117,7 @@ public class SingleMoviePage extends HttpServlet {
         			String[] listOfStars = stars.split(",");
         			StringBuilder sb_star = new StringBuilder();
         			for (String s : listOfStars) {
-        				sb_star.append("<a href='stars?star=" + s.trim() + "'>"+ s.trim() + "</a>");
+        				sb_star.append("<a href='stars?star=" + s.trim().toLowerCase() + "'>"+ s.trim() + "</a>");
         				sb_star.append(", ");
         			}
         			sb_star.deleteCharAt(sb_star.length() - 1);
@@ -120,15 +125,17 @@ public class SingleMoviePage extends HttpServlet {
         			out.print(sb_star.toString());
         			out.println("</td>");
         			
+
+        			String movie = movieID + "::" + title;
+        			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
         			out.println("</tr>");
         		}
+        		
         		out.println("</tbody>");
         		out.println("</div>");
         		out.println("</table>");	
         		
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button></div>");
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Go Back</button></div>");
-        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button></div>");
+        		out.println("<div class=\"box\"><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></div>");
         		out.println("<script src=\"movielist.js\"></script>");
         		out.println("</body>");
         		
@@ -154,11 +161,7 @@ public class SingleMoviePage extends HttpServlet {
         		out.println("</p>");
         		out.print("</body>");
         }
-        
         out.println("</html>"); 
         out.close();
-        
 	}
-
-
 }
