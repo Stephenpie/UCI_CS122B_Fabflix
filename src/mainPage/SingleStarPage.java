@@ -96,7 +96,11 @@ public class SingleStarPage extends HttpServlet {
         			String[] listOfMovies = moviesTitle.split(",");
         			StringBuilder sb = new StringBuilder();
         			for (String s : listOfMovies) {
-        				sb.append("<a href='movies?movie=" + s.trim() + "'>"+ s.trim() + "</a>");
+        				String movieTitle = s;
+        				if (s.contains("&")) {
+        					s = s.replace("&", "@@");
+        				}
+        				sb.append("<a href='movies?movie=" + s.trim() + "'>"+ movieTitle.trim() + "</a>");
         				sb.append(", ");
         			}
         			sb.deleteCharAt(sb.length() - 1);

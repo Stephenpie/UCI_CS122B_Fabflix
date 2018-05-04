@@ -38,7 +38,13 @@ public class SingleMoviePage extends HttpServlet {
         
         // get the parameter in GET
         String movieName = request.getParameter("movie");
-
+        System.out.println("First " + movieName);
+        if (movieName != null && movieName.contains("@@")) {
+        	movieName = movieName.replace("@@", "&");
+        }
+        
+        System.out.println(movieName);
+        
         out.println("<html>");
         out.println("<head><title>Fabflix</title>");
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
@@ -128,7 +134,7 @@ public class SingleMoviePage extends HttpServlet {
 
         			String movie = movieID + "::" + title;
         			if (movie.contains("&")) {
-                    	movie = movie.replace("&", "@#");
+                    	movie = movie.replace("&", "@@");
                     }
         			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
         			out.println("</tr>");

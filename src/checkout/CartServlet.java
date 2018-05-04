@@ -29,8 +29,8 @@ public class CartServlet extends HttpServlet {
 
         String act = request.getParameter("act");
         String item = request.getParameter("item");
-        if (item != null && item.contains("@#")) {
-        	item = item.replace("@#", "&");
+        if (item != null && item.contains("@@")) {
+        	item = item.replace("@@", "&");
         }
         String qty = request.getParameter("qty");
 
@@ -94,6 +94,9 @@ public class CartServlet extends HttpServlet {
                 for (String movie : cart.keySet()) {
                     out.println("<tr>");
                     String movieTitle = movie.split("::")[1];
+                    if (movieTitle.contains("@@")) {
+                    	movieTitle.replace("@@", "&");
+                    }
                     System.out.println(movieTitle);
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");

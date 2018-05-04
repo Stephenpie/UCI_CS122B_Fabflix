@@ -168,9 +168,14 @@ public class BrowsingServlet extends HttpServlet {
                     String genres = resultSet.getString("genres");
                     String stars = resultSet.getString("stars");
                     Float rating = resultSet.getFloat("rating");
-                
+                    
+                    String movieTitle = title;
+                    if (title.contains("&")) {
+                    	title = title.replace("&", "@@");
+                    }
+                    
                     out.println("<tr>");
-                    out.println("<td>" + "<a href='movies?movie=" + title.trim() + "'>" + title.trim() + "</td>");
+                    out.println("<td>" + "<a href='movies?movie=" + title.trim() + "'>" + movieTitle.trim() + "</td>");
                     out.println("<td>" + year + "</td>");
                     out.println("<td>" + director + "</td>");
                     out.println("<td>" + genres + "</td>");
@@ -189,9 +194,9 @@ public class BrowsingServlet extends HttpServlet {
                     
                     out.println("<td>" + rating + "</td>");
                     String movie = movieID + "::" + title;
-                    if (movie.contains("&")) {
-                    	movie = movie.replace("&", "@#");
-                    }
+//                    if (movie.contains("&")) {
+//                    	movie = movie.replace("&", "@#");
+//                    }
                     System.out.println(movie);
         			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
                     out.println("</tr>");
