@@ -29,7 +29,7 @@ public class CartServlet extends HttpServlet {
 
         String act = request.getParameter("act");
         String item = request.getParameter("item");
-        if (item.contains("@")) {
+        if (item != null && item.contains("@")) {
         	item = item.replace('@', '&');
         }
         String qty = request.getParameter("qty");
