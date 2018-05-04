@@ -72,8 +72,11 @@ public class ConfirmationServlet extends HttpServlet {
             }
             for (String movie : cart.keySet()) {
                 id++;
-                String movieID = movie.split(":")[0];
-                String movieTitle = movie.split(":")[1];
+                if (movie.contains("@")) {
+                	movie = movie.replace('@', '&');
+                }
+                String movieID = movie.split("::")[0];
+                String movieTitle = movie.split("::")[1];
                 String saleID = "";
                 for (int i = 0; i < cart.get(movie); i++) {
                     query = "INSERT INTO sales (customerId, movieId, saleDate) VALUES('" + userID + "', '" + movieID + "', CURDATE());";

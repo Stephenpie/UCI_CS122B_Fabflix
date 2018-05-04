@@ -29,6 +29,9 @@ public class CartServlet extends HttpServlet {
 
         String act = request.getParameter("act");
         String item = request.getParameter("item");
+        if (item.contains("@")) {
+        	item = item.replace('@', '&');
+        }
         String qty = request.getParameter("qty");
 
         response.setContentType("text/html");
@@ -63,6 +66,8 @@ public class CartServlet extends HttpServlet {
                 int count = Integer.parseInt(qty);
                 cart.put(item, count);
             } else if (act != null && act.equals("delete")) {
+            	System.out.println(item);
+            	cart.get(item);
                 cart.remove(item);
             }
 

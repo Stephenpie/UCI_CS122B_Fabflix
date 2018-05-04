@@ -189,6 +189,10 @@ public class BrowsingServlet extends HttpServlet {
                     
                     out.println("<td>" + rating + "</td>");
                     String movie = movieID + "::" + title;
+                    if (movie.contains("&")) {
+                    	movie = movie.replace('&', '@');
+                    }
+                    System.out.println(movie);
         			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
                     out.println("</tr>");
                 }

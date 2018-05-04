@@ -179,7 +179,7 @@ public class AdvancedSearchServlet extends HttpServlet {
                     Float rating = resultSet.getFloat("rating");
                 
                     out.println("<tr>");
-                    out.println("<td>" + "<a href='movies?movie=" + mtitle.trim() + "'>" + mtitle.trim() + "</td>");
+                    out.println("<td>" + "<a href='movies?movie=" + mtitle + "'>" + mtitle.trim() + "</td>");
                     out.println("<td>" + myear + "</td>");
                     out.println("<td>" + mdirector + "</td>");
                     out.println("<td>" + genres + "</td>");
@@ -197,7 +197,10 @@ public class AdvancedSearchServlet extends HttpServlet {
                     out.println("</td>");
                     
                     out.println("<td>" + rating + "</td>");
-                    String movie = movieID + ":" + title;
+                    String movie = movieID + "::" + title;
+                    if (movie.contains("&")) {
+                    	movie = movie.replace('&', '@');
+                    }
                     out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
 
                     out.println("</tr>");
