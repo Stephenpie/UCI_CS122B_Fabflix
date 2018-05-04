@@ -128,7 +128,7 @@ public class SingleMoviePage extends HttpServlet {
 
         			String movie = movieID + "::" + title;
         			if (movie.contains("&")) {
-                    	movie = movie.replace('&', '@');
+                    	movie = movie.replace("&", "@#");
                     }
         			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
         			out.println("</tr>");

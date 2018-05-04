@@ -72,8 +72,8 @@ public class ConfirmationServlet extends HttpServlet {
             }
             for (String movie : cart.keySet()) {
                 id++;
-                if (movie.contains("@")) {
-                	movie = movie.replace('@', '&');
+                if (movie.contains("@#")) {
+                	movie = movie.replace("@#", "&");
                 }
                 String movieID = movie.split("::")[0];
                 String movieTitle = movie.split("::")[1];
