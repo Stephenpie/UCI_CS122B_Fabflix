@@ -126,7 +126,14 @@ public class SingleStarPage extends HttpServlet {
                 out.println("<td>");
                 String moviesOfStar = "";
                 for (String movie : movies) {
-                    moviesOfStar += "<a href='movies?movie=" + movie.trim() + "'>"+ movie.trim() + "</a>, ";
+                	String movieTitle1 = movie;
+    				if (movie.contains("&")) {
+    					movie = movie.replace("&", "@@");
+    				}
+    				if (movie.contains("+")) {
+    					movie = movie.replace("+", "**");
+    				}
+                    moviesOfStar += "<a href='movies?movie=" + movie.trim() + "'>"+ movieTitle1.trim() + "</a>, ";
                 }
                 out.println(moviesOfStar.substring(0, moviesOfStar.length()-2));
                 out.println("</td>");

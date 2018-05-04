@@ -155,6 +155,9 @@ public class SearchServlet extends HttpServlet {
         			if (title.contains("&")) {
                     	title = title.replace("&", "@@");
                     }
+        			if (title.contains("+")) {
+                    	title = title.replace("+", "**");
+                    }
         			out.println("<tr>");
         			out.println("<td>" + "<a href='movies?movie=" + title.trim() + "'>" + movieTitle.trim() + "</td>");
         			out.println("<td>" + year + "</td>");

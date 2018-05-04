@@ -42,7 +42,9 @@ public class SingleMoviePage extends HttpServlet {
         if (movieName != null && movieName.contains("@@")) {
         	movieName = movieName.replace("@@", "&");
         }
-        
+        if (movieName != null && movieName.contains("**")) {
+        	movieName = movieName.replace("**", "+");
+        }
         System.out.println(movieName);
         
         out.println("<html>");
@@ -135,6 +137,9 @@ public class SingleMoviePage extends HttpServlet {
         			String movie = movieID + "::" + title;
         			if (movie.contains("&")) {
                     	movie = movie.replace("&", "@@");
+                    }
+        			if (movie.contains("+")) {
+                    	movie = movie.replace("+", "**");
                     }
         			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
         			out.println("</tr>");

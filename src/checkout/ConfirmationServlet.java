@@ -75,6 +75,9 @@ public class ConfirmationServlet extends HttpServlet {
                 if (movie.contains("@@")) {
                 	movie = movie.replace("@@", "&");
                 }
+                if (movie.contains("**")) {
+                	movie = movie.replace("**", "+");
+                }
                 String movieID = movie.split("::")[0];
                 String movieTitle = movie.split("::")[1];
                 String saleID = "";

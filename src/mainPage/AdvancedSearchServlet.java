@@ -32,7 +32,7 @@ public class AdvancedSearchServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         // get the parameter in GET
-        String title = request.getParameter("title");
+        String title = request.getParameter("query");
         String year = request.getParameter("year");
         String director = request.getParameter("director");
         String star = request.getParameter("star");
@@ -181,6 +181,9 @@ public class AdvancedSearchServlet extends HttpServlet {
                     String movieTitle = mtitle;
                     if (mtitle.contains("&")) {
                     	mtitle = mtitle.replace("&", "@@");
+                    }
+                    if (mtitle.contains("+")) {
+                    	mtitle = mtitle.replace("+", "**");
                     }
                     
                     out.println("<tr>");

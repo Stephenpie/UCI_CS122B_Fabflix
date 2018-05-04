@@ -32,6 +32,9 @@ public class CartServlet extends HttpServlet {
         if (item != null && item.contains("@@")) {
         	item = item.replace("@@", "&");
         }
+        if (item != null && item.contains("**")) {
+        	item = item.replace("**", "+");
+        }
         String qty = request.getParameter("qty");
 
         response.setContentType("text/html");
@@ -105,6 +108,9 @@ public class CartServlet extends HttpServlet {
                     // javascript needs us add ' when using variable
                     if (movie.contains("&")) {
                     	movie = movie.replace("&", "@@");
+                    }
+                    if (movie.contains("+")) {
+                    	movie = movie.replace("+", "**");
                     }
                     out.print("<td><button class=\"btn btn-info\" id=\"update\" onclick=\"updateItem('" + movie + "', 'qty" + id + "')\">Update</button>");
                     out.print("<button class=\"btn btn-info\" id=\"delete\" onclick=\"deleteItem('" + movie + "')\">Delete</button></td>");
