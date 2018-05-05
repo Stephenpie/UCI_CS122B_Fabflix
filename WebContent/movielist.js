@@ -41,12 +41,20 @@ if (nextButton) {
 		var limit = getUrlParameter('numOfMovies');
 		var offset = parseInt(getUrlParameter('page')) + 1;
 		var sort = getUrlParameter('sortby');
+		
+		var title = getUrlParameter('title');
+		var year = getUrlParameter('year');
+		var director = getUrlParameter('director');
+		var star = getUrlParameter('star');
+		
 		if (query != null) {
 			window.location.href = "search?query=" + query + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
 		} else if (genre != null) {
 			window.location.href = "browse?genre=" + genre + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
 		} else if (prefix != null) {
 			window.location.href = "browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+		} else if (title != null || year != null || director != null || star != null) {
+			window.location.href = "advanced?title=" + title + "&year=" + year + "&director=" + director + "&star=" + star + "&numOfMovies=" + limit + "&page=" + offset +"&sortby=" + sort;
 		} else {
 			window.alert("Something went wrong. Back to the main page.");
 			window.location.href = "index.html";
@@ -63,12 +71,20 @@ if (prevButton) {
 		var limit = getUrlParameter('numOfMovies');
 		var sort = getUrlParameter('sortby');
 		var offset = parseInt(getUrlParameter('page')) - 1;
+		
+		var title = getUrlParameter('title');
+		var year = getUrlParameter('year');
+		var director = getUrlParameter('director');
+		var star = getUrlParameter('star');
+		
 		if (query != null) {
 			window.location.href = "search?query=" + query + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
 		} else if (genre != null) {
 			window.location.href = "browse?genre=" + genre + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
 		} else if (prefix != null) {
 			window.location.href = "browse?prefix=" + prefix + "&numOfMovies=" + limit + "&page=" + offset + "&sortby=" + sort;
+		} else if (title != null || year != null || director != null || star != null) {
+			window.location.href = "advanced?title=" + title + "&year=" + year + "&director=" + director + "&star=" + star + "&numOfMovies=" + limit + "&page=" + offset +"&sortby=" + sort;
 		} else {
 			window.alert("Something went wrong. Back to the main page.");
 			window.location.href = "index.html";

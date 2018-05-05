@@ -32,7 +32,7 @@ public class AdvancedSearchServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         // get the parameter in GET
-        String title = request.getParameter("query");
+        String title = request.getParameter("title");
         String year = request.getParameter("year");
         String director = request.getParameter("director");
         String star = request.getParameter("star");
