@@ -62,13 +62,18 @@ public class BrowsingServlet extends HttpServlet {
                 // prepare query
                 String query = "";
                 if (genre != null) {
-                    query = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+//                    query = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
+//                            + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
+//                          + "WHERE g.name = '" + genre + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
+//                          + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId";
+                    query = "SELECT * FROM (SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
                             + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
-                          + "WHERE g.name = '" + genre + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
-                          + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId";
+                          + "WHERE g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
+                          + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId) t WHERE genres LIKE '%" + genre + "%'";
+                    
                 } else {
                     query = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
-                            + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
+                            + " FROM genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
                             + "WHERE m.title LIKE '" + prefix + "%' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                             + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId";
                 }

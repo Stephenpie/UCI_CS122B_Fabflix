@@ -96,7 +96,7 @@ if (prevButton) {
 
 function updateItem(movie, qtyId) {
 	var qty = document.getElementById(qtyId).value;
-	if (qty <= 0) {
+	if (qty.isNaN() || qty <= 0) {
 		window.alert("Invalid quantity!");
 	} else {
 		window.location.href = "cart?act=update&item=" + movie + "&qty=" + qty;
