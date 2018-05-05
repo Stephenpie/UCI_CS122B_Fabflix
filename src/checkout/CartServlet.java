@@ -103,7 +103,7 @@ public class CartServlet extends HttpServlet {
                     System.out.println(movieTitle);
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");
-                    out.print("<td><input type=\"text\" id=\"qty" + id + "\" value=\""+ cart.get(movie) +"\"></td>");
+                    out.print("<td><input type=\"number\" id=\"qty" + id + "\" value=\""+ cart.get(movie) +"\"></td>");
                     
                     // javascript needs us add ' when using variable
                     if (movie.contains("&")) {
