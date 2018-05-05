@@ -67,11 +67,9 @@ public class ConfirmationServlet extends HttpServlet {
             String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = '" + userID + "'";
             ResultSet rid = statement.executeQuery(query);
             int id = 0;
-            if (rid.next()) {
-                id = Integer.parseInt(rid.getString("id"));
-            }
+            rid.next();
+            id = Integer.parseInt(rid.getString("id"));
             for (String movie : cart.keySet()) {
-                id++;
                 if (movie.contains("@@")) {
                 	movie = movie.replace("@@", "&");
                 }
@@ -85,6 +83,7 @@ public class ConfirmationServlet extends HttpServlet {
                     query = "INSERT INTO sales (customerId, movieId, saleDate) VALUES('" + userID + "', '" + movieID + "', CURDATE());";
                     System.out.println(query);
                     int result = statement.executeUpdate(query);
+                    id++;
                     saleID += (id + ", ");
                 }
                 out.println("<tr>");
