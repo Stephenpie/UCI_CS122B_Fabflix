@@ -29,6 +29,12 @@ public class CartServlet extends HttpServlet {
 
         String act = request.getParameter("act");
         String item = request.getParameter("item");
+        if (item != null && item.contains("@@")) {
+        	item = item.replace("@@", "&");
+        }
+        if (item != null && item.contains("**")) {
+        	item = item.replace("**", "+");
+        }
         String qty = request.getParameter("qty");
 
         response.setContentType("text/html");
@@ -63,6 +69,8 @@ public class CartServlet extends HttpServlet {
                 int count = Integer.parseInt(qty);
                 cart.put(item, count);
             } else if (act != null && act.equals("delete")) {
+            	System.out.println(item);
+            	cart.get(item);
                 cart.remove(item);
             }
 
@@ -89,12 +97,21 @@ public class CartServlet extends HttpServlet {
                 for (String movie : cart.keySet()) {
                     out.println("<tr>");
                     String movieTitle = movie.split("::")[1];
+                    if (movieTitle.contains("@@")) {
+                    	movieTitle.replace("@@", "&");
+                    }
                     System.out.println(movieTitle);
                     out.print("<td>" + movieTitle + "</td>");
                     out.print("<td>FREE</td>");
                     out.print("<td><input type=\"text\" id=\"qty" + id + "\" value=\""+ cart.get(movie) +"\"></td>");
                     
                     // javascript needs us add ' when using variable
+                    if (movie.contains("&")) {
+                    	movie = movie.replace("&", "@@");
+                    }
+                    if (movie.contains("+")) {
+                    	movie = movie.replace("+", "**");
+                    }
                     out.print("<td><button class=\"btn btn-info\" id=\"update\" onclick=\"updateItem('" + movie + "', 'qty" + id + "')\">Update</button>");
                     out.print("<button class=\"btn btn-info\" id=\"delete\" onclick=\"deleteItem('" + movie + "')\">Delete</button></td>");
 

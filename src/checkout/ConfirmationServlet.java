@@ -67,18 +67,23 @@ public class ConfirmationServlet extends HttpServlet {
             String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = '" + userID + "'";
             ResultSet rid = statement.executeQuery(query);
             int id = 0;
-            if (rid.next()) {
-                id = Integer.parseInt(rid.getString("id"));
-            }
+            rid.next();
+            id = Integer.parseInt(rid.getString("id"));
             for (String movie : cart.keySet()) {
-                id++;
-                String movieID = movie.split(":")[0];
-                String movieTitle = movie.split(":")[1];
+                if (movie.contains("@@")) {
+                	movie = movie.replace("@@", "&");
+                }
+                if (movie.contains("**")) {
+                	movie = movie.replace("**", "+");
+                }
+                String movieID = movie.split("::")[0];
+                String movieTitle = movie.split("::")[1];
                 String saleID = "";
                 for (int i = 0; i < cart.get(movie); i++) {
                     query = "INSERT INTO sales (customerId, movieId, saleDate) VALUES('" + userID + "', '" + movieID + "', CURDATE());";
                     System.out.println(query);
                     int result = statement.executeUpdate(query);
+                    id++;
                     saleID += (id + ", ");
                 }
                 out.println("<tr>");

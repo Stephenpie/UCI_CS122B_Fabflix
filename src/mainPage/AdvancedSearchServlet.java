@@ -177,9 +177,17 @@ public class AdvancedSearchServlet extends HttpServlet {
                     String genres = resultSet.getString("genres");
                     String stars = resultSet.getString("stars");
                     Float rating = resultSet.getFloat("rating");
-                
+                    
+                    String movieTitle = mtitle;
+                    if (mtitle.contains("&")) {
+                    	mtitle = mtitle.replace("&", "@@");
+                    }
+                    if (mtitle.contains("+")) {
+                    	mtitle = mtitle.replace("+", "**");
+                    }
+                    
                     out.println("<tr>");
-                    out.println("<td>" + "<a href='movies?movie=" + mtitle.trim() + "'>" + mtitle.trim() + "</td>");
+                    out.println("<td>" + "<a href='movies?movie=" + mtitle + "'>" + movieTitle.trim() + "</td>");
                     out.println("<td>" + myear + "</td>");
                     out.println("<td>" + mdirector + "</td>");
                     out.println("<td>" + genres + "</td>");
@@ -197,7 +205,11 @@ public class AdvancedSearchServlet extends HttpServlet {
                     out.println("</td>");
                     
                     out.println("<td>" + rating + "</td>");
-                    String movie = movieID + ":" + title;
+                    String movie = movieID + "::" + mtitle;
+//                    if (movie.contains("&")) {
+//                    	movie = movie.replace("&", "@#");
+//                    }
+                    System.out.println("MOVIE: " + movie);
                     out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
 
                     out.println("</tr>");

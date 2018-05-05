@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,9 +53,12 @@ public class SingleStarPage extends HttpServlet {
         		// declare statement
         		Statement statement = connection.createStatement();
         		// prepare query
-        		String Query = "SELECT s.name, s.birthYear, GROUP_CONCAT(' ', m.title) AS movies "
-        				+ "FROM stars s, stars_in_movies sm, movies m "
-        				+ "WHERE s.name = '" + starName + "' AND s.id = sm.starId AND sm.movieId = m.id GROUP BY s.name, s.birthYear";
+        		String Query = "SELECT s.name, s.birthYear, m.title, m.id "
+                        + "FROM stars s, stars_in_movies sm, movies m "
+                        + "WHERE s.name = '" + starName + "' AND s.id = sm.starId AND sm.movieId = m.id";
+//        		String Query = "SELECT s.name, s.birthYear, GROUP_CONCAT(' ', m.title) AS movies "
+//        				+ "FROM stars s, stars_in_movies sm, movies m "
+//        				+ "WHERE s.name = '" + starName + "' AND s.id = sm.starId AND sm.movieId = m.id GROUP BY s.name, s.birthYear";
         		
         		// execute query
         		ResultSet resultSet = statement.executeQuery(Query);
@@ -81,31 +85,60 @@ public class SingleStarPage extends HttpServlet {
         		out.println("<div>");
         		out.println("<tbody>");
         		// add a row for every star result
+        		ArrayList<String> movies = new ArrayList<>();
+                String name = "";
+                String yearOfBirth = "";
+                String movieTitle = "";
         		while (resultSet.next()) {
         			// get a star from result set
-        			String name = resultSet.getString("name");
-        			String yearOfBirth = resultSet.getString("birthYear");
-        			String moviesTitle = resultSet.getString("movies");
+        			name = resultSet.getString("name");
+        			yearOfBirth = resultSet.getString("birthYear");
+        			movieTitle = resultSet.getString("title");
         			
-        			out.println("<tr>");
-        			out.println("<td>" + name + "</td>");
-        			out.println("<td>" + yearOfBirth + "</td>");
-
-        			// For list of movies
-        			out.print("<td>");
-        			String[] listOfMovies = moviesTitle.split(",");
-        			StringBuilder sb = new StringBuilder();
-        			for (String s : listOfMovies) {
-        				sb.append("<a href='movies?movie=" + s.trim() + "'>"+ s.trim() + "</a>");
-        				sb.append(", ");
-        			}
-        			sb.deleteCharAt(sb.length() - 1);
-        			sb.deleteCharAt(sb.length() - 1);
-        			out.print(sb.toString());
-        			out.println("</td>");
+        			movies.add(movieTitle);
         			
-        			out.println("</tr>");
+//        			out.println("<tr>");
+//        			out.println("<td>" + name + "</td>");
+//        			out.println("<td>" + yearOfBirth + "</td>");
+//
+//        			// For list of movies
+//        			out.print("<td>");
+//        			String[] listOfMovies = moviesTitle.split(",");
+//        			StringBuilder sb = new StringBuilder();
+//        			for (String s : listOfMovies) {
+//        				String movieTitle = s;
+//        				if (s.contains("&")) {
+//        					s = s.replace("&", "@@");
+//        				}
+//        				sb.append("<a href='movies?movie=" + s.trim() + "'>"+ movieTitle.trim() + "</a>");
+//        				sb.append(", ");
+//        			}
+//        			sb.deleteCharAt(sb.length() - 1);
+//        			sb.deleteCharAt(sb.length() - 1);
+//        			out.print(sb.toString());
+//        			out.println("</td>");
+//        			
+//        			out.println("</tr>");
         		}
+                out.println("<tr>");
+                out.println("<td>" + name + "</td>");
+                out.println("<td>" + yearOfBirth + "</td>");
+                out.println("<td>");
+                String moviesOfStar = "";
+                for (String movie : movies) {
+                	String movieTitle1 = movie;
+    				if (movie.contains("&")) {
+    					movie = movie.replace("&", "@@");
+    				}
+    				if (movie.contains("+")) {
+    					movie = movie.replace("+", "**");
+    				}
+                    moviesOfStar += "<a href='movies?movie=" + movie.trim() + "'>"+ movieTitle1.trim() + "</a>, ";
+                }
+                out.println(moviesOfStar.substring(0, moviesOfStar.length()-2));
+                out.println("</td>");
+                out.println("</tr>");
+
         		out.println("</tbody>");
         		out.println("</div>");
         		out.println("</table>");
