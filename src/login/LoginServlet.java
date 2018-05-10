@@ -1,11 +1,13 @@
 package login;
 
 import com.google.gson.JsonObject;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,7 +39,7 @@ public class LoginServlet extends HttpServlet {
 			Statement statement = connection.createStatement();
 			// prepare query
 						
-			String query = "SELECT c.id, c.email, c.password FROM customers c WHERE c.email = "+ "'" + username + "'" + " AND c.password = " + "'" + password + "'";
+			String query = "SELECT c.id, c.email, c.password FROM customers c WHERE c.email = "+ "'" + username + "'";
 			// execute query
     		ResultSet resultSet = statement.executeQuery(query);
     		
@@ -49,32 +51,38 @@ public class LoginServlet extends HttpServlet {
 	        /* This example only allows username/password to be test/test
 	        /  in the real project, you should talk to the database to verify username/password
 	        */
-	        
+            boolean success = false;
 	        if (resultSet.next()) {
 	            // Login success:
-	
-	            // set this user into the session
-	            String userID = resultSet.getString("id");
-	            request.getSession().setAttribute("user", new User(username, password, userID));
-	
-	            JsonObject responseJsonObject = new JsonObject();
-	            responseJsonObject.addProperty("status", "success");
-	            responseJsonObject.addProperty("message", "success");
-	
-	            response.getWriter().write(responseJsonObject.toString());
+	        	// get the encrypted password from the database
+				String encryptedPassword = resultSet.getString("password");
+				
+				// use the same encryptor to compare the user input password with encrypted password stored in DB
+				success = new StrongPasswordEncryptor().checkPassword(password, encryptedPassword);
+	        	
+				if (success == true) {
+					// set this user into the session
+		            String userID = resultSet.getString("id");
+		            request.getSession().setAttribute("user", new User(username, password, userID));
+		
+		            JsonObject responseJsonObject = new JsonObject();
+		            responseJsonObject.addProperty("status", "success");
+		            responseJsonObject.addProperty("message", "success");
+		            response.getWriter().write(responseJsonObject.toString());
+				} else {
+					// Login fail
+		            JsonObject responseJsonObject = new JsonObject();
+		            responseJsonObject.addProperty("status", "fail");
+		            
+		            responseJsonObject.addProperty("message", "Either username or password doesn't exist");
+		            response.getWriter().write(responseJsonObject.toString());
+				}
 	        } else {
 	            // Login fail
 	            JsonObject responseJsonObject = new JsonObject();
 	            responseJsonObject.addProperty("status", "fail");
 	            
 	            responseJsonObject.addProperty("message", "Either username or password doesn't exist");
-	            /*
-	            if (!username.equals("anteater")) {
-	                responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
-	            } else if (!password.equals("123456")) {
-	                responseJsonObject.addProperty("message", "incorrect password");
-	            }
-	            */
 	            response.getWriter().write(responseJsonObject.toString());
 	        }
 	        resultSet.close();
