@@ -41,6 +41,10 @@ public class LoginServlet extends HttpServlet {
 			// execute query
     		ResultSet resultSet = statement.executeQuery(query);
     		
+            String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+            System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+            
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
     		
 	        /* This example only allows username/password to be test/test
 	        /  in the real project, you should talk to the database to verify username/password
