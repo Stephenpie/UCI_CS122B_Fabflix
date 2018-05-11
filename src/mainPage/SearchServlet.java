@@ -80,7 +80,7 @@ public class SearchServlet extends HttpServlet {
         		    mqlQuery += " LIMIT ? OFFSET ?";
         		}
         		
-        		statement = connection.prepareStatement(query);
+        		statement = connection.prepareStatement(mqlQuery);
         		statement.setString(1, "%" + query + "%");
         		statement.setString(2, query);
         		statement.setString(3, "%" + query + "%");
@@ -88,7 +88,7 @@ public class SearchServlet extends HttpServlet {
         		statement.setInt(5, Integer.parseInt(limit));
         		statement.setInt(6, offset);
         		// execute query
-        		ResultSet resultSet = statement.executeQuery(mqlQuery);
+        		ResultSet resultSet = statement.executeQuery();
 
         		out.println("<body class=\"loginBackgroundColor\">");
         		out.println("<div>");
