@@ -58,6 +58,7 @@ public class SingleStarPage extends HttpServlet {
         		
         		// execute query
         		PreparedStatement statement = connection.prepareStatement(query);
+        		statement.setString(1, starName);
         		ResultSet resultSet = statement.executeQuery();
 
         		out.println("<body class=\"loginBackgroundColor\">");
