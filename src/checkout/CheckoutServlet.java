@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -70,15 +70,15 @@ public class CheckoutServlet extends HttpServlet{
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             // create database connection
             Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-            // declare statement
-            Statement statement = connection.createStatement();
-            // prepare query
-                        
-            String query = "SELECT * FROM creditcards c WHERE c.firstName = '" + firstname + "' AND c.lastName = '" 
-            + lastname + "' AND c.id = '" + creditcard + "' AND c.expiration = '" + expirationDate + "'";
-            System.out.println(query);
+            // prepare query       
+            String query = "SELECT * FROM creditcards c WHERE c.firstName = ? AND c.lastName = ? AND c.id = ? AND c.expiration = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, firstname);
+            statement.setString(1, lastname);
+            statement.setString(1, creditcard);
+            statement.setString(1, expirationDate);
             // execute query
-            ResultSet resultSet = statement.executeQuery(query);
+            ResultSet resultSet = statement.executeQuery();
             
             
             if (resultSet.next()) {
