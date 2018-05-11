@@ -74,9 +74,9 @@ public class CheckoutServlet extends HttpServlet{
             String query = "SELECT * FROM creditcards c WHERE c.firstName = ? AND c.lastName = ? AND c.id = ? AND c.expiration = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, firstname);
-            statement.setString(1, lastname);
-            statement.setString(1, creditcard);
-            statement.setString(1, expirationDate);
+            statement.setString(2, lastname);
+            statement.setString(3, creditcard);
+            statement.setString(4, expirationDate);
             // execute query
             ResultSet resultSet = statement.executeQuery();
             
@@ -93,8 +93,10 @@ public class CheckoutServlet extends HttpServlet{
                 JsonObject responseJsonObject = new JsonObject();
                 responseJsonObject.addProperty("status", "fail");
                 
-                query = "SELECT * FROM creditcards c WHERE c.id = '" + creditcard + "'";
-                resultSet = statement.executeQuery(query);
+                query = "SELECT * FROM creditcards c WHERE c.id = ?";
+                statement = connection.prepareStatement(query);
+                statement.setString(1, creditcard);
+                resultSet = statement.executeQuery();
                 
                 if (!resultSet.next()) {
                     responseJsonObject.addProperty("message", "Credit card not exist");
