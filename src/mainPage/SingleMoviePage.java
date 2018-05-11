@@ -3,8 +3,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -57,16 +57,17 @@ public class SingleMoviePage extends HttpServlet {
         		Class.forName("com.mysql.jdbc.Driver").newInstance();
         		// create database connection
         		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-        		// declare statement
-        		Statement statement = connection.createStatement();
         		// prepare query
-        		String Query = "SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
+        		String query = "SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
         		        + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
-                        + "WHERE m.title = '" + movieName + "' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
+                        + "WHERE m.title = ? AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                         + "GROUP BY m.id";
         		
+        		PreparedStatement statement = connection.prepareStatement(query);
+        		statement.setString(1, movieName);
+        		
         		// execute query
-        		ResultSet resultSet = statement.executeQuery(Query);
+        		ResultSet resultSet = statement.executeQuery();
 
         		out.println("<body class=\"loginBackgroundColor\">");
         		out.println("<h1> Movie Info: "+ movieName +"</h1>");

@@ -3,8 +3,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -51,17 +51,14 @@ public class SingleStarPage extends HttpServlet {
         		// create database connection
         		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
         		// declare statement
-        		Statement statement = connection.createStatement();
         		// prepare query
-        		String Query = "SELECT s.name, s.birthYear, m.title, m.id "
+        		String query = "SELECT s.name, s.birthYear, m.title, m.id "
                         + "FROM stars s, stars_in_movies sm, movies m "
-                        + "WHERE s.name = '" + starName + "' AND s.id = sm.starId AND sm.movieId = m.id";
-//        		String Query = "SELECT s.name, s.birthYear, GROUP_CONCAT(' ', m.title) AS movies "
-//        				+ "FROM stars s, stars_in_movies sm, movies m "
-//        				+ "WHERE s.name = '" + starName + "' AND s.id = sm.starId AND sm.movieId = m.id GROUP BY s.name, s.birthYear";
+                        + "WHERE s.name = ? AND s.id = sm.starId AND sm.movieId = m.id";
         		
         		// execute query
-        		ResultSet resultSet = statement.executeQuery(Query);
+        		PreparedStatement statement = connection.prepareStatement(query);
+        		ResultSet resultSet = statement.executeQuery();
 
         		out.println("<body class=\"loginBackgroundColor\">");
         		out.println("<h1> Star Profile: "+ starName +"</h1>");
