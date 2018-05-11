@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,9 +41,9 @@ public class BrowsingServlet extends HttpServlet {
         String genre = request.getParameter("genre");
         String prefix = request.getParameter("prefix");
         String limit = request.getParameter("numOfMovies");
-        String offset = Integer.toString((Integer.parseInt(request.getParameter("page")) - 1) * Integer.parseInt(limit));
+        int offset = (Integer.parseInt(request.getParameter("page")) - 1) * Integer.parseInt(limit);
         String sort = request.getParameter("sortby");
-        String nextOffset = Integer.toString(Integer.parseInt(request.getParameter("page")) * Integer.parseInt(limit));
+        int nextOffset = Integer.parseInt(request.getParameter("page")) * Integer.parseInt(limit);
         
         out.println("<html>");
         out.println("<head><title>Fabflix</title>");
@@ -58,8 +57,7 @@ public class BrowsingServlet extends HttpServlet {
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
                 // create database connection
                 Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-                // declare statement
-//                Statement statement = connection.createStatement();
+
                 // prepare query
                 String query = "";
                 PreparedStatement statement = null;
@@ -68,50 +66,41 @@ public class BrowsingServlet extends HttpServlet {
                           + "FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
                                 + "FROM genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
                                 + "WHERE m.id IN (SELECT m.id FROM movies m, genres g, genres_in_movies gm "
-                                               + "WHERE g.name = ? AND g.id = gm.genreId AND m.id = gm.movieId) AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
+                                               + "WHERE g.name=? AND g.id = gm.genreId AND m.id = gm.movieId) AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                           + "GROUP BY m.id) m "
                           + "LEFT JOIN ratings r ON m.id = r.movieId";
-                    statement = connection.prepareStatement(query);
-                    statement.setString(1, genre);
-//                    String mids = "SELECT m.id FROM movies m, genres g, genres_in_movies gm WHERE g.name = ? AND g.id = gm.genreId AND m.id = gm.movieId";
-//                    query = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
-//                            + " FROM genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
-//                            + "WHERE m.id IN (" + mids + ") AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
-//                            + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId";
-                    
+
                 } else {
                     query = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating "
                           + "FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
                                 + "FROM genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
                                 + "WHERE m.title LIKE ? AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                                 + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId";
-                    statement = connection.prepareStatement(query);
-                    statement.setString(1, prefix + "%");
-//                    query = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars"
-//                            + " FROM genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
-//                            + "WHERE m.title LIKE '" + prefix + "%' AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
-//                            + "GROUP BY m.id) m LEFT JOIN ratings r ON m.id = r.movieId";
                 }
-                String checkQuery = query;
                 
-//                if (!sort.equals("null")) {
-//        		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
-//        		        query += " ORDER BY m.title ASC" + " LIMIT " + limit + " OFFSET " + offset; 
-//        		        checkQuery += " ORDER BY m.title ASC" + " LIMIT " + limit + " OFFSET " + nextOffset; 
-//        		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
-//        		        query += " ORDER BY m.title DESC" + " LIMIT " + limit + " OFFSET " + offset;
-//        		        checkQuery += " ORDER BY m.title DESC" + " LIMIT " + limit + " OFFSET " + nextOffset;
-//        		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
-//        		        query += " ORDER BY r.rating ASC" + " LIMIT " + limit + " OFFSET " + offset;
-//        		        checkQuery += " ORDER BY r.rating ASC" + " LIMIT " + limit + " OFFSET " + nextOffset;
-//        		    } else {
-//        		        query += " ORDER BY r.rating DESC" + " LIMIT " + limit + " OFFSET " + offset;
-//        		        checkQuery += " ORDER BY r.rating DESC" + " LIMIT " + limit + " OFFSET " + nextOffset;
-//        		    }
-//        		} else {
-//        			query += " LIMIT " + limit + " OFFSET " + offset;
-//        			checkQuery += " LIMIT " + limit + " OFFSET " + nextOffset;
-//        		}
+                if (!sort.equals("null")) {
+        		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
+        		        query += " ORDER BY m.title ASC LIMIT ? OFFSET ?"; 
+        		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
+        		        query += " ORDER BY m.title DESC LIMIT ? OFFSET ?";
+        		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
+        		        query += " ORDER BY r.rating ASC LIMIT ? OFFSET ?";
+        		    } else {
+        		        query += " ORDER BY r.rating DESC LIMIT ? OFFSET ?";
+        		    }
+        		} else {
+        			query += " LIMIT ? OFFSET ?";
+        		}
+                
+                statement = connection.prepareStatement(query);
+                
+                if (genre != null) {
+                    statement.setString(1, genre);
+                } else {
+                    statement.setString(1, prefix + "%");
+                }
+                statement.setInt(2, Integer.parseInt(limit));
+                statement.setInt(3, offset);
                 
                 // execute query
                 ResultSet resultSet = statement.executeQuery();
@@ -228,10 +217,11 @@ public class BrowsingServlet extends HttpServlet {
                 out.println("</div>");
                 out.println("</table>");
                 
-                ResultSet nextPage = statement.executeQuery(checkQuery);
+                statement.setInt(3, nextOffset);
+                ResultSet nextPage = statement.executeQuery();
                 
                 out.println("<div class=\"box\">");
-                if (!offset.equals("0")) {
+                if (offset != 0) {
                     out.println("<button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button>");
                 }
                 if (nextPage.next()) {
