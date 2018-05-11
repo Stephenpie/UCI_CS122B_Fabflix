@@ -185,7 +185,6 @@ public class SearchServlet extends HttpServlet {
         		out.println("</table>");
         		
         		statement.setInt(6, nextOffset);
-        		statement = connection.prepareStatement(mqlQuery);
         		ResultSet nextPage = statement.executeQuery();
         		
         		out.println("<div class=\"box\">");
