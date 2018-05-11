@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.HashMap;
 
 import javax.servlet.annotation.WebServlet;
@@ -43,10 +43,8 @@ public class ConfirmationServlet extends HttpServlet {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             // create database connection
             Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-            // declare statement
-            Statement statement = connection.createStatement();
-            // prepare query
-                        
+            
+            // prepare query     
             String userID = ((User) session.getAttribute("user")).getUserID();
             
             out.println("<body class=\"loginBackgroundColor\">");
@@ -64,8 +62,10 @@ public class ConfirmationServlet extends HttpServlet {
             out.println("</thead>");
             out.println("<tbody>");
         
-            String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = '" + userID + "'";
-            ResultSet rid = statement.executeQuery(query);
+            String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, userID);
+            ResultSet rid = statement.executeQuery();
             int id = 0;
             rid.next();
             id = Integer.parseInt(rid.getString("id"));
