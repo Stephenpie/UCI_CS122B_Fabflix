@@ -1,6 +1,7 @@
 package login;
 
 import com.google.gson.JsonObject;
+
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -36,12 +38,14 @@ public class LoginServlet extends HttpServlet {
 			// create database connection
 			Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 			// declare statement
-			Statement statement = connection.createStatement();
+//			Statement statement = connection.createStatement();
 			// prepare query
 						
-			String query = "SELECT c.id, c.email, c.password FROM customers c WHERE c.email = "+ "'" + username + "'";
+			String query = "SELECT id, email, password FROM customers WHERE email=?";
+			PreparedStatement statement = connection.prepareStatement(query);
+			statement.setString(1, username);
 			// execute query
-    		ResultSet resultSet = statement.executeQuery(query);
+    		ResultSet resultSet = statement.executeQuery();
     		
             String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
             System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
