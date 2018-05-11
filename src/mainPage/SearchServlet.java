@@ -3,8 +3,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,9 +40,9 @@ public class SearchServlet extends HttpServlet {
         // get the parameter in GET
         String query = request.getParameter("query");
         String limit = request.getParameter("numOfMovies");
-        String offset = Integer.toString((Integer.parseInt(request.getParameter("page")) - 1) * Integer.parseInt(limit));
+        int offset = (Integer.parseInt(request.getParameter("page")) - 1) * Integer.parseInt(limit);
         String sort = request.getParameter("sortby");
-        String nextOffset = Integer.toString(Integer.parseInt(request.getParameter("page")) * Integer.parseInt(limit));
+        int nextOffset = Integer.parseInt(request.getParameter("page")) * Integer.parseInt(limit);
         
         
         out.println("<html>");
@@ -58,40 +58,35 @@ public class SearchServlet extends HttpServlet {
         		// create database connection
         		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
         		// declare statement
-        		Statement statement = connection.createStatement();
+        		PreparedStatement statement = null;
         		// prepare query
         		String mqlQuery = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT t2.id, t2.title, "
         		        + "t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars FROM genres g, genres_in_movies gm, "
         		        + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
         		        + "FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId GROUP BY m.id) t1 WHERE "
-        		        + "t1.title LIKE '%" + query + "%' OR t1.year = '" + query + "' OR t1.director LIKE '%" + query + "%' OR t1.stars LIKE '%" + 
-        		        query + "%') t2 WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId";
-        		String checkQuery = mqlQuery;
+        		        + "t1.title LIKE ? OR t1.year = ? OR t1.director LIKE ? OR t1.stars LIKE ?) t2 "
+        		        + "WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId";
         		if (!sort.equals("null")) {
-        		    System.out.println(sort);
         		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
-        		        mqlQuery += " ORDER BY m.title ASC LIMIT " + limit + " OFFSET " + offset;
-        		        checkQuery += " ORDER BY m.title ASC LIMIT " + limit + " OFFSET " + nextOffset;
-        		        System.out.println(mqlQuery);
+        		        mqlQuery += " ORDER BY m.title ASC LIMIT ? OFFSET ?";
         		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
-        		        mqlQuery += " ORDER BY m.title DESC LIMIT " + limit + " OFFSET " + offset;
-        		        checkQuery += " ORDER BY m.title DESC LIMIT " + limit + " OFFSET " + nextOffset;
-                        System.out.println(mqlQuery);
+        		        mqlQuery += " ORDER BY m.title DESC LIMIT ? OFFSET ?";
         		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
-        		        mqlQuery += " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + offset;
-        		        checkQuery += " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + nextOffset;
-                        System.out.println(mqlQuery);
+        		        mqlQuery += " ORDER BY r.rating ASC LIMIT ? OFFSET ?";
         		    } else {
-        		        mqlQuery += " ORDER BY r.rating DESC LIMIT " + limit + " OFFSET " + offset;
-        		        checkQuery += " ORDER BY r.rating DESC LIMIT " + limit + " OFFSET " + nextOffset;
-                        System.out.println(mqlQuery);
+        		        mqlQuery += " ORDER BY r.rating DESC LIMIT ? OFFSET ?";
         		    }
         		} else {
-        		    mqlQuery += " LIMIT " + limit + " OFFSET " + offset;
-        		    checkQuery += " LIMIT 1" + " OFFSET " + nextOffset;
-        		    System.out.println(mqlQuery);
+        		    mqlQuery += " LIMIT ? OFFSET ?";
         		}
         		
+        		statement = connection.prepareStatement(query);
+        		statement.setString(1, "%" + query + "%");
+        		statement.setString(2, query);
+        		statement.setString(3, "%" + query + "%");
+        		statement.setString(4, "%" + query + "%");
+        		statement.setInt(5, Integer.parseInt(limit));
+        		statement.setInt(6, offset);
         		// execute query
         		ResultSet resultSet = statement.executeQuery(mqlQuery);
 
@@ -189,10 +184,12 @@ public class SearchServlet extends HttpServlet {
         		out.println("</div>");
         		out.println("</table>");
         		
-        		ResultSet nextPage = statement.executeQuery(checkQuery);
+        		statement.setInt(6, nextOffset);
+        		statement = connection.prepareStatement(mqlQuery);
+        		ResultSet nextPage = statement.executeQuery();
         		
         		out.println("<div class=\"box\">");
-        		if (!offset.equals("0")) {
+        		if (offset != 0) {
         		    out.println("<button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button>");
         		}
         		if (nextPage.next()) {
