@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private boolean validated = false;
 
 
     /**
@@ -46,10 +47,13 @@ public class LoginServlet extends HttpServlet {
 			// execute query
     		ResultSet resultSet = statement.executeQuery();
     	
-            String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-            System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
-            
-            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+    		if (!validated) {
+                String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+                System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+                
+                RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+                validated = true;
+    		}
     		
 	        /* This example only allows username/password to be test/test
 	        /  in the real project, you should talk to the database to verify username/password

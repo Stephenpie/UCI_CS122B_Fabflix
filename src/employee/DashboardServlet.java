@@ -46,15 +46,44 @@ public class DashboardServlet extends HttpServlet {
             out.println("<body class=\"loginBackgroundColor\">");
             out.println("<h2 class=\"text-center\">Employee Dashboard</h2>");
             
-            out.println("<h3 \">Add new start</h3>");
-            out.println("<form id=\"add_star\" method=\"get\" action=\"\">");
-            out.println("<label><b>Star Name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter star name\" name=\"starname\"> required");
-            out.println("<br><label><b>Birth Year</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter birth year\" name=\"birthyear\">");
+            out.println("<h3 \">Add new movie</h3>");
+            out.println("<form id=\"add_movie\" method=\"get\" action=\"\">");
+            out.println("<label><b>Title</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie title\" name=\"title\" required>");
+            out.println("<br><label><b>Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter movie year\" name=\"year\" required>");
+            out.println("<br><label><b>Director</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter director\" name=\"director\" required>");
+            out.println("<br><label><b>Star</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie star\" name=\"mstar\" required>");
+            out.println("<br><label><b>Genre</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie genre\" name=\"genre\" required>");
             out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
             
             String query = "";
             PreparedStatement statement = null;
             ResultSet res = null;
+            String mtitle = request.getParameter("title");
+            String myear = request.getParameter("year");
+            String mdirector = request.getParameter("director");
+            String mstar = request.getParameter("mstar");
+            String mgenre = request.getParameter("genre");
+            if (mtitle != null) {
+                query = "SELECT * FROM movies WHERE title = ? AND year = ? AND director = ?";
+                statement = connection.prepareStatement(query);
+                statement.setString(1, mtitle.trim());
+                statement.setString(2, myear.trim());
+                statement.setString(3, mdirector.trim());
+                res = statement.executeQuery();
+                if (res.next()) { // movie already exist
+                    out.println("Movie already exist! Try to add a NEW one!");
+                } else { // add new movie
+                    
+                }
+            }
+            
+            
+            out.println("<h3 \">Add new star</h3>");
+            out.println("<form id=\"add_star\" method=\"get\" action=\"\">");
+            out.println("<label><b>Star Name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter star name\" name=\"starname\" required>");
+            out.println("<br><label><b>Birth Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter birth year\" name=\"birthyear\">");
+            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
+            
             String starName = request.getParameter("starname");
             String birthYear = request.getParameter("birthYear");
             if (starName != null) {
@@ -62,16 +91,16 @@ public class DashboardServlet extends HttpServlet {
                 statement = connection.prepareStatement(query);
                 res = statement.executeQuery();
                 res.next();
-                String id = res.getString("id");
-                System.out.println(id);
-                int temp = Integer.parseInt(id.substring(2, id.length()));
-                id = id.substring(0, 2) + (++temp);
-                System.out.println(id);
+                String starID = res.getString("id");
+                System.out.println(starID);
+                int temp = Integer.parseInt(starID.substring(2, starID.length()));
+                starID = starID.substring(0, 2) + (++temp);
+                System.out.println(starID);
                 
                 query = "INSERT INTO stars (id, name, birthYear) VALUES(?, ?, ?)";
                 statement = connection.prepareStatement(query);
-                statement.setString(1, id);
-                statement.setString(2, starName);
+                statement.setString(1, starID);
+                statement.setString(2, starName.trim());
                 statement.setString(3, birthYear);
                 int update = statement.executeUpdate();
                 out.println("<p>Success!</p>");

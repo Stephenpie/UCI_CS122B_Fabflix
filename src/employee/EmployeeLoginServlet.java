@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 @WebServlet(urlPatterns = "/fabflix/_dashboard")
 public class EmployeeLoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private boolean validated = false;
 
 
     /**
@@ -85,10 +86,13 @@ public class EmployeeLoginServlet extends HttpServlet {
             
             boolean success = false;
             if (resultSet.next()) {
-                String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-                System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
-                
-                RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+                if (!validated) {
+                    String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+                    System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+                    
+                    RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+                    validated = true;
+                }
                 
                 // Login success:
                 // get the encrypted password from the database
