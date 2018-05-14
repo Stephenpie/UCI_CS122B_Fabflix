@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -119,22 +118,22 @@ public class AdvancedSearchServlet extends HttpServlet {
                 if (!title.isEmpty()) {
                     statement.setString(1, "%" + title + "%");
                 } else {
-                    statement.setString(1, "%");
+                    statement.setString(1, "%%");
                 }
                 if (!year.isEmpty()) {
                     statement.setString(2, year);
                 } else {
-                    statement.setString(2, "%");
+                    statement.setString(2, "%%");
                 }
                 if (!director.isEmpty()) {
                     statement.setString(3, "%" + director + "%");
                 } else {
-                    statement.setString(3, "%");
+                    statement.setString(3, "%%");
                 }
                 if (!star.isEmpty()) {
                     statement.setString(4, "%" + star + "%");
                 } else {
-                    statement.setString(4, "%");
+                    statement.setString(4, "%%");
                 }
                 statement.setInt(5, Integer.parseInt(limit));
                 statement.setInt(6, offset);

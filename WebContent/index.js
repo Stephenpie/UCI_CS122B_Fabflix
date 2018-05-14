@@ -25,23 +25,3 @@ window.onload = function(){
 		handleSearch($('#query').val()) 
 	}
 };
-
-//function submitSearchForm(formSubmitEvent) {
-//	var arr = jQuery("#advancedSearch").serializeArray();
-//	var n = 0;
-//	for (i = 0; i < arr; i++) {
-//		if (arr[i] == "") {
-//			n++;
-//		}
-//	}
-//	if (n == 4) {
-//		window.alert("Please enter something to search!");
-//	} else {
-//		var url = jQuery("#advancedSearch").serialize();
-//		console.log(url);
-//	}
-//	
-//	window.location.href = "advanced?" + url + "&numOfMovies=25&page=1&sortby=null&advanced=true";
-//}
-//
-//jQuery("#advancedSearch").submit((event) => submitSearchForm(event));

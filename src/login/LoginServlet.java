@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
 			statement.setString(1, username);
 			// execute query
     		ResultSet resultSet = statement.executeQuery();
-    		
+    	
             String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
             System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
             
@@ -56,6 +56,7 @@ public class LoginServlet extends HttpServlet {
 	        */
             boolean success = false;
 	        if (resultSet.next()) {
+	            
 	            // Login success:
 	        	// get the encrypted password from the database
 				String encryptedPassword = resultSet.getString("password");
