@@ -2,6 +2,7 @@ package employee;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,13 +14,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.JsonObject;
-
-import login.User;
-
 @WebServlet(urlPatterns = "/fabflix/dashboard")
 public class DashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    
+    private String dropStoredProcedure() {
+        return "DROP PROCEDURE IF EXISTS add_movie;";
+    }
+    
+    private String createStoredProcedure() {
+        String procedure = 
+                "CREATE PROCEDURE add_movie(IN movieID varchar(10), IN title varchar(100), IN year int(11), IN director varchar(100), " + 
+                "    IN starID varchar(10), IN star varchar(100), IN genre varchar(32))" + 
+                "BEGIN" + 
+                "    INSERT INTO movies VALUES(movieID, title, year, director);" + 
+                "    INSERT INTO stars(id, name) SELECT * FROM (SELECT starID, star) AS tstars WHERE NOT EXISTS (SELECT * FROM stars WHERE name = star);" + 
+                "    INSERT INTO stars_in_movies VALUES(starID, movieID);" + 
+                "    INSERT INTO genres (name) SELECT * FROM (SELECT genre) AS tg WHERE NOT EXISTS (SELECT * FROM genres WHERE name = genre);" + 
+                "    INSERT INTO genres_in_movies VALUES((SELECT id FROM genres WHERE name = genre), movieID);" + 
+                "END";
+        
+        return procedure;
+    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
@@ -77,7 +93,53 @@ public class DashboardServlet extends HttpServlet {
                 if (res.next()) { // movie already exist
                     out.println("Movie already exist! Try to add a NEW one!");
                 } else { // add new movie
+                    query = dropStoredProcedure();
+                    statement = connection.prepareStatement(query);
+                    statement.execute();
                     
+                    query = createStoredProcedure();
+                    statement = connection.prepareStatement(query);
+                    statement.execute();
+                    
+                    query = "SELECT MAX(id) AS id FROM movies";
+                    statement = connection.prepareStatement(query);
+                    res = statement.executeQuery();
+                    res.next();
+                    String movieID = res.getString("id");
+                    System.out.println(movieID);
+                    int temp = Integer.parseInt(movieID.substring(2, movieID.length()));
+                    movieID = movieID.substring(0, 2) + (++temp);
+                    System.out.println("movieID = " + movieID);
+                    
+                    query = "SELECT * FROM stars WHERE name = ?";
+                    statement = connection.prepareStatement(query);
+                    statement.setString(1, mstar);
+                    res = statement.executeQuery();
+                    String mstarID;
+                    if (res.next()) { // this star already exists
+                        mstarID = res.getString("id");
+                    } else {
+                        query = "SELECT MAX(id) AS id FROM stars";
+                        statement = connection.prepareStatement(query);
+                        res = statement.executeQuery();
+                        res.next();
+                        mstarID = res.getString("id");
+                        temp = Integer.parseInt(mstarID.substring(2, mstarID.length()));
+                        mstarID = mstarID.substring(0, 2) + (++temp);
+                        System.out.println(mstarID);
+                    }
+                    
+                    CallableStatement callStatement = connection.prepareCall("{call add_movie(?,?,?,?,?,?,?)}"); 
+                    callStatement.setString(1, movieID);
+                    callStatement.setString(2, mtitle);
+                    callStatement.setString(3, myear);
+                    callStatement.setString(4, mdirector);
+                    callStatement.setString(5, mstarID);
+                    callStatement.setString(6, mstar);
+                    callStatement.setString(7, mgenre);
+                    
+                    int update = callStatement.executeUpdate();
+                    out.println("Successfully added a new movie with provided information!");
                 }
             }
             
