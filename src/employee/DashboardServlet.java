@@ -46,14 +46,18 @@ public class DashboardServlet extends HttpServlet {
             out.println("<body class=\"loginBackgroundColor\">");
             out.println("<h2 class=\"text-center\">Employee Dashboard</h2>");
             
-            out.println("<h3 \">Add new movie</h3>");
-            out.println("<form id=\"add_movie\" method=\"get\" action=\"\">");
-            out.println("<label><b>Title</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie title\" name=\"title\" required>");
-            out.println("<br><label><b>Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter movie year\" name=\"year\" required>");
-            out.println("<br><label><b>Director</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter director\" name=\"director\" required>");
-            out.println("<br><label><b>Star</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie star\" name=\"mstar\" required>");
-            out.println("<br><label><b>Genre</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie genre\" name=\"genre\" required>");
-            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
+            out.println("<div class=\"container\">");
+            	out.println("<div class=\"row\">");
+            		out.println("<div class=\"col-lg-6\">");
+			            out.println("<h3 \">Add new movie</h3>");
+			            out.println("<form id=\"add_movie\" method=\"get\" action=\"\">");
+			            out.println("<label><b>Title</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie title\" name=\"title\" required>");
+			            out.println("<br><label><b>Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter movie year\" name=\"year\" required>");
+			            out.println("<br><label><b>Director</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter director\" name=\"director\" required>");
+			            out.println("<br><label><b>Star</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie star\" name=\"mstar\" required>");
+			            out.println("<br><label><b>Genre</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie genre\" name=\"genre\" required>");
+			            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
+			        out.println("</div>");
             
             String query = "";
             PreparedStatement statement = null;
@@ -77,13 +81,16 @@ public class DashboardServlet extends HttpServlet {
                 }
             }
             
-            
-            out.println("<h3 \">Add new star</h3>");
-            out.println("<form id=\"add_star\" method=\"get\" action=\"\">");
-            out.println("<label><b>Star Name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter star name\" name=\"starname\" required>");
-            out.println("<br><label><b>Birth Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter birth year\" name=\"birthyear\">");
-            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
-            
+            		out.println("<div class=\"col-lg-6\">");
+			            out.println("<h3 \">Add new star</h3>");
+			            out.println("<form id=\"add_star\" method=\"get\" action=\"\">");
+			            out.println("<label><b>Star Name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter star name\" name=\"starname\" required>");
+			            out.println("<br><label><b>Birth Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter birth year\" name=\"birthyear\">");
+			            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
+			        out.println("</div>");
+			    out.println("</div>");
+			out.println("</div>");
+			
             String starName = request.getParameter("starname");
             String birthYear = request.getParameter("birthYear");
             if (starName != null) {
@@ -114,8 +121,15 @@ public class DashboardServlet extends HttpServlet {
                 tables.add(res.getString("Tables_in_moviedb"));
             }
 
+            out.println("<div class=\"container\">");
+            //out.println("<div class=\"row\">");
+            int i = 0;
             for (String table : tables) {
-                out.println("<div class=\"container\">");
+            	if (i % 2 == 0) {
+            		out.println("<div class=\"row\">");
+            	}
+            	out.println("<div class=\"col-lg-6\">");
+            	
                 out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
     
                 query = "SHOW fields FROM " + table;
@@ -129,6 +143,7 @@ public class DashboardServlet extends HttpServlet {
                 out.println("</thead>");
                 out.println("<tbody>");
                 while (res.next()) {
+                	out.println("<tr>");
                     out.println("<td>" + res.getString("Field") + "</td>");
                     out.println("<td>" + res.getString("Type") + "</td>");
                     out.println("</tr>");
@@ -136,8 +151,15 @@ public class DashboardServlet extends HttpServlet {
                 out.println("</tbody>");
                 out.println("</table>");
                 out.println("</div>");
-            }            
+                if (i % 2 == 1) {
+                	out.println("</div>");
+                }
+                i++;
+            }    
             
+            	//out.println("</div>");
+            
+            out.println("</div>");
 
             out.println("<center><button type=\"button\" class=\"btn btn-info\" id=\"back\">Home</button></center>");
 
