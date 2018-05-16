@@ -113,27 +113,27 @@ public class AdvancedSearchServlet extends HttpServlet {
                     mqlQuery += " LIMIT ? OFFSET ?";
                     checkQuery += " LIMIT 1" + " OFFSET " + nextOffset;
                 }
-                
+                System.out.println("MYSQL QUERY = " + mqlQuery);
                 PreparedStatement statement = connection.prepareStatement(mqlQuery);
                 if (!title.isEmpty()) {
                     statement.setString(1, "%" + title + "%");
                 } else {
-                    statement.setString(1, "%%");
+                    statement.setString(1, "");
                 }
                 if (!year.isEmpty()) {
                     statement.setString(2, year);
                 } else {
-                    statement.setString(2, "%%");
+                    statement.setString(2, "");
                 }
                 if (!director.isEmpty()) {
                     statement.setString(3, "%" + director + "%");
                 } else {
-                    statement.setString(3, "%%");
+                    statement.setString(3, "");
                 }
                 if (!star.isEmpty()) {
                     statement.setString(4, "%" + star + "%");
                 } else {
-                    statement.setString(4, "%%");
+                    statement.setString(4, "");
                 }
                 statement.setInt(5, Integer.parseInt(limit));
                 statement.setInt(6, offset);
