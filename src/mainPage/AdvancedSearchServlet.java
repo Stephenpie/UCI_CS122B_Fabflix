@@ -94,25 +94,19 @@ public class AdvancedSearchServlet extends HttpServlet {
                         + "WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m "
                   + "LEFT JOIN ratings r ON m.id = r.movieId";
                 
-                String checkQuery = mqlQuery;
                 if (!sort.equals("null")) {
                     System.out.println(sort);
                     if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
                         mqlQuery += " ORDER BY m.title ASC LIMIT ? OFFSET ?";
-                        checkQuery += " ORDER BY m.title ASC LIMIT " + limit + " OFFSET " + nextOffset;
                     } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
                         mqlQuery += " ORDER BY m.title DESC LIMIT ? OFFSET ?";
-                        checkQuery += " ORDER BY m.title DESC LIMIT " + limit + " OFFSET " + nextOffset;
                     } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
                         mqlQuery += " ORDER BY r.rating ASC LIMIT ? OFFSET ?";
-                        checkQuery += " ORDER BY r.rating ASC LIMIT " + limit + " OFFSET " + nextOffset;
                     } else {
                         mqlQuery += " ORDER BY r.rating DESC LIMIT ? OFFSET ?";
-                        checkQuery += " ORDER BY r.rating DESC LIMIT " + limit + " OFFSET " + nextOffset;
                     }
                 } else {
                     mqlQuery += " LIMIT ? OFFSET ?";
-                    checkQuery += " LIMIT 1" + " OFFSET " + nextOffset;
                 }
                                 
                 System.out.println("MYSQL QUERY = " + mqlQuery);
@@ -240,6 +234,7 @@ public class AdvancedSearchServlet extends HttpServlet {
                 out.println("</div>");
                 out.println("</table>");
                 
+                statement.setInt(j, Integer.parseInt(nextOffset));
                 ResultSet nextPage = statement.executeQuery();
                 
                 out.println("<div class=\"box\">");
