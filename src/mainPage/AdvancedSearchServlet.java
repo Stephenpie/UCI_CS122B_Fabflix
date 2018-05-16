@@ -64,34 +64,35 @@ public class AdvancedSearchServlet extends HttpServlet {
                                                                                  + "FROM movies m, stars s, stars_in_movies sm "
                                                                                  + "WHERE m.id = sm.movieId AND s.id = sm.starId "
                                                                                  + "GROUP BY m.id) t1 "
-                                                                           + "WHERE t1.title LIKE ? AND t1.year = ? AND t1.director LIKE ? AND t1.stars LIKE ?) t2 "
-                                      + "WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m "
-                                + "LEFT JOIN ratings r ON m.id = r.movieId";
-//                if (!title.isEmpty()) {
-//                    mqlQuery += "t1.title LIKE '%" + title + "%' ";
-//                }
-//                if (!year.isEmpty()) {
-//                    if (!title.isEmpty()) {
-//                        mqlQuery += "AND t1.year = '" + year + "' ";
-//                    } else {
-//                        mqlQuery += "t1.year = '" + year + "' ";
-//                    }
-//                }
-//                if (!director.isEmpty()) {
-//                    if (!title.isEmpty() || !year.isEmpty()) {
-//                        mqlQuery += "AND t1.director LIKE '%" + director + "%' ";
-//                    } else {
-//                        mqlQuery += "t1.director LIKE '%" + director + "%' ";
-//                    }
-//                }
-//                if (!star.isEmpty()) {
-//                    if (!title.isEmpty() || !year.isEmpty() || !director.isEmpty()) {
-//                        mqlQuery += "AND t1.stars LIKE '%" + star + "%'";
-//                    } else {
-//                        mqlQuery += "t1.stars LIKE '%" + star + "%'";
-//                    }
-//                }
-//                mqlQuery += ") t2 WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId";
+                                                                           + "WHERE ";
+                if (!title.isEmpty()) {
+                    mqlQuery += "t1.title LIKE ? ";
+                }
+                if (!year.isEmpty()) {
+                    if (!title.isEmpty()) {
+                        mqlQuery += "AND t1.year = ? ";
+                    } else {
+                        mqlQuery += "t1.year = ? ";
+                    }
+                }
+                if (!director.isEmpty()) {
+                    if (!title.isEmpty() || !year.isEmpty()) {
+                        mqlQuery += "AND t1.director LIKE ? ";
+                    } else {
+                        mqlQuery += "t1.director LIKE ? ";
+                    }
+                }
+                if (!star.isEmpty()) {
+                    if (!title.isEmpty() || !year.isEmpty() || !director.isEmpty()) {
+                        mqlQuery += "AND t1.stars LIKE ?";
+                    } else {
+                        mqlQuery += "t1.stars LIKE ?";
+                    }
+                }
+                
+                mqlQuery += ") t2 "
+                        + "WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m "
+                  + "LEFT JOIN ratings r ON m.id = r.movieId";
                 
                 String checkQuery = mqlQuery;
                 if (!sort.equals("null")) {
@@ -113,30 +114,29 @@ public class AdvancedSearchServlet extends HttpServlet {
                     mqlQuery += " LIMIT ? OFFSET ?";
                     checkQuery += " LIMIT 1" + " OFFSET " + nextOffset;
                 }
+                                
                 System.out.println("MYSQL QUERY = " + mqlQuery);
                 PreparedStatement statement = connection.prepareStatement(mqlQuery);
+                int j = 1;
                 if (!title.isEmpty()) {
-                    statement.setString(1, "%" + title + "%");
-                } else {
-                    statement.setString(1, "");
-                }
+                    statement.setString(j, "%" + title + "%");
+                    j++;
+                } 
                 if (!year.isEmpty()) {
-                    statement.setString(2, year);
-                } else {
-                    statement.setString(2, "");
-                }
+                    statement.setString(j, year);
+                    j++;
+                } 
                 if (!director.isEmpty()) {
-                    statement.setString(3, "%" + director + "%");
-                } else {
-                    statement.setString(3, "");
+                    statement.setString(j, "%" + director + "%");
+                    j++;
                 }
                 if (!star.isEmpty()) {
-                    statement.setString(4, "%" + star + "%");
-                } else {
-                    statement.setString(4, "");
+                    statement.setString(j, "%" + star + "%");
+                    j++;
                 }
-                statement.setInt(5, Integer.parseInt(limit));
-                statement.setInt(6, offset);
+                statement.setInt(j, Integer.parseInt(limit));
+                j++;
+                statement.setInt(j, offset);
                 // execute query
                 ResultSet resultSet = statement.executeQuery();
 
