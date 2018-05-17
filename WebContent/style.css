@@ -62,7 +62,7 @@ strong {
    	background-image: url("background.jpg");
    
    	/* Full height */
-    height: 800px;
+    height: 100%;
     width: 100%; 
 
 	/* Center and scale the image nicely */

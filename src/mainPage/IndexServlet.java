@@ -63,7 +63,7 @@ public class IndexServlet extends HttpServlet {
                 // create database connection
                 Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
                 // prepare query  
-                String mqlQuery = "SELECT * FROM genres";                
+                String mqlQuery = "SELECT * FROM genres ORDER BY genres.name";                
                 PreparedStatement statement = connection.prepareStatement(mqlQuery);
                 // execute query
                 ResultSet resultSet = statement.executeQuery();
@@ -83,10 +83,10 @@ public class IndexServlet extends HttpServlet {
                 		"			    </div>	\n" + 
                 		"	    	</div>\n" + 
                 		"    	</div>\n" + 
-                		"    	<div><br><br><br></div>\n" + 
+                		"    	<div><br></div>\n" + 
                 		"    	<div class=\"container\">\n" + 
                 		"    	<div class=\"row\">\n" + 
-                		"    		<div class=\"col-lg-4\">\n" + 
+                		"    		<div class=\"col-lg-8\">\n" + 
                 		"    			<div class=\"content genre\">\n" + 
                 		"	    	   		<p>Browse by Movie Genre</p>\n" + 
                 		"			    	    <table class=\"table table-bordered\">\n" + 
@@ -95,7 +95,7 @@ public class IndexServlet extends HttpServlet {
                 // add a row for every star result
                 int i = 0;
                 while (resultSet.next()) {
-                	if (i % 4 == 0) {
+                	if (i % 8 == 0) {
                 		out.println("<tr>");
                 	}
                 	out.print("<td><a href=browse?genre=");
@@ -104,7 +104,7 @@ public class IndexServlet extends HttpServlet {
                 	out.print("&numOfMovies=25&page=1&sortby=null>");
                 	out.print(result);
                 	out.println("</a></td>");
-                	if (i % 4 == 3) {
+                	if (i % 8 == 7) {
                 		out.println("</tr>");
                 	}
                 	i++;
