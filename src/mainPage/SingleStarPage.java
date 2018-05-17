@@ -122,7 +122,10 @@ public class SingleStarPage extends HttpServlet {
                 out.println("<td>" + name + "</td>");
                 out.println("<td>" + yearOfBirth + "</td>");
                 out.println("<td>");
-                String moviesOfStar = "";
+                
+                System.out.println("MOVIE TITLE : " + movieTitle);
+                
+            	String moviesOfStar = "";
                 for (String movie : movies) {
                 	String movieTitle1 = movie;
     				if (movie.contains("&")) {
@@ -133,7 +136,10 @@ public class SingleStarPage extends HttpServlet {
     				}
                     moviesOfStar += "<a href='movies?movie=" + movie.trim() + "'>"+ movieTitle1.trim() + "</a>, ";
                 }
-                out.println(moviesOfStar.substring(0, moviesOfStar.length()-2));
+                if (!moviesOfStar.equals(""))
+                	out.println(moviesOfStar.substring(0, moviesOfStar.length()-2));
+                
+                
                 out.println("</td>");
                 out.println("</tr>");
 

@@ -149,9 +149,7 @@ public class DashboardServlet extends HttpServlet {
 			            out.println("<label><b>Star Name</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter star name\" name=\"starname\" required>");
 			            out.println("<br><label><b>Birth Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter birth year\" name=\"birthyear\">");
 			            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
-			        out.println("</div>");
-			    out.println("</div>");
-			out.println("</div>");
+			        
 			
             String starName = request.getParameter("starname");
             String birthYear = request.getParameter("birthYear");
@@ -172,9 +170,11 @@ public class DashboardServlet extends HttpServlet {
                 statement.setString(2, starName.trim());
                 statement.setString(3, birthYear);
                 int update = statement.executeUpdate();
-                out.println("<p>Success!</p>");
+                out.println("Success!");
             }
-            
+            out.println("</div>");
+		    out.println("</div>");
+		    out.println("</div>");
             query = "SHOW tables";
             statement = connection.prepareStatement(query);
             res = statement.executeQuery();
