@@ -21,15 +21,18 @@ public class InsertMovieData {
         XMLstarParser starParser = new XMLstarParser();
         starParser.runParser();
         LinkedList<Star> stars = starParser.getStars();
+        System.out.println("finishing parsing actors file: " + (double) (System.currentTimeMillis() - start) / 1000);
         
         XMLmovieParser movieParser = new XMLmovieParser();
         movieParser.runParser();
         LinkedList<Movie> movies = movieParser.getMovies();
         HashSet<String> uniqueGenres = movieParser.getUniqueGenres();
-//        
-//        XMLmoviestarParser movieStarParser = new XMLmoviestarParser();
-//        movieStarParser.runParser();
-//        HashMap<String, LinkedList<String>> movieStars = movieStarParser.getMoviesStars();
+        System.out.println("finishing parsing mains file: " + (double) (System.currentTimeMillis() - start) / 1000);
+        
+        XMLmoviestarParser movieStarParser = new XMLmoviestarParser();
+        movieStarParser.runParser();
+        HashMap<String, LinkedList<String>> movieStars = movieStarParser.getMoviesStars();
+        System.out.println("finishing parsing casts file: " + (double) (System.currentTimeMillis() - start) / 1000);
         
         String loginUser = "root";
         String loginPasswd = "tangwang";
@@ -73,7 +76,7 @@ public class InsertMovieData {
 
 			statement.executeBatch();
 			connection.commit();
-			System.out.println("finish inserting stars: " + count);
+			System.out.println("finish inserting stars: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
 			// Insert new genres, genres_in_movies, and movies
 			connection.setAutoCommit(false);
@@ -86,7 +89,7 @@ public class InsertMovieData {
 			}
 			statement.executeBatch();
 			connection.commit();
-			System.out.println("finishing inserting new genres: " + uniqueGenres.size());
+			System.out.println("finishing inserting new genres: " + uniqueGenres.size() + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
 			// Insert new movies
 			connection.setAutoCommit(false);
@@ -102,11 +105,13 @@ public class InsertMovieData {
             		+ "WHERE NOT EXISTS (SELECT m.title, m.year, m.director FROM movies m WHERE m.title = ? AND m.year = ? AND m.director = ?) LIMIT 1";
             statement = connection.prepareStatement(query);
             
+            String gQuery = "INSERT INTO genres_in_movies VALUES((SELECT id FROM genres WHERE name = ?), "
+            		+ "(SELECT id FROM movies WHERE title = ? and year = ? AND director = ?))";
+            PreparedStatement gStatement = connection.prepareStatement(gQuery);
+            
             count = 0;
             for (Movie m : movies) {
             	movieID = front + (++back);
-            	m.setID(movieID);
-            	System.out.println(m.getID());
             	statement.setString(1, movieID);
             	statement.setString(2, m.getTitle());
             	statement.setInt(3, m.getYear());
@@ -115,37 +120,57 @@ public class InsertMovieData {
             	statement.setInt(6, m.getYear());
             	statement.setString(7, m.getDirector());
             	count++;
-            	
-				statement.addBatch();
-				if (count % batchSize == 0) {
-					System.out.println(count);
-					statement.executeBatch();
-				}
-            }
-			statement.executeBatch();
-			connection.commit();
-			System.out.println("finish inserting movies: " + count);
-			
-            query = "INSERT INTO genres_in_movies VALUES((SELECT id FROM genres WHERE name = ?), ?)";
-            statement = connection.prepareStatement(query);
-            
-            count = 0;
-            for (Movie m : movies) {
-            	for (String genre: m.getGenres()) {
-            		statement.setString(1, genre);
-	            	statement.setString(2, m.getID());
-	            	count++;
+            	for (String genre : m.getGenres()) {
+            		gStatement.setString(1, genre);
+            		gStatement.setString(2, m.getTitle());
+            		gStatement.setInt(3, m.getYear());
+            		gStatement.setString(4, m.getDirector());
             	}
             	
 				statement.addBatch();
+				gStatement.addBatch();
 				if (count % batchSize == 0) {
-					System.out.println(count);
 					statement.executeBatch();
+					gStatement.executeBatch();
 				}
             }
 			statement.executeBatch();
+			gStatement.executeBatch();
 			connection.commit();
-			System.out.println("finish inserting genres_in_movies: " + count);
+			System.out.println("finish inserting movies: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
+			
+			// Insert stars_in_movies
+			connection.setAutoCommit(false);
+			String sQuery = "INSERT INTO stars SELECT * FROM (SELECT ?, ?, ?) AS temp WHERE NOT EXISTS (SELECT id FROM stars WHERE name = ?)";
+			query = "INSERT INTO stars_in_movies(starId, movieId) SELECT * FROM (SELECT (SELECT id FROM stars "
+					+ "WHERE name = ? LIMIT 1), (SELECT id FROM movies WHERE title = ? LIMIT 1)) AS tmp WHERE EXISTS (SELECT id FROM movies WHERE title = ? LIMIT 1)";
+			PreparedStatement sStatement = connection.prepareStatement(sQuery);
+			statement = connection.prepareStatement(query);
+			
+			count = 0;
+			for (String title : movieStars.keySet()) {
+				for (String star : movieStars.get(title)) {
+					starID = front + (++back);
+					sStatement.setString(1, starID);
+					sStatement.setString(2, star);
+					sStatement.setNull(3, Types.INTEGER);
+					sStatement.setString(4, star);
+					statement.setString(1, star);
+					statement.setString(2, title);
+					statement.setString(3, title);
+					count++;
+				}
+				sStatement.addBatch();
+				statement.addBatch();
+				if (count % batchSize == 0) {
+					sStatement.executeBatch();
+					statement.executeBatch();
+				}
+			}
+			sStatement.executeBatch();
+			statement.executeBatch();
+			connection.commit();
+			System.out.println("finish inserting stars_in_movies: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
             
 			
 	        resultSet.close();

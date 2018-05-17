@@ -28,7 +28,7 @@ public class XMLmoviestarParser extends DefaultHandler {
 
     public void runParser() {
         parseDocument();
-        printData();
+//        printData();
     }
 
     private void parseDocument() {

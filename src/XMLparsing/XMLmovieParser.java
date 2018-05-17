@@ -33,8 +33,7 @@ public class XMLmovieParser extends DefaultHandler {
 
     public void runParser() {
         parseDocument();
-        printData();
-        System.out.println(genres.size());
+//        printData();
     }
 
     private void parseDocument() {
@@ -88,7 +87,7 @@ public class XMLmovieParser extends DefaultHandler {
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
-
+    	tempVal = tempVal.trim();
         if (qName.equalsIgnoreCase("film")) {
             //add it to the list
             tempMovie.setDirector(director);
