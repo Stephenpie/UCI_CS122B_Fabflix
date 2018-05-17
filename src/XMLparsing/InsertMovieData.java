@@ -77,10 +77,11 @@ public class InsertMovieData {
 			
 			// Insert new genres, genres_in_movies, and movies
 			connection.setAutoCommit(false);
-			query = "INSERT INTO genres (name) VALUES (?)";
+			query = "INSERT INTO genres (name) SELECT * FROM (SELECT ?) AS tmp WHERE NOT EXISTS (SELECT name FROM genres WHERE name = ?)";
 			statement = connection.prepareStatement(query);
 			for (String genre : uniqueGenres) {
 				statement.setString(1, genre);
+				statement.setString(2, genre);
 				statement.addBatch();
 			}
 			statement.executeBatch();
@@ -95,11 +96,57 @@ public class InsertMovieData {
 			resultSet.next();
             String movieID = resultSet.getString("id");
             front = movieID.substring(0, 2);
-            back = Integer.parseInt(starID.substring(2, starID.length()));
+            back = Integer.parseInt(movieID.substring(2, movieID.length()));
             
+            query = "INSERT INTO movies SELECT * FROM (SELECT ? AS id, ? AS title, ? AS year, ? AS director) AS temp "
+            		+ "WHERE NOT EXISTS (SELECT m.title, m.year, m.director FROM movies m WHERE m.title = ? AND m.year = ? AND m.director = ?) LIMIT 1";
+            statement = connection.prepareStatement(query);
+            
+            count = 0;
             for (Movie m : movies) {
+            	movieID = front + (++back);
+            	m.setID(movieID);
+            	System.out.println(m.getID());
+            	statement.setString(1, movieID);
+            	statement.setString(2, m.getTitle());
+            	statement.setInt(3, m.getYear());
+            	statement.setString(4, m.getDirector());
+            	statement.setString(5, m.getTitle());
+            	statement.setInt(6, m.getYear());
+            	statement.setString(7, m.getDirector());
+            	count++;
             	
+				statement.addBatch();
+				if (count % batchSize == 0) {
+					System.out.println(count);
+					statement.executeBatch();
+				}
             }
+			statement.executeBatch();
+			connection.commit();
+			System.out.println("finish inserting movies: " + count);
+			
+            query = "INSERT INTO genres_in_movies VALUES((SELECT id FROM genres WHERE name = ?), ?)";
+            statement = connection.prepareStatement(query);
+            
+            count = 0;
+            for (Movie m : movies) {
+            	for (String genre: m.getGenres()) {
+            		statement.setString(1, genre);
+	            	statement.setString(2, m.getID());
+	            	count++;
+            	}
+            	
+				statement.addBatch();
+				if (count % batchSize == 0) {
+					System.out.println(count);
+					statement.executeBatch();
+				}
+            }
+			statement.executeBatch();
+			connection.commit();
+			System.out.println("finish inserting genres_in_movies: " + count);
+            
 			
 	        resultSet.close();
 	        statement.close();

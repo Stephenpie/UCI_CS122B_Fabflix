@@ -94,16 +94,16 @@ public class XMLmovieParser extends DefaultHandler {
             tempMovie.setDirector(director);
             movies.add(tempMovie);
 
-        } else if (qName.equalsIgnoreCase("t")) {
+        } else if (qName.equalsIgnoreCase("t")) { //title
             tempMovie.setTitle(tempVal);
-        } else if (qName.equalsIgnoreCase("year")) {
+        } else if (qName.equalsIgnoreCase("year")) { //year
             if (isNumeric(tempVal)) {
                 tempMovie.setYear(Integer.parseInt(tempVal));
             }
-        } else if (qName.equalsIgnoreCase("dirname")) {
+        } else if (qName.equalsIgnoreCase("dirname")) { //director
 //            tempMovie.setDirector(tempVal);
             director = tempVal;
-        } else if (qName.equalsIgnoreCase("cat")) {
+        } else if (qName.equalsIgnoreCase("cat")) { //genre
 //        	System.out.println(tempVal);
         	if (tempVal.length() == 0) {
         		tempVal = "Null";
