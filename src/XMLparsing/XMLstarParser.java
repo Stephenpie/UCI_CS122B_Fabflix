@@ -1,9 +1,8 @@
 package XMLparsing;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -15,7 +14,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class XMLstarParser extends DefaultHandler {
 
-    List<Star> myEmpls;
+    LinkedList<Star> stars;
 
     private String tempVal;
 
@@ -23,12 +22,12 @@ public class XMLstarParser extends DefaultHandler {
     private Star tempEmp;
 
     public XMLstarParser() {
-        myEmpls = new ArrayList<Star>();
+        stars = new LinkedList<Star>();
     }
 
-    public void runExample() {
+    public void runParser() {
         parseDocument();
-        printData();
+//        printData();
     }
 
     private void parseDocument() {
@@ -58,9 +57,9 @@ public class XMLstarParser extends DefaultHandler {
      */
     private void printData() {
 
-        System.out.println("No of Stars '" + myEmpls.size() + "'.");
+        System.out.println("No of Stars '" + stars.size() + "'.");
 
-        Iterator<Star> it = myEmpls.iterator();
+        Iterator<Star> it = stars.iterator();
         while (it.hasNext()) {
             System.out.println(it.next().toString());
         }
@@ -85,7 +84,7 @@ public class XMLstarParser extends DefaultHandler {
 
         if (qName.equalsIgnoreCase("actor")) {
             //add it to the list
-            myEmpls.add(tempEmp);
+            stars.add(tempEmp);
 
         } else if (qName.equalsIgnoreCase("stagename")) {
             tempEmp.setName(tempVal);
@@ -105,9 +104,13 @@ public class XMLstarParser extends DefaultHandler {
             return false;
         }
     }
+    
+    public LinkedList<Star> getStars() {
+    	return stars;
+    }
 
     public static void main(String[] args) {
         XMLstarParser spe = new XMLstarParser();
-        spe.runExample();
+        spe.runParser();
     }
 }

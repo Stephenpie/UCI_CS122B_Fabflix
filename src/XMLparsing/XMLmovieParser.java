@@ -2,6 +2,7 @@ package XMLparsing;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,14 +23,18 @@ public class XMLmovieParser extends DefaultHandler {
     private Movie tempMovie;
     
     private String director;
+    
+    private HashSet<String> genres;
 
     public XMLmovieParser() {
         movies = new LinkedList<Movie>();
+        genres = new HashSet<>();
     }
 
-    public void runExample() {
+    public void runParser() {
         parseDocument();
         printData();
+        System.out.println(genres.size());
     }
 
     private void parseDocument() {
@@ -99,7 +104,14 @@ public class XMLmovieParser extends DefaultHandler {
 //            tempMovie.setDirector(tempVal);
             director = tempVal;
         } else if (qName.equalsIgnoreCase("cat")) {
+//        	System.out.println(tempVal);
+        	if (tempVal.length() == 0) {
+        		tempVal = "Null";
+        	} else if (tempVal.length() != 0 && !Character.isLetterOrDigit(tempVal.charAt(tempVal.length() - 1))) {
+        		tempVal = tempVal.substring(0, tempVal.length() - 2);
+        	}
             tempMovie.setGenre(tempVal);
+            genres.add(tempVal);
         }
 
     }
@@ -116,9 +128,13 @@ public class XMLmovieParser extends DefaultHandler {
     public LinkedList<Movie> getMovies() {
         return movies;
     }
+    
+    public HashSet<String> getUniqueGenres() {
+    	return genres;
+    }
 
     public static void main(String[] args) {
         XMLmovieParser spe = new XMLmovieParser();
-        spe.runExample();
+        spe.runParser();
     }
 }

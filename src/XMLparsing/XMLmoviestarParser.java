@@ -26,7 +26,7 @@ public class XMLmoviestarParser extends DefaultHandler {
         movies = new HashMap<String, LinkedList<String>>();
     }
 
-    public void runExample() {
+    public void runParser() {
         parseDocument();
         printData();
     }
@@ -99,6 +99,6 @@ public class XMLmoviestarParser extends DefaultHandler {
 
     public static void main(String[] args) {
         XMLmoviestarParser spe = new XMLmoviestarParser();
-        spe.runExample();
+        spe.runParser();
     }
 }
