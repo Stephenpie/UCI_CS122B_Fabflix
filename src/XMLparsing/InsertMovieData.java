@@ -102,7 +102,7 @@ public class InsertMovieData {
 			connection.commit();
 			System.out.println("finish inserting stars: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
-//			HashMap<String, String> movieIdTitle = new HashMap<>();
+			HashMap<String, String> movieIdTitle = new HashMap<>();
 			
 			HashMap<String, HashMap<String, Integer>> existingMovies = new HashMap<>();
 			query = "SELECT id, title, year, director FROM movies";
@@ -112,7 +112,7 @@ public class InsertMovieData {
 				HashMap<String, Integer> dmovies = existingMovies.getOrDefault(result.getString("director"), new HashMap<String, Integer>());
 				dmovies.put(result.getString("title"), result.getInt("year"));
 				existingMovies.put(result.getString("director"), dmovies);
-//				movieIdTitle.put(result.getString("title"), result.getString("id"));
+				movieIdTitle.put(result.getString("title"), result.getString("id"));
 			}
 			System.out.println(existingMovies.size());
 			// Insert new genres, genres_in_movies, and movies
@@ -204,14 +204,15 @@ public class InsertMovieData {
 //			query = "INSERT INTO stars_in_movies(starId, movieId) SELECT * FROM (SELECT (SELECT id FROM stars "
 //					+ "WHERE name = ? LIMIT 1), (SELECT id FROM movies WHERE title = ? AND director = ? LIMIT 1)) AS tmp WHERE EXISTS (SELECT id FROM movies WHERE title = ? AND director = ? LIMIT 1)";
 			query = "INSERT INTO stars_in_movies(starId, movieId)  VALUES((SELECT id FROM stars "
-					+ "WHERE name = ? LIMIT 1), (SELECT id FROM movies WHERE title = ? AND director = ? LIMIT 1))";
+					+ "WHERE name = ? LIMIT 1), (SELECT ?))";
 			PreparedStatement sStatement = connection.prepareStatement(sQuery);
 			statement = connection.prepareStatement(query);
 			
 			count = 0;
 			for (String star : movieStars.keySet()) {
-				if (existingMovies.containsKey(movieStars.get(star).getDirector()) && 
-						existingMovies.get(movieStars.get(star).getDirector()).containsKey(movieStars.get(star).getTitle())) {
+//				if (existingMovies.containsKey(movieStars.get(star).getDirector()) && 
+//						existingMovies.get(movieStars.get(star).getDirector()).containsKey(movieStars.get(star).getTitle())) {
+				if (movieIdTitle.containsKey(movieStars.get(star).getTitle())) {
 					if (!existingStars.containsKey(star)) {
 						sStatement.setString(1, front + (++back));
 						sStatement.setString(2, star);
@@ -223,8 +224,9 @@ public class InsertMovieData {
 					}
 					
 					statement.setString(1, star);
-					statement.setString(2, movieStars.get(star).getTitle());
-					statement.setString(3, movieStars.get(star).getDirector());
+//					statement.setString(2, movieStars.get(star).getTitle());
+//					statement.setString(3, movieStars.get(star).getDirector());
+					statement.setString(2, movieIdTitle.get(movieStars.get(star).getTitle()));
 //					statement.setString(4, movieStars.get(star).getTitle());
 //					statement.setString(5, movieStars.get(star).getDirector());
 					statement.addBatch();
