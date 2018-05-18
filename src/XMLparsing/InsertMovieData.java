@@ -82,7 +82,7 @@ public class InsertMovieData {
 					statement.setString(1, starID);
 					statement.setString(2, s.getStarName());
 					statement.setNull(3, Types.INTEGER);
-					inconsistency += "star: " + s.getStarName() + ", no birth year";
+					inconsistency += "star: " + s.getStarName() + ", no birth year\n";
 				} else {
 					statement.setString(1, starID);
 					statement.setString(2, s.getStarName());
@@ -235,7 +235,7 @@ public class InsertMovieData {
 						System.out.println(count);
 					}
 				} else {
-					inconsistency += "no matching movie exist for star: " + star + ", " + movieStars.get(star);
+					inconsistency += "no matching movie exist for star: " + star + ", " + movieStars.get(star) + "\n";
 				}
 			}
 			sStatement.executeBatch();

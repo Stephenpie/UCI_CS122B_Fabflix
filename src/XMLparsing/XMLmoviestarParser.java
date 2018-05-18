@@ -96,7 +96,7 @@ public class XMLmoviestarParser extends DefaultHandler {
         	if (movieIDs.contains(id)) {
         		movies.put(tempVal, movie);
         	} else {
-        		System.out.println("no matching movie exists");
+        		System.out.println("no matching movie exists in db: " + movie);
         	}
         } else if (qName.equalsIgnoreCase("is")) { //director
         	director = tempVal.trim();

@@ -100,7 +100,7 @@ public class IndexServlet extends HttpServlet {
                 	}
                 	out.print("<td><a href=browse?genre=");
                 	String result = resultSet.getString("name");
-                	out.print(result.toLowerCase());
+                	out.print(result);//.toLowerCase());
                 	out.print("&numOfMovies=25&page=1&sortby=null>");
                 	out.print(result);
                 	out.println("</a></td>");
