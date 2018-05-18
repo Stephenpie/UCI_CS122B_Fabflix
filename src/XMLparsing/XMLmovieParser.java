@@ -145,5 +145,6 @@ public class XMLmovieParser extends DefaultHandler {
     public static void main(String[] args) {
         XMLmovieParser spe = new XMLmovieParser();
         spe.runParser();
+        spe.printData();
     }
 }

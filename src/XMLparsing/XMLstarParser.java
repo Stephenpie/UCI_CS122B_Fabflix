@@ -113,5 +113,6 @@ public class XMLstarParser extends DefaultHandler {
     public static void main(String[] args) {
         XMLstarParser spe = new XMLstarParser();
         spe.runParser();
+        spe.printData();
     }
 }

@@ -22,12 +22,11 @@ public class XMLmoviestarParser extends DefaultHandler {
     private String tempVal;
 
     //to maintain context
-    private String title;
-    private String mid;
     private String director;
     private LinkedList<String> stars;
     private HashSet<String> movieIDs;
     private Movie movie;
+    private String id;
 
     public XMLmoviestarParser(HashSet<String> movieIDs) {
     	this.movieIDs = movieIDs;
@@ -94,11 +93,16 @@ public class XMLmoviestarParser extends DefaultHandler {
         	movie.setTitle(tempVal.trim());
         	movie.setDirector(director);
         } else if (qName.equalsIgnoreCase("a")) { // star
-        	movies.put(tempVal, movie);
+        	if (movieIDs.contains(id)) {
+        		movies.put(tempVal, movie);
+        	} else {
+        		System.out.println("no matching movie exists");
+        	}
         } else if (qName.equalsIgnoreCase("is")) { //director
         	director = tempVal.trim();
         } else if (qName.equalsIgnoreCase("f")) {
-        	movie.setID(tempVal.trim());
+        	id = tempVal.trim();
+        	movie.setID(id);
         }
     }
     
@@ -109,5 +113,6 @@ public class XMLmoviestarParser extends DefaultHandler {
     public static void main(String[] args) {
         XMLmoviestarParser spe = new XMLmoviestarParser(new HashSet<>());
         spe.runParser();
+        spe.printData();
     }
 }

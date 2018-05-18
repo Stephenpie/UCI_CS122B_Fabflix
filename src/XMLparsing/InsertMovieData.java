@@ -17,6 +17,8 @@ public class InsertMovieData {
 	private static ResultSet resultSet;
 	
 	public static void main(String[] args) {
+		String inconsistency = "";
+		
 		long start = System.currentTimeMillis();
         XMLstarParser starParser = new XMLstarParser();
         starParser.runParser();
@@ -45,7 +47,9 @@ public class InsertMovieData {
 			// create database connection
 			Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 			
-			query = "SELECT DISTINCT name, birthYear FROM stars";
+//			HashMap<String, String> starIds = new HashMap<>();
+			
+			query = "SELECT DISTINCT name, birthYear, id FROM stars";
 			statement = connection.prepareStatement(query);
 			ResultSet result = statement.executeQuery();
 			HashMap<String , HashSet<Integer>> existingStars = new HashMap<>();
@@ -78,6 +82,7 @@ public class InsertMovieData {
 					statement.setString(1, starID);
 					statement.setString(2, s.getStarName());
 					statement.setNull(3, Types.INTEGER);
+					inconsistency += "star: " + s.getStarName() + ", no birth year";
 				} else {
 					statement.setString(1, starID);
 					statement.setString(2, s.getStarName());
@@ -97,7 +102,7 @@ public class InsertMovieData {
 			connection.commit();
 			System.out.println("finish inserting stars: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
-			HashMap<String, String> movieIdTitle = new HashMap<>();
+//			HashMap<String, String> movieIdTitle = new HashMap<>();
 			
 			HashMap<String, HashMap<String, Integer>> existingMovies = new HashMap<>();
 			query = "SELECT id, title, year, director FROM movies";
@@ -107,7 +112,7 @@ public class InsertMovieData {
 				HashMap<String, Integer> dmovies = existingMovies.getOrDefault(result.getString("director"), new HashMap<String, Integer>());
 				dmovies.put(result.getString("title"), result.getInt("year"));
 				existingMovies.put(result.getString("director"), dmovies);
-				movieIdTitle.put(result.getString("title"), result.getString("id"));
+//				movieIdTitle.put(result.getString("title"), result.getString("id"));
 			}
 			System.out.println(existingMovies.size());
 			// Insert new genres, genres_in_movies, and movies
@@ -155,7 +160,7 @@ public class InsertMovieData {
 	            	HashMap<String, Integer> dmovies = existingMovies.getOrDefault(m.getDirector(), new HashMap<String, Integer>());
 	            	dmovies.put(m.getTitle(), m.getYear());
 	            	existingMovies.put(m.getDirector(), dmovies);
-	            	movieIdTitle.put(m.getTitle(), m.getID()); // here
+//	            	movieIdTitle.put(m.getTitle(), m.getID()); // here
 	            	count++;
 	            	for (String genre : m.getGenres()) {
 	            		gStatement.setString(1, genre);
@@ -185,16 +190,6 @@ public class InsertMovieData {
 				uniqueStars.add(result.getString("name"));
 			}
 			
-			query = "SELECT DISTINCT title FROM movies";
-			statement = connection.prepareStatement(query);
-			result = statement.executeQuery();
-			HashSet<String> uniqueTitle = new HashSet<>();
-			while (result.next()) {
-				uniqueTitle.add(result.getString("title"));
-			}
-			System.out.println(uniqueTitle.size());
-			System.out.println("finish adding titles: " + " - " + (double) (System.currentTimeMillis() - start) / 1000);
-			
 			
 			query = "SELECT MAX(id) AS id FROM stars";
 			statement = connection.prepareStatement(query);
@@ -215,34 +210,32 @@ public class InsertMovieData {
 			
 			count = 0;
 			for (String star : movieStars.keySet()) {
-//				if (!existingStars.containsKey(star)) {
-//					sStatement.setString(1, front + (++back));
-//					sStatement.setString(2, star);
-//					sStatement.setNull(3, Types.INTEGER);
-//					sStatement.addBatch();
-//				}
-//				if (movieIdTitle.containsKey(movieStars.get(star).getTitle())) { // !!!movieIdTitle
 				if (existingMovies.containsKey(movieStars.get(star).getDirector()) && 
 						existingMovies.get(movieStars.get(star).getDirector()).containsKey(movieStars.get(star).getTitle())) {
+					if (!existingStars.containsKey(star)) {
+						sStatement.setString(1, front + (++back));
+						sStatement.setString(2, star);
+						sStatement.setNull(3, Types.INTEGER);
+						sStatement.addBatch();
+						HashSet<Integer> info = existingStars.getOrDefault(star, new HashSet<>());
+						info.add(0);
+						existingStars.put(star, info);
+					}
+					
 					statement.setString(1, star);
 					statement.setString(2, movieStars.get(star).getTitle());
 					statement.setString(3, movieStars.get(star).getDirector());
 //					statement.setString(4, movieStars.get(star).getTitle());
 //					statement.setString(5, movieStars.get(star).getDirector());
 					statement.addBatch();
-					
-					if (!existingStars.containsKey(star)) {
-						sStatement.setString(1, front + (++back));
-						sStatement.setString(2, star);
-						sStatement.setNull(3, Types.INTEGER);
-						sStatement.addBatch();
-					}
 					count++;
-				}
-				if (count % batchSize == 0) {
-					sStatement.executeBatch();
-					statement.executeBatch();
-					System.out.println(count);
+					if (count % batchSize == 0) {
+						sStatement.executeBatch();
+						statement.executeBatch();
+						System.out.println(count);
+					}
+				} else {
+					inconsistency += "no matching movie exist for star: " + star + ", " + movieStars.get(star);
 				}
 			}
 			sStatement.executeBatch();
@@ -252,50 +245,14 @@ public class InsertMovieData {
 			System.out.println("finish inserting stars_in_movies: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
 			// End of trying
-			
-			
-			// Insert stars_in_movies
-			connection.setAutoCommit(false);
-//			String sQuery = "INSERT INTO stars SELECT * FROM (SELECT ?, ?, ?) AS temp WHERE NOT EXISTS (SELECT id FROM stars WHERE name = ?)";
-//			String sQuery = "INSERT INTO stars VALUES(?, ?, ?)";
-//			query = "INSERT INTO stars_in_movies(starId, movieId) SELECT * FROM (SELECT (SELECT id FROM stars "
-//					+ "WHERE name = ? LIMIT 1), (SELECT id FROM movies WHERE title = ? LIMIT 1)) AS tmp WHERE EXISTS (SELECT id FROM movies WHERE title = ? LIMIT 1)";
-//			PreparedStatement sStatement = connection.prepareStatement(sQuery);
-//			statement = connection.prepareStatement(query);
-//			
-//			count = 0;
-//			for (String title : movieStars.keySet()) {
-//				for (String star : movieStars.get(title)) {
-//					if (!existingStars.containsKey(star)) {
-//						starID = front + (++back);
-//						sStatement.setString(1, starID);
-//						sStatement.setString(2, star);
-//						sStatement.setNull(3, Types.INTEGER);
-//						sStatement.setString(4, star);
-//					}
-//					statement.setString(1, star);
-//					statement.setString(2, title);
-//					statement.setString(3, title);
-//					count++;
-//				}
-//				sStatement.addBatch();
-//				statement.addBatch();
-//				if (count % batchSize == 0) {
-//					sStatement.executeBatch();
-//					statement.executeBatch();
-//				}
-//			}
-//			sStatement.executeBatch();
-//			statement.executeBatch();
-//			connection.commit();
-//			System.out.println("finish inserting stars_in_movies: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
-            
+		
 			
 	        resultSet.close();
 	        statement.close();
             connection.close();
             long end = System.currentTimeMillis();
             System.out.println(end - start);
+            System.out.println(inconsistency);
         } catch (Exception e) {
         	/*
     		 * After you deploy the WAR file through tomcat manager webpage,
