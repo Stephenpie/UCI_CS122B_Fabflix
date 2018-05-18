@@ -1,0 +1,11 @@
+1. We first use naive method to parse the data and insert into tables.
+
+2. Without checking for duplicate values, it was about 7 min.
+
+3. After adding techniques to check for duplicate values, it takes over 15 min.
+
+4. We use batch insert and use hashmap to store existing data in database.
+   With such technique, inserting data to stars, genres (resulting: 130), movies and genres_in_movies tables are super fast. 
+   For stars and genres, it takes no longer than 3 seconds. 
+   For movies (resulting: 21233) and genres_in_movies (resulting: 27796), it takes about 88 seconds. 
+   However, for inserting data into stars_in_movies table, it takes about 7 min to finish checking duplicates and inserting into stars (resulting: 75921) and stars_in_movies (resulting: 95172).
