@@ -5,7 +5,7 @@ public class Star {
     private int birthYear;
     
     public Star() {
-        
+        birthYear = 0;
     }
     
     public Star(String name, int birthYear) {

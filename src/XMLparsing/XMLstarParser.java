@@ -1,8 +1,8 @@
 package XMLparsing;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -14,7 +14,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class XMLstarParser extends DefaultHandler {
 
-    LinkedList<Star> stars;
+	HashSet<Star> stars;
 
     private String tempVal;
 
@@ -22,7 +22,7 @@ public class XMLstarParser extends DefaultHandler {
     private Star tempEmp;
 
     public XMLstarParser() {
-        stars = new LinkedList<Star>();
+        stars = new HashSet<Star>();
     }
 
     public void runParser() {
@@ -57,12 +57,11 @@ public class XMLstarParser extends DefaultHandler {
      */
     private void printData() {
 
-        System.out.println("No of Stars '" + stars.size() + "'.");
-
         Iterator<Star> it = stars.iterator();
         while (it.hasNext()) {
             System.out.println(it.next().toString());
         }
+        System.out.println("No of Stars '" + stars.size() + "'.");
     }
 
     //Event Handlers
@@ -87,10 +86,12 @@ public class XMLstarParser extends DefaultHandler {
             stars.add(tempEmp);
 
         } else if (qName.equalsIgnoreCase("stagename")) {
-            tempEmp.setName(tempVal);
+            tempEmp.setName(tempVal.trim());
         } else if (qName.equalsIgnoreCase("dob")) {
             if (isNumeric(tempVal)) {
-                tempEmp.setBirthYear(Integer.parseInt(tempVal));
+                tempEmp.setBirthYear(Integer.parseInt(tempVal.trim()));
+            } else {
+            	System.out.println("inconsitent star birthYear:" + tempVal);
             }
         }
 
@@ -105,7 +106,7 @@ public class XMLstarParser extends DefaultHandler {
         }
     }
     
-    public LinkedList<Star> getStars() {
+    public HashSet<Star> getStars() {
     	return stars;
     }
 

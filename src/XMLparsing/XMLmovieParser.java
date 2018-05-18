@@ -25,10 +25,12 @@ public class XMLmovieParser extends DefaultHandler {
     private String director;
     
     private HashSet<String> genres;
+    private HashSet<String> movieIDs;
 
     public XMLmovieParser() {
         movies = new LinkedList<Movie>();
         genres = new HashSet<>();
+        movieIDs = new HashSet<>();
     }
 
     public void runParser() {
@@ -78,7 +80,6 @@ public class XMLmovieParser extends DefaultHandler {
         if (qName.equalsIgnoreCase("film")) {
             //create a new instance of employee
             tempMovie = new Movie();
-//            tempEmp.setType(attributes.getValue("type"));
         }
     }
 
@@ -94,23 +95,28 @@ public class XMLmovieParser extends DefaultHandler {
             movies.add(tempMovie);
 
         } else if (qName.equalsIgnoreCase("t")) { //title
-            tempMovie.setTitle(tempVal);
+            tempMovie.setTitle(tempVal.trim());
         } else if (qName.equalsIgnoreCase("year")) { //year
-            if (isNumeric(tempVal)) {
-                tempMovie.setYear(Integer.parseInt(tempVal));
+            if (isNumeric(tempVal.trim())) {
+                tempMovie.setYear(Integer.parseInt(tempVal.trim()));
+            } else {
+            	System.out.println("inconsistent movie year:" + tempVal);
             }
         } else if (qName.equalsIgnoreCase("dirname")) { //director
 //            tempMovie.setDirector(tempVal);
-            director = tempVal;
+            director = tempVal.trim();
         } else if (qName.equalsIgnoreCase("cat")) { //genre
 //        	System.out.println(tempVal);
         	if (tempVal.length() == 0) {
+        		System.out.println("missing genre, genre set to null");
         		tempVal = "Null";
         	} else if (tempVal.length() != 0 && !Character.isLetterOrDigit(tempVal.charAt(tempVal.length() - 1))) {
         		tempVal = tempVal.substring(0, tempVal.length() - 2);
         	}
-            tempMovie.setGenre(tempVal);
-            genres.add(tempVal);
+            tempMovie.setGenre(tempVal.trim());
+            genres.add(tempVal.trim());
+        } else if (qName.equalsIgnoreCase("fid")) {
+        	movieIDs.add(tempVal.trim());
         }
 
     }
@@ -130,6 +136,10 @@ public class XMLmovieParser extends DefaultHandler {
     
     public HashSet<String> getUniqueGenres() {
     	return genres;
+    }
+    
+    public HashSet<String> getMovieIDs() {
+    	return movieIDs;
     }
 
     public static void main(String[] args) {

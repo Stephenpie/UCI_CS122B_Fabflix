@@ -2,6 +2,7 @@ package XMLparsing;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -14,21 +15,28 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class XMLmoviestarParser extends DefaultHandler {
 
-    HashMap<String, LinkedList<String>> movies;
+//    HashMap<String, LinkedList<String>> movies;
+//	HashMap<String, HashMap<String, LinkedList<String>>> movies;
+	HashMap<String, Movie> movies;
 
     private String tempVal;
 
     //to maintain context
     private String title;
+    private String mid;
+    private String director;
     private LinkedList<String> stars;
+    private HashSet<String> movieIDs;
+    private Movie movie;
 
-    public XMLmoviestarParser() {
-        movies = new HashMap<String, LinkedList<String>>();
+    public XMLmoviestarParser(HashSet<String> movieIDs) {
+    	this.movieIDs = movieIDs;
+        movies = new HashMap<>();
     }
 
     public void runParser() {
         parseDocument();
-//        printData();
+        printData();
     }
 
     private void parseDocument() {
@@ -58,14 +66,10 @@ public class XMLmoviestarParser extends DefaultHandler {
      */
     private void printData() {
 
-        System.out.println("No of Movies '" + movies.size() + "'.");
-
         for (String s:movies.keySet()) {
-            System.out.println(s);
-            for (String star : movies.get(s)) {
-                System.out.println(" --" + star);
-            }
+            System.out.println(s + ", " + movies.get(s));
         }
+        System.out.println("No of Movies '" + movies.size() + "'.");
     }
 
     //Event Handlers
@@ -73,7 +77,8 @@ public class XMLmoviestarParser extends DefaultHandler {
         //reset
         tempVal = "";
         if (qName.equalsIgnoreCase("filmc")) {
-            stars = new LinkedList<>();
+        	movie = new Movie();
+//            stars = new LinkedList<>();
         }
     }
 
@@ -84,21 +89,25 @@ public class XMLmoviestarParser extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
         if (qName.equalsIgnoreCase("filmc")) {
-            movies.put(title, stars);
-        } else if (qName.equalsIgnoreCase("t")) {
-            title = tempVal;
-        } else if (qName.equalsIgnoreCase("a")) {
-            stars.add(tempVal);
+        	
+        } else if (qName.equalsIgnoreCase("t")) { // title
+        	movie.setTitle(tempVal.trim());
+        	movie.setDirector(director);
+        } else if (qName.equalsIgnoreCase("a")) { // star
+        	movies.put(tempVal, movie);
+        } else if (qName.equalsIgnoreCase("is")) { //director
+        	director = tempVal.trim();
+        } else if (qName.equalsIgnoreCase("f")) {
+        	movie.setID(tempVal.trim());
         }
-
     }
     
-    public HashMap<String, LinkedList<String>> getMoviesStars() {
+    public HashMap<String, Movie> getMoviesStars() {
         return movies;
     }
 
     public static void main(String[] args) {
-        XMLmoviestarParser spe = new XMLmoviestarParser();
+        XMLmoviestarParser spe = new XMLmoviestarParser(new HashSet<>());
         spe.runParser();
     }
 }
