@@ -82,7 +82,7 @@ public class SearchSuggestion extends HttpServlet {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 JsonObject jso = new JsonObject();
-                jso.addProperty("title", resultSet.getString("title"));
+                jso.addProperty("value", resultSet.getString("title"));
                 jsonArray.add(jso);
                 if (jsonArray.size() == 10) {
                     break;
