@@ -51,7 +51,6 @@ public class SearchServlet extends HttpServlet {
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
         out.println("<script type=\"text/javascript\" src=\"index.js\"></script>");
-//        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</head>");
         try {
         		Class.forName("com.mysql.jdbc.Driver").newInstance();

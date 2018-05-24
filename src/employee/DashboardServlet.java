@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 
 import javax.servlet.annotation.WebServlet;
@@ -152,7 +153,7 @@ public class DashboardServlet extends HttpServlet {
 			        
 			
             String starName = request.getParameter("starname");
-            String birthYear = request.getParameter("birthYear");
+            String birthYear = request.getParameter("birthyear");
             if (starName != null) {
                 query = "SELECT MAX(id) AS id FROM stars";
                 statement = connection.prepareStatement(query);
@@ -168,7 +169,11 @@ public class DashboardServlet extends HttpServlet {
                 statement = connection.prepareStatement(query);
                 statement.setString(1, starID);
                 statement.setString(2, starName.trim());
-                statement.setString(3, birthYear);
+                if (birthYear.length() > 0) {
+                	statement.setInt(3, Integer.parseInt(birthYear));
+                } else {
+                	statement.setNull(3, Types.INTEGER);
+                }
                 int update = statement.executeUpdate();
                 out.println("Success!");
             }
