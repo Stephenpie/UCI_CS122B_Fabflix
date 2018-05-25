@@ -52,7 +52,7 @@ public class SearchSuggestion extends HttpServlet {
             String[] queries = query.split(" ");
             String arguments = "";
             for (int i = 0; i < queries.length; i++) {
-                arguments += "+?, ";
+                arguments += "? ";
             }
             String sqlQuery = "DROP TABLE IF EXISTS ft;";
             PreparedStatement statement = connection.prepareStatement(sqlQuery);
@@ -69,14 +69,13 @@ public class SearchSuggestion extends HttpServlet {
             sqlQuery = "INSERT INTO ft (title) SELECT title FROM movies";
             statement = connection.prepareStatement(sqlQuery);
             statement.executeUpdate();
+     
             
-            
-            
-            sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments.substring(0, arguments.length()-2));     
+            sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments);     
             System.out.println(sqlQuery);
             statement = connection.prepareStatement(sqlQuery);
             for (int i = 0; i < queries.length; i++) {
-                statement.setString(i+1, queries[i]);
+                statement.setString(i+1, "+" + queries[i] + "*");
             }
             // execute query
             ResultSet resultSet = statement.executeQuery();

@@ -1,3 +1,5 @@
+var cachedSuggestion = {};
+
 function validateForm() {
 	var form =  document.forms["advancedSearch"];
 	if (form["title"].value == "" && form["year"].value == "" && form["director"].value == "" && form["star"].value == "") {
@@ -7,27 +9,30 @@ function validateForm() {
 }
 
 function handleLookup(query, doneCallback) {
-	console.log("autocomplete initiated")
+	console.log("autocomplet initiated")
 	console.log("sending AJAX request to backend Java Servlet")
 	
 	// TODO: if you want to check past query results first, you can do it here
-	
-	// sending the HTTP GET request to the Java Servlet endpoint hero-suggestion
-	// with the query data
-	jQuery.ajax({
-		"method": "GET",
-		// generate the request url from the query.
-		// escape the query string to avoid errors caused by special characters 
-		"url": "suggestion?query=" + escape(query),
-		"success": function(data) {
-			// pass the data, query, and doneCallback function into the success handler
-			handleLookupAjaxSuccess(data, query, doneCallback) 
-		},
-		"error": function(errorData) {
-			console.log("lookup ajax error")
-			console.log(errorData)
-		}
-	})
+	if (cachedSuggestion[query] != null) {
+		doneCallback( { suggestions: cachedSuggestion[query] } );
+	} else {
+		// sending the HTTP GET request to the Java Servlet endpoint hero-suggestion
+		// with the query data
+		jQuery.ajax({
+			"method": "GET",
+			// generate the request url from the query.
+			// escape the query string to avoid errors caused by special characters 
+			"url": "suggestion?query=" + escape(query),
+			"success": function(data) {
+				// pass the data, query, and doneCallback function into the success handler
+				handleLookupAjaxSuccess(data, query, doneCallback) 
+			},
+			"error": function(errorData) {
+				console.log("lookup ajax error")
+				console.log(errorData)
+			}
+		})
+	}
 }
 
 function handleLookupAjaxSuccess(data, query, doneCallback) {
@@ -38,6 +43,8 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 	console.log(jsonData)
 	
 	// TODO: if you want to cache the result into a global variable you can do it here
+	cachedSuggestion[query] = jsonData;
+//	console.log(cachedSuggestion);
 
 	// call the callback function provided by the autocomplete library
 	// add "{suggestions: jsonData}" to satisfy the library response format according to
@@ -45,6 +52,14 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 	doneCallback( { suggestions: jsonData } );
 }
 
+function handleSelectSuggestion(suggestion) {
+	// TODO: jump to the specific result page based on the selected suggestion
+	
+	console.log("you select " + suggestion["value"])
+	var url = "movies?movie=" + suggestion["value"];
+	window.location.href = url;
+	console.log(url)
+}
 
 
 $('#query').autocomplete({
@@ -74,7 +89,8 @@ jQuery('#query').keypress(function(event) {
 })
 
 function handleSearch(value) {
-	window.location.href = "search?query=" + value + "&numOfMovies=25&page=1&sortby=null";
+//	window.location.href = "search?query=" + value + "&numOfMovies=25&page=1&sortby=null";
+	window.location.href = "movies?movie=" + value;
 }
 
 // bind pressing the button to a handler function
