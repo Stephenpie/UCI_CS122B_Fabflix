@@ -54,26 +54,29 @@ public class SearchSuggestion extends HttpServlet {
             for (int i = 0; i < queries.length; i++) {
                 arguments += "? ";
             }
-            String sqlQuery = "DROP TABLE IF EXISTS ft;";
-            PreparedStatement statement = connection.prepareStatement(sqlQuery);
-            statement.executeUpdate();
-            
-            sqlQuery = "CREATE TABLE ft (" + 
-                        "id INT AUTO_INCREMENT," + 
-                        "title text," + 
-                        "PRIMARY KEY (id)," + 
-                        "FULLTEXT (title));";
-            statement = connection.prepareStatement(sqlQuery);
-            statement.executeUpdate();
-            
-            sqlQuery = "INSERT INTO ft (title) SELECT title FROM movies";
-            statement = connection.prepareStatement(sqlQuery);
-            statement.executeUpdate();
+//            String sqlQuery = "DROP TABLE IF EXISTS ft;";
+//            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+//            statement.executeUpdate();
+//            
+//            sqlQuery = "CREATE TABLE ft (" + 
+//                        "id INT AUTO_INCREMENT," + 
+//                        "movieId VARCHAR(10)," +
+//                        "title text," + 
+//                        "year INT," +
+//                        "director VARCHAR(100)," +
+//                        "PRIMARY KEY (id)," + 
+//                        "FULLTEXT (title));";
+//            statement = connection.prepareStatement(sqlQuery);
+//            statement.executeUpdate();
+//            
+//            sqlQuery = "INSERT INTO ft (movieId, title, year, director) SELECT id, title, year, director FROM movies";
+//            statement = connection.prepareStatement(sqlQuery);
+//            statement.executeUpdate();
      
             
-            sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments);     
+            String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments);     
             System.out.println(sqlQuery);
-            statement = connection.prepareStatement(sqlQuery);
+            PreparedStatement statement = connection.prepareStatement(sqlQuery);
             for (int i = 0; i < queries.length; i++) {
                 statement.setString(i+1, "+" + queries[i] + "*");
             }
@@ -82,6 +85,9 @@ public class SearchSuggestion extends HttpServlet {
             while (resultSet.next()) {
                 JsonObject jso = new JsonObject();
                 jso.addProperty("value", resultSet.getString("title"));
+                JsonObject additionalDataJsonObject = new JsonObject();
+                additionalDataJsonObject.addProperty("category", "Movie");
+                jso.add("data", additionalDataJsonObject);
                 jsonArray.add(jso);
                 if (jsonArray.size() == 10) {
                     break;

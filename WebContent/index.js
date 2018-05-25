@@ -14,10 +14,12 @@ function handleLookup(query, doneCallback) {
 	
 	// TODO: if you want to check past query results first, you can do it here
 	if (cachedSuggestion[query] != null) {
+		console.log("using cache");
 		doneCallback( { suggestions: cachedSuggestion[query] } );
 	} else {
 		// sending the HTTP GET request to the Java Servlet endpoint hero-suggestion
 		// with the query data
+		console.log("new request");
 		jQuery.ajax({
 			"method": "GET",
 			// generate the request url from the query.
@@ -89,8 +91,8 @@ jQuery('#query').keypress(function(event) {
 })
 
 function handleSearch(value) {
-//	window.location.href = "search?query=" + value + "&numOfMovies=25&page=1&sortby=null";
-	window.location.href = "movies?movie=" + value;
+	window.location.href = "search?query=" + value + "&numOfMovies=25&page=1&sortby=null";
+//	window.location.href = "movies?movie=" + value;
 }
 
 // bind pressing the button to a handler function

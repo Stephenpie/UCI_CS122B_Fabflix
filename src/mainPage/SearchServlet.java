@@ -59,35 +59,56 @@ public class SearchServlet extends HttpServlet {
         		// declare statement
         		PreparedStatement statement = null;
         		// prepare query
-        		String mqlQuery = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT t2.id, t2.title, "
-        		        + "t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars FROM genres g, genres_in_movies gm, "
-        		        + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
-        		        + "FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId GROUP BY m.id) t1 WHERE "
-        		        + "t1.title LIKE ? OR t1.year = ? OR t1.director LIKE ? OR t1.stars LIKE ?) t2 "
-        		        + "WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId";
+        		String[] queries = query.split(" ");
+        		String arguments = "";
+        		for (int i = 0; i < queries.length; i++) {
+        		    arguments += "? ";
+        		}
+//        		String mqlQuery = String.format("SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating FROM (SELECT t2.id, t2.title, "
+//        		        + "t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars FROM genres g, genres_in_movies gm, "
+//        		        + "(SELECT * FROM (SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
+//        		        + "FROM movies m, stars s, stars_in_movies sm WHERE m.id = sm.movieId AND s.id = sm.starId GROUP BY m.id) t1 WHERE "
+//        		        + "t1.title LIKE %s) t2 "
+//        		        + "WHERE g.id = gm.genreId AND gm.movieId = t2.id GROUP BY t2.id) m LEFT JOIN ratings r ON m.id = r.movieId", arguments.substring(0, arguments.length()-1));
+        		
+        		String sqlQuery = String.format("SELECT * FROM (SELECT movieId, title, year, director FROM ft WHERE MATCH (title) "
+        		        + "AGAINST (%s IN BOOLEAN MODE)) m LEFT JOIN ratings r ON m.movieId = r.movieId", arguments.substring(0, arguments.length()-1));
         		if (!sort.equals("null")) {
         		    if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
-        		        mqlQuery += " ORDER BY m.title ASC LIMIT ? OFFSET ?";
+        		        sqlQuery += " ORDER BY m.title ASC LIMIT ? OFFSET ?";
+//        		        mqlQuery += " ORDER BY m.title ASC LIMIT ? OFFSET ?";
         		    } else if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("desc")) {
-        		        mqlQuery += " ORDER BY m.title DESC LIMIT ? OFFSET ?";
+//        		        mqlQuery += " ORDER BY m.title DESC LIMIT ? OFFSET ?";
+        		        sqlQuery += " ORDER BY m.title DESC LIMIT ? OFFSET ?";
         		    } else if (sort.substring(0, 6).equals("rating") && sort.substring(6, sort.length()).equals("asc")) {
-        		        mqlQuery += " ORDER BY r.rating ASC LIMIT ? OFFSET ?";
+//        		        mqlQuery += " ORDER BY r.rating ASC LIMIT ? OFFSET ?";
+        		        sqlQuery += " ORDER BY r.rating ASC LIMIT ? OFFSET ?";
         		    } else {
-        		        mqlQuery += " ORDER BY r.rating DESC LIMIT ? OFFSET ?";
+//        		        mqlQuery += " ORDER BY r.rating DESC LIMIT ? OFFSET ?";
+        		        sqlQuery += " ORDER BY r.rating DESC LIMIT ? OFFSET ?";
         		    }
         		} else {
-        		    mqlQuery += " LIMIT ? OFFSET ?";
+//        		    mqlQuery += " LIMIT ? OFFSET ?";
+        		    sqlQuery += " LIMIT ? OFFSET ?";
         		}
-        		
-        		statement = connection.prepareStatement(mqlQuery);
-        		statement.setString(1, "%" + query + "%");
-        		statement.setString(2, query);
-        		statement.setString(3, "%" + query + "%");
-        		statement.setString(4, "%" + query + "%");
-        		statement.setInt(5, Integer.parseInt(limit));
-        		statement.setInt(6, offset);
-        		// execute query
-        		ResultSet resultSet = statement.executeQuery();
+        		statement = connection.prepareStatement(sqlQuery);
+                int i = 0;
+                for (; i < queries.length; i++) {
+                    statement.setString(i+1, "+" + queries[i] + "*");
+                }
+                statement.setInt(++i, Integer.parseInt(limit));
+                statement.setInt(++i, offset);
+                ResultSet resultSet = statement.executeQuery();
+//        		System.out.println(mqlQuery);
+//        		statement = connection.prepareStatement(mqlQuery);
+//        		int i = 1;
+//        		for (; i<queries.length + 1; i++) {
+//        		    statement.setString(i, "+" + queries[i-1] + "*");
+//        		}
+//        		statement.setInt(i++, Integer.parseInt(limit));
+//        		statement.setInt(i, offset);
+//        		// execute query
+//        		ResultSet resultSet = statement.executeQuery();
 
         		out.println("<body class=\"loginBackgroundColor\">");
         		out.println("<div>");
@@ -135,55 +156,110 @@ public class SearchServlet extends HttpServlet {
         		out.println("<div>"); // container
         		out.println("<tbody>");
         		// add a row for every star result
-        		while (resultSet.next()) {
-        			// get a star from result set
-        			String movieID = resultSet.getString("id");
-        			String title = resultSet.getString("title");
-        			int year = resultSet.getInt("year");
-        			String director = resultSet.getString("director");
-        			String genres = resultSet.getString("genres");
-        			String stars = resultSet.getString("stars");
-        			Float rating = resultSet.getFloat("rating");
-        			
-        			String movieTitle = title;
-        			if (title.contains("&")) {
-                    	title = title.replace("&", "@@");
-                    }
-        			if (title.contains("+")) {
-                    	title = title.replace("+", "**");
-                    }
-        			out.println("<tr>");
-        			out.println("<td>" + "<a href='movies?movie=" + title.trim() + "'>" + movieTitle.trim() + "</td>");
-        			out.println("<td>" + year + "</td>");
-        			out.println("<td>" + director + "</td>");
-        			out.println("<td>" + genres + "</td>");
-
-        			out.print("<td>");
-        			String[] listOfStars = stars.split(",");
-        			StringBuilder sb = new StringBuilder();
-        			for (String s : listOfStars) {
-        				sb.append("<a href='stars?star=" + s.trim() + "'>"+ s.trim() + "</a>");
-        				sb.append(", ");
-        			}
-        			sb.deleteCharAt(sb.length() - 1);
-        			sb.deleteCharAt(sb.length() - 1);
-        			out.print(sb.toString());
-        			out.println("</td>");
-        			
-        			out.println("<td>" + rating + "</td>");
-        			String movie = movieID + "::" + title;
-//        			if (movie.contains("&")) {
-//                    	movie = movie.replace("&", "@#");
+//        		while (resultSet.next()) {
+//        			// get a star from result set
+//        			String movieID = resultSet.getString("id");
+//        			String title = resultSet.getString("title");
+//        			int year = resultSet.getInt("year");
+//        			String director = resultSet.getString("director");
+//        			String genres = resultSet.getString("genres");
+//        			String stars = resultSet.getString("stars");
+//        			Float rating = resultSet.getFloat("rating");
+//        			
+//        			String movieTitle = title;
+//        			if (title.contains("&")) {
+//                    	title = title.replace("&", "@@");
 //                    }
-        			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
-
-        			out.println("</tr>");
+//        			if (title.contains("+")) {
+//                    	title = title.replace("+", "**");
+//                    }
+//        			out.println("<tr>");
+//        			out.println("<td>" + "<a href='movies?movie=" + title.trim() + "'>" + movieTitle.trim() + "</td>");
+//        			out.println("<td>" + year + "</td>");
+//        			out.println("<td>" + director + "</td>");
+//        			out.println("<td>" + genres + "</td>");
+//
+//        			out.print("<td>");
+//        			String[] listOfStars = stars.split(",");
+//        			StringBuilder sb = new StringBuilder();
+//        			for (String s : listOfStars) {
+//        				sb.append("<a href='stars?star=" + s.trim() + "'>"+ s.trim() + "</a>");
+//        				sb.append(", ");
+//        			}
+//        			sb.deleteCharAt(sb.length() - 1);
+//        			sb.deleteCharAt(sb.length() - 1);
+//        			out.print(sb.toString());
+//        			out.println("</td>");
+//        			
+//        			out.println("<td>" + rating + "</td>");
+//        			String movie = movieID + "::" + title;
+////        			if (movie.contains("&")) {
+////                    	movie = movie.replace("&", "@#");
+////                    }
+//        			out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
+//
+//        			out.println("</tr>");
+//        		}
+        		while (resultSet.next()) {
+        		    String id = resultSet.getString("movieId");
+        		    String title = resultSet.getString("title");
+        		    String year = resultSet.getString("year");
+        		    String director = resultSet.getString("director");
+        		    String temp = "SELECT name FROM genres g, genres_in_movies gm WHERE gm.movieId = ? AND g.id = gm.genreId";
+        		    PreparedStatement ps = connection.prepareStatement(temp);
+        		    ps.setString(1, id);
+        		    ResultSet res = ps.executeQuery();
+        		    String genres = "";
+        		    while (res.next()) {
+        		        genres += res.getString("name") + ", ";
+        		    }
+        		    
+        		    String movieTitle = title;
+                    if (title.contains("&")) {
+                        title = title.replace("&", "@@");
+                    }
+                    if (title.contains("+")) {
+                        title = title.replace("+", "**");
+                    }
+        		    out.println("<tr>");
+        		    out.println("<td>" + "<a href='movies?movie=" + title.trim() + "'>" + movieTitle.trim() + "</td>");
+        		    out.println("<td>" + year + "</td>");
+        		    out.println("<td>" + director + "</td>");
+        		    out.println("<td>" + genres.substring(0, genres.length()-2) + "</td>");
+        		    out.print("<td>");
+        		    
+        		    temp = "SELECT name FROM stars s, stars_in_movies sm WHERE sm.movieId = ? AND s.id = sm.starId";
+        		    ps = connection.prepareStatement(temp);
+        		    ps.setString(1, id);
+        		    res = ps.executeQuery();
+        		    String sb = "";
+        		    while (res.next()) {
+        		        String s = res.getString("name");
+        		        sb += "<a href='stars?star=" + s + "'>" + s + "</a>, ";
+        		    }
+                    out.print(sb.substring(0, sb.length()-2));
+                    out.println("</td>");
+                    
+                    String rating = resultSet.getString("rating");
+//                    temp = "SELECT rating FROM ratings WHERE movieId = ?";
+//                    ps = connection.prepareStatement(temp);
+//                    ps.setString(1, id);
+//                    res = ps.executeQuery();
+//                    float rating = 0;
+//                    if (res.next()) {
+//                        rating = res.getFloat("rating");
+//                    }
+                    out.println("<td>" + rating + "</td>");
+                    
+                    String movie = id + "::" + title;
+                    out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
+                    out.println("</tr>");
         		}
         		out.println("</tbody>");
         		out.println("</div>");
         		out.println("</table>");
         		
-        		statement.setInt(6, nextOffset);
+        		statement.setInt(i, nextOffset);
         		ResultSet nextPage = statement.executeQuery();
         		
         		out.println("<div class=\"box\">");
