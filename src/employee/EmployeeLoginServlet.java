@@ -2,6 +2,7 @@ package employee;
 
 import com.google.gson.JsonObject;
 
+import login.RecaptchaConstants;
 import login.RecaptchaVerifyUtils;
 import login.User;
 
@@ -90,7 +91,7 @@ public class EmployeeLoginServlet extends HttpServlet {
                     String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
                     System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
                     
-                    RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+                    RecaptchaVerifyUtils.verify(gRecaptchaResponse, RecaptchaConstants.WEB_SECRET_KEY);
                     validated = true;
                 }
                 

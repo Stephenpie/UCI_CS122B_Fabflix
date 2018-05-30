@@ -13,9 +13,9 @@ public class RecaptchaVerifyUtils {
 	
     public static final String SITE_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
 	
-    public static void verify( String gRecaptchaResponse) throws Exception {
+    public static void verify(String gRecaptchaResponse, String secretKey) throws Exception {
         if (gRecaptchaResponse == null || gRecaptchaResponse.length() == 0) {
-        		throw new Exception("recaptcha verification failed: gRecaptchaResponse is null or empty");
+        		throw new Exception("recaptcha verification failed: g-recaptcha-response is null or empty");
         }
         
         URL verifyUrl = new URL(SITE_VERIFY_URL);
@@ -31,7 +31,7 @@ public class RecaptchaVerifyUtils {
 
 
         // Data will be sent to the server.
-        String postParams = "secret=" + RecaptchaConstants.SECRET_KEY + "&response=" + gRecaptchaResponse;
+        String postParams = "secret=" + secretKey + "&response=" + gRecaptchaResponse;
 
         // Send Request
         conn.setDoOutput(true);
