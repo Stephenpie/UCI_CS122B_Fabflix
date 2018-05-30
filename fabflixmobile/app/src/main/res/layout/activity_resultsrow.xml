@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="500px"
+    android:background="@android:color/holo_blue_light">
+
+    <TextView
+        android:id="@+id/title"
+        android:padding="10px"
+        android:textSize="40px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Peter Anteater"
+        android:textColor="@android:color/white"
+        />
+
+    <TextView
+        android:id="@+id/year"
+        android:padding="10px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1965"
+        android:textColor="@android:color/white"
+        />
+
+    <TextView
+        android:id="@+id/director"
+        android:padding="10px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="shirley"
+        android:textColor="@android:color/white"
+        />
+    <TextView
+        android:id="@+id/genres"
+        android:padding="10px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="love"
+        android:textColor="@android:color/white"
+        />
+
+    <TextView
+        android:id="@+id/stars"
+        android:padding="10px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lily P"
+        android:textColor="@android:color/white"
+        />
+
+</LinearLayout>
