@@ -97,37 +97,39 @@ public class SearchServlet extends HttpServlet {
           
             JsonArray searchResults = SearchHelper.getSearchResult(query, sort, limit, offset, true);
             int i = 0;
-            for (; i < searchResults.size() - 1; i++) {
-                JsonObject movie = searchResults.get(i).getAsJsonObject();
-                String id = movie.get("id").getAsString();
-                String title = movie.get("title").getAsString();
-                String year = movie.get("year").getAsString();
-                String director = movie.get("director").getAsString();
-                String genres = movie.get("genres").getAsString();
-                String stars = movie.get("stars").getAsString();
-                String rating = movie.get("rating").getAsString();
-                
-                String movieTitle = title;
-                if (title.contains("&")) {
-                    title = title.replace("&", "@@");
+            if (searchResults.size() > 1) {
+                for (; i < searchResults.size() - 1; i++) {
+                    JsonObject movie = searchResults.get(i).getAsJsonObject();
+                    String id = movie.get("id").getAsString();
+                    String title = movie.get("title").getAsString();
+                    String year = movie.get("year").getAsString();
+                    String director = movie.get("director").getAsString();
+                    String genres = movie.get("genres").getAsString();
+                    String stars = movie.get("stars").getAsString();
+                    String rating = movie.get("rating").getAsString();
+                    
+                    String movieTitle = title;
+                    if (title.contains("&")) {
+                        title = title.replace("&", "@@");
+                    }
+                    if (title.contains("+")) {
+                        title = title.replace("+", "**");
+                    }
+                    
+                    out.println("<tr>");
+                    out.println("<td>" + "<a href='movies?movie=" + title.trim() + "'>" + movieTitle.trim() + "</td>");
+                    out.println("<td>" + year + "</td>");
+                    out.println("<td>" + director + "</td>");
+                    out.println("<td>" + genres + "</td>");
+                    out.print("<td>");
+                    out.print(stars + "</td>");          
+                    out.println("<td>" + rating + "</td>");
+                    
+                    String movieCart = id + "::" + title;
+                    out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movieCart
+                            + "')\">Add to Cart</button></td>");
+                    out.println("</tr>");
                 }
-                if (title.contains("+")) {
-                    title = title.replace("+", "**");
-                }
-                
-                out.println("<tr>");
-                out.println("<td>" + "<a href='movies?movie=" + title.trim() + "'>" + movieTitle.trim() + "</td>");
-                out.println("<td>" + year + "</td>");
-                out.println("<td>" + director + "</td>");
-                out.println("<td>" + genres + "</td>");
-                out.print("<td>");
-                out.print(stars + "</td>");          
-                out.println("<td>" + rating + "</td>");
-                
-                String movieCart = id + "::" + title;
-                out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movieCart
-                        + "')\">Add to Cart</button></td>");
-                out.println("</tr>");
             }
             
             out.println("</tbody>");
