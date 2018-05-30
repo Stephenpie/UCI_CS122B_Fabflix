@@ -80,7 +80,13 @@ public class IndexServlet extends HttpServlet {
                 		"			    		<input type=\"text\" class=\"form-control\" placeholder=\"Search a movie...\" id=\"query\">\n" + 
                 		"			      		<span class=\"input-group-btn\"><button id=\"search\" class=\"btn btn-default\" type=\"submit\"><i class=\"glyphicon glyphicon-search\"></i></button>\n" + 
                 		"			      		</span>\n" + 
-                		"			    	</div>\n" + 
+//                		"			    	</div>\n" + 
+//                		"                   <div class=\"autocomplete-suggestions\">\n" +
+//                	    "                   <div class=\"autocomplete-group\"><strong>NHL</strong></div>\n" +
+//                	    "                   <div class=\"autocomplete-suggestion autocomplete-selected\">...</div>\n" +
+//                	    "                   <div class=\"autocomplete-suggestion\">...</div>\n" +
+//                	    "                   <div class=\"autocomplete-suggestion\">...</div>\n" +
+//                	    "                   </div>\n" +
                 		"			    </div>	\n" + 
                 		"	    	</div>\n" + 
                 		"    	</div>\n" + 

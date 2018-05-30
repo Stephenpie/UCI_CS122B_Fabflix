@@ -54,29 +54,29 @@ public class SearchSuggestion extends HttpServlet {
             for (int i = 0; i < queries.length; i++) {
                 arguments += "? ";
             }
-//            String sqlQuery = "DROP TABLE IF EXISTS ft;";
-//            PreparedStatement statement = connection.prepareStatement(sqlQuery);
-//            statement.executeUpdate();
-//            
-//            sqlQuery = "CREATE TABLE ft (" + 
-//                        "id INT AUTO_INCREMENT," + 
-//                        "movieId VARCHAR(10)," +
-//                        "title text," + 
-//                        "year INT," +
-//                        "director VARCHAR(100)," +
-//                        "PRIMARY KEY (id)," + 
-//                        "FULLTEXT (title));";
-//            statement = connection.prepareStatement(sqlQuery);
-//            statement.executeUpdate();
-//            
-//            sqlQuery = "INSERT INTO ft (movieId, title, year, director) SELECT id, title, year, director FROM movies";
-//            statement = connection.prepareStatement(sqlQuery);
-//            statement.executeUpdate();
+            String sqlQuery = "DROP TABLE IF EXISTS ft;";
+            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+            statement.executeUpdate();
+            
+            sqlQuery = "CREATE TABLE ft (" + 
+                        "id INT AUTO_INCREMENT," + 
+                        "movieId VARCHAR(10)," +
+                        "title text," + 
+                        "year INT," +
+                        "director VARCHAR(100)," +
+                        "PRIMARY KEY (id)," + 
+                        "FULLTEXT (title));";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.executeUpdate();
+            
+            sqlQuery = "INSERT INTO ft (movieId, title, year, director) SELECT id, title, year, director FROM movies";
+            statement = connection.prepareStatement(sqlQuery);
+            statement.executeUpdate();
      
             
-            String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments);     
+            sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments);     
             System.out.println(sqlQuery);
-            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+            statement = connection.prepareStatement(sqlQuery);
             for (int i = 0; i < queries.length; i++) {
                 statement.setString(i+1, "+" + queries[i] + "*");
             }
