@@ -77,16 +77,9 @@ public class IndexServlet extends HttpServlet {
                 		"	    		<div class=\"col-lg-4 center\"><font size=\"6\">FabFlix</font></div>\n" + 
                 		"	    		<div class=\"col-lg-4\">\n" + 
                 		"			    	<div class=\"input-group\">\n" + 
-                		"			    		<input type=\"text\" class=\"form-control\" placeholder=\"Search a movie...\" id=\"query\">\n" + 
+                		"			    		<input type=\"text\" class=\"form-control\" placeholder=\"Search a movie...\" id=\"query\" required>\n" + 
                 		"			      		<span class=\"input-group-btn\"><button id=\"search\" class=\"btn btn-default\" type=\"submit\"><i class=\"glyphicon glyphicon-search\"></i></button>\n" + 
                 		"			      		</span>\n" + 
-//                		"			    	</div>\n" + 
-//                		"                   <div class=\"autocomplete-suggestions\">\n" +
-//                	    "                   <div class=\"autocomplete-group\"><strong>NHL</strong></div>\n" +
-//                	    "                   <div class=\"autocomplete-suggestion autocomplete-selected\">...</div>\n" +
-//                	    "                   <div class=\"autocomplete-suggestion\">...</div>\n" +
-//                	    "                   <div class=\"autocomplete-suggestion\">...</div>\n" +
-//                	    "                   </div>\n" +
                 		"			    </div>	\n" + 
                 		"	    	</div>\n" + 
                 		"    	</div>\n" + 

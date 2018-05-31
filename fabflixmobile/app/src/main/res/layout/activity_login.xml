@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/red"
+    android:background="#ffb3b4"
     tools:context="edu.uci.ics.fabflixmobile.LoginActivity">
 
     <ScrollView

@@ -54,23 +54,23 @@ public class SearchSuggestion extends HttpServlet {
             for (int i = 0; i < queries.length; i++) {
                 arguments += "? ";
             }
-            String sqlQuery = "DROP TABLE IF EXISTS ft;";
+//            String sqlQuery = "DROP TABLE IF EXISTS ft;";
+//            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+//            statement.executeUpdate();
+//            
+//            sqlQuery = "CREATE TABLE ft (" + 
+//                        "id INT AUTO_INCREMENT," + 
+//                        "movieId VARCHAR(10)," +
+//                        "title text," + 
+//                        "year INT," +
+//                        "director VARCHAR(100)," +
+//                        "PRIMARY KEY (id)," + 
+//                        "FULLTEXT (title));";
+//            statement = connection.prepareStatement(sqlQuery);
+//            statement.executeUpdate();
+            
+            String sqlQuery = "INSERT INTO ft (movieId, title, year, director) SELECT id, title, year, director FROM movies";
             PreparedStatement statement = connection.prepareStatement(sqlQuery);
-            statement.executeUpdate();
-            
-            sqlQuery = "CREATE TABLE ft (" + 
-                        "id INT AUTO_INCREMENT," + 
-                        "movieId VARCHAR(10)," +
-                        "title text," + 
-                        "year INT," +
-                        "director VARCHAR(100)," +
-                        "PRIMARY KEY (id)," + 
-                        "FULLTEXT (title));";
-            statement = connection.prepareStatement(sqlQuery);
-            statement.executeUpdate();
-            
-            sqlQuery = "INSERT INTO ft (movieId, title, year, director) SELECT id, title, year, director FROM movies";
-            statement = connection.prepareStatement(sqlQuery);
             statement.executeUpdate();
      
             
@@ -94,6 +94,9 @@ public class SearchSuggestion extends HttpServlet {
                 }
             }
             
+            resultSet.close();
+            statement.close();
+            connection.close();
             
             response.getWriter().write(jsonArray.toString());
             return;
