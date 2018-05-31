@@ -28,9 +28,11 @@ public class SearchActivity extends ActionBarActivity {
     public void goToResults(View view) {
         Intent goToIntent = new Intent(this, ResultsActivity.class);
         String query = ((EditText) findViewById(R.id.query)).getText().toString();
-        goToIntent.putExtra("query", query);
-        goToIntent.putExtra("page", 1);
-        startActivity(goToIntent);
+        if (query.length() != 0) {
+            goToIntent.putExtra("query", query);
+            goToIntent.putExtra("page", 1);
+            startActivity(goToIntent);
+        }
     }
 
     public void onSearchClicked(View view) {

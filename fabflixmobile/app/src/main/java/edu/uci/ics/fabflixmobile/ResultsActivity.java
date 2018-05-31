@@ -35,56 +35,8 @@ public class ResultsActivity extends ActionBarActivity {
         query = bundle.getString("query");
         page = bundle.getInt("page");
         StringRequest searchRequest = setPage();
-//        if (query != null && !"".equals(query)) {
-//            String url = String.format("http://10.0.2.2:8080/cs122b-spring18-team-90/api/android-search?query=%s&numOfMovies=15&page=%s&sortby=null", query, page);
-//
-//            final ArrayList<Movie> movies = new ArrayList<>();
-//            final StringRequest searchRequest = new StringRequest(Request.Method.GET, url,
-//                    new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//
-//                            try {
-//                                Log.d("response", response);
-//                                int i = 0;
-//                                JSONArray jsonarray = new JSONArray(response);
-//                                for (; i < jsonarray.length() - 1; i++) {
-//                                    JSONObject jso = jsonarray.getJSONObject(i);
-//                                    movies.add(new Movie(jso.getString("id"), jso.getString("title"), jso.getString("year"),
-//                                            jso.getString("director"), jso.getString("genres"),
-//                                            jso.getString("stars")));
-//                                }
-//                                View prev = findViewById(R.id.prev);
-//                                View next = findViewById(R.id.next);
-//                                if (page > 1) {
-//                                    prev.setVisibility(View.VISIBLE);
-//                                }
-//                                if (jsonarray.getJSONObject(i).getBoolean("next")) {
-//                                    next.setVisibility(View.VISIBLE);
-//                                    Log.d("btn","next");
-//                                } else {
-//                                    Log.d("btn", "no next");
-//                                }
-//
-//
-//                                MovieListViewAdapter adapter = new MovieListViewAdapter(movies, getApplicationContext());
-//                                ListView listView = (ListView)findViewById(R.id.list);
-//                                listView.setAdapter(adapter);
-//                            } catch (Exception e) {
-//                                Log.d("Error", e.getMessage());
-//                            }
-//                        }
-//                    },
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            // error
-//                            Log.d("security.error", error.toString());
-//                        }
-//                    }
-//            );
 
-            queue.add(searchRequest);
+        queue.add(searchRequest);
 
     }
 

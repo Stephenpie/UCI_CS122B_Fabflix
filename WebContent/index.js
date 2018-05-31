@@ -91,8 +91,11 @@ jQuery('#query').keypress(function(event) {
 })
 
 function handleSearch(value) {
-	window.location.href = "search?query=" + value + "&numOfMovies=25&page=1&sortby=null";
-//	window.location.href = "movies?movie=" + value;
+	if (value == "") {
+		window.alert("Please enter something to search!");
+	} else {
+		window.location.href = "search?query=" + value + "&numOfMovies=25&page=1&sortby=null";
+	}
 }
 
 // bind pressing the button to a handler function

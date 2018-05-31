@@ -140,7 +140,7 @@ public class SearchServlet extends HttpServlet {
             if (offset != 0) {
                 out.println("<button type=\"button\" class=\"btn btn-info\" id=\"prev\">Prev</button>");
             }
-            if (searchResults.size() > 1 && searchResults.get(i).getAsJsonObject().get("next").getAsBoolean()) {
+            if (searchResults.get(i).getAsJsonObject().get("next").getAsBoolean()) {
                 out.println("<button type=\"button\" class=\"btn btn-info\" id=\"next\">Next</button>");
             }
 
