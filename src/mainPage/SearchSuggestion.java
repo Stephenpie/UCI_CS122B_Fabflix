@@ -68,15 +68,15 @@ public class SearchSuggestion extends HttpServlet {
 //                        "FULLTEXT (title));";
 //            statement = connection.prepareStatement(sqlQuery);
 //            statement.executeUpdate();
-            
-            String sqlQuery = "INSERT INTO ft (movieId, title, year, director) SELECT id, title, year, director FROM movies";
-            PreparedStatement statement = connection.prepareStatement(sqlQuery);
-            statement.executeUpdate();
+//            
+//            sqlQuery = "INSERT INTO ft (movieId, title, year, director) SELECT id, title, year, director FROM movies";
+//            statement = connection.prepareStatement(sqlQuery);
+//            statement.executeUpdate();
      
             
-            sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments);     
+            String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments);     
             System.out.println(sqlQuery);
-            statement = connection.prepareStatement(sqlQuery);
+            PreparedStatement statement = connection.prepareStatement(sqlQuery);
             for (int i = 0; i < queries.length; i++) {
                 statement.setString(i+1, "+" + queries[i] + "*");
             }
