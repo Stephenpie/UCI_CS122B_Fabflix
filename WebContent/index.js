@@ -9,8 +9,7 @@ function validateForm() {
 }
 
 function handleLookup(query, doneCallback) {
-	console.log("autocomplet initiated")
-	console.log("sending AJAX request to backend Java Servlet")
+	console.log("autocomplete initiated")
 	
 	// TODO: if you want to check past query results first, you can do it here
 	if (cachedSuggestion[query] != null) {
@@ -19,6 +18,7 @@ function handleLookup(query, doneCallback) {
 	} else {
 		// sending the HTTP GET request to the Java Servlet endpoint hero-suggestion
 		// with the query data
+		console.log("sending AJAX request to backend Java Servlet")
 		console.log("new request");
 		jQuery.ajax({
 			"method": "GET",

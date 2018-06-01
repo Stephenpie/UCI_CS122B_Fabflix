@@ -74,7 +74,7 @@ public class SearchSuggestion extends HttpServlet {
 //            statement.executeUpdate();
      
             
-            String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE)", arguments);     
+            String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE) LIMIT 10", arguments);     
             System.out.println(sqlQuery);
             PreparedStatement statement = connection.prepareStatement(sqlQuery);
             for (int i = 0; i < queries.length; i++) {
@@ -89,9 +89,9 @@ public class SearchSuggestion extends HttpServlet {
                 additionalDataJsonObject.addProperty("category", "Movie");
                 jso.add("data", additionalDataJsonObject);
                 jsonArray.add(jso);
-                if (jsonArray.size() == 10) {
-                    break;
-                }
+//                if (jsonArray.size() == 10) {
+//                    break;
+//                }
             }
             
             resultSet.close();
