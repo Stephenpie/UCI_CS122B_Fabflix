@@ -73,7 +73,7 @@ public class LoginActivity extends ActionBarActivity {
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
 
         // 10.0.2.2 is the host machine when running the android emulator
-        final StringRequest afterLoginRequest = new StringRequest(Request.Method.GET, "https://10.0.2.2:8443/cs122b-spring18-team-90/api/username",
+        final StringRequest afterLoginRequest = new StringRequest(Request.Method.GET, "https://13.57.251.1:8443/cs122b-spring18-team-90/api/username",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -92,7 +92,7 @@ public class LoginActivity extends ActionBarActivity {
         );
 
 
-        final StringRequest loginRequest = new StringRequest(Request.Method.POST, "https://10.0.2.2:8443/cs122b-spring18-team-90/api/android-login",
+        final StringRequest loginRequest = new StringRequest(Request.Method.POST, "https://13.57.251.1:8443/cs122b-spring18-team-90/api/android-login",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

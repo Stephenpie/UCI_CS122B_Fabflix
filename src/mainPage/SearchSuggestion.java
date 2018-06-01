@@ -74,12 +74,31 @@ public class SearchSuggestion extends HttpServlet {
 //            statement.executeUpdate();
      
             
-            String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE) LIMIT 10", arguments);     
+//            String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE) LIMIT 10", arguments);     
+//            System.out.println(sqlQuery);
+//            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+//            for (int i = 0; i < queries.length; i++) {
+//                statement.setString(i+1, "+" + queries[i] + "*");
+//            }
+            String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE) OR "
+                    + "(SELECT edrec(?, title, ?) = 1) LIMIT 10", arguments);
             System.out.println(sqlQuery);
             PreparedStatement statement = connection.prepareStatement(sqlQuery);
-            for (int i = 0; i < queries.length; i++) {
+            int i = 0;
+            for (; i < queries.length; i++) {
                 statement.setString(i+1, "+" + queries[i] + "*");
             }
+            statement.setString(++i, query);
+            if (query.length() < 4) {
+                statement.setInt(++i,  0);
+            } else if (query.length() < 7) {
+                statement.setInt(++i, 1);
+            } else if (query.length() < 13) {
+                statement.setInt(++i, 2);
+            } else {
+                statement.setInt(++i, 3);
+            }
+
             // execute query
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {

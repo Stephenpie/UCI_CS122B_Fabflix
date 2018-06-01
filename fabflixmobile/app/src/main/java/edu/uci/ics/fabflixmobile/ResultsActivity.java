@@ -42,7 +42,7 @@ public class ResultsActivity extends ActionBarActivity {
 
     public StringRequest setPage() {
         if (query != null && !"".equals(query)) {
-            String url = String.format("https://10.0.2.2:8443/cs122b-spring18-team-90/api/android-search?query=%s&numOfMovies=15&page=%s&sortby=null", query, page);
+            String url = String.format("https://13.57.251.1:8443/cs122b-spring18-team-90/api/android-search?query=%s&numOfMovies=15&page=%s&sortby=null", query, page);
 
             final ArrayList<Movie> movies = new ArrayList<>();
             final StringRequest searchRequest = new StringRequest(Request.Method.GET, url,
@@ -64,9 +64,13 @@ public class ResultsActivity extends ActionBarActivity {
                                 View next = findViewById(R.id.next);
                                 if (page > 1) {
                                     prev.setVisibility(View.VISIBLE);
+                                } else {
+                                    prev.setVisibility(View.INVISIBLE);
                                 }
                                 if (jsonarray.getJSONObject(i).getBoolean("next")) {
                                     next.setVisibility(View.VISIBLE);
+                                } else {
+                                    next.setVisibility(View.INVISIBLE);
                                 }
 
 

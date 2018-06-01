@@ -35,7 +35,7 @@ public class SearchHelper {
             }
 
             String sqlQuery = String.format("SELECT * FROM (SELECT movieId, title, year, director FROM ft WHERE MATCH (title) "
-                    + "AGAINST (%s IN BOOLEAN MODE)) m LEFT JOIN ratings r ON m.movieId = r.movieId", arguments.substring(0, arguments.length()-1));
+                    + "AGAINST (%s IN BOOLEAN MODE) OR (SELECT edrec(?, title, ?) = 1)) m LEFT JOIN ratings r ON m.movieId = r.movieId", arguments.substring(0, arguments.length()-1));
             if (!sort.equals("null")) {
                 if (sort.substring(0, 5).equals("title") && sort.substring(5, sort.length()).equals("asc")) {
                     sqlQuery += " ORDER BY m.title ASC LIMIT ? OFFSET ?";
@@ -54,6 +54,18 @@ public class SearchHelper {
             for (; i < queries.length; i++) {
                 statement.setString(i+1, "+" + queries[i] + "*");
             }
+            
+            statement.setString(++i, query);
+            if (query.length() < 4) {
+                statement.setInt(++i,  0);
+            } else if (query.length() < 7) {
+                statement.setInt(++i, 1);
+            } else if (query.length() < 13) {
+                statement.setInt(++i, 2);
+            } else {
+                statement.setInt(++i, 3);
+            }
+            
             statement.setInt(++i, limit);
             statement.setInt(++i, offset);
             ResultSet resultSet = statement.executeQuery();
