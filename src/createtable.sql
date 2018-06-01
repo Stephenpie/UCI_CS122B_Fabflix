@@ -68,3 +68,13 @@ create table employees(
 	password varchar(20) not null,
 	fullname varchar(100)
 );
+
+create table ft (
+	id INT AUTO_INCREMENT,
+	movieId VARCHAR(10),
+	title text,
+	year INT,
+	director VARCHAR(100),
+	PRIMARY KEY (id),
+	FULLTEXT (title)
+);
