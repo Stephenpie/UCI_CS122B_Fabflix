@@ -1,17 +1,17 @@
 package mainPage;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class SearchHelper {
-    private static String loginUser = "root";
-    private static String loginPasswd = "tangwang";
-    private static String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
     private static PreparedStatement statement = null;
     
     public SearchHelper() {
@@ -23,9 +23,14 @@ public class SearchHelper {
         JsonArray jsonArray = new JsonArray();
         
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            // create database connection
-            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
                         
             // prepare query
             String[] queries = query.split(" ");
@@ -49,7 +54,7 @@ public class SearchHelper {
             } else {
                 sqlQuery += " LIMIT ? OFFSET ?";
             }
-            statement = connection.prepareStatement(sqlQuery);
+            statement = dbcon.prepareStatement(sqlQuery);
             int i = 0;
             for (; i < queries.length; i++) {
                 statement.setString(i+1, "+" + queries[i] + "*");
@@ -81,7 +86,7 @@ public class SearchHelper {
                 }
                 
                 String temp = "SELECT name FROM genres g, genres_in_movies gm WHERE gm.movieId = ? AND g.id = gm.genreId";
-                PreparedStatement ps = connection.prepareStatement(temp);
+                PreparedStatement ps = dbcon.prepareStatement(temp);
                 ps.setString(1, id);
                 ResultSet res = ps.executeQuery();
                 String genres = "";
@@ -90,7 +95,7 @@ public class SearchHelper {
                 }
                 
                 temp = "SELECT name FROM stars s, stars_in_movies sm WHERE sm.movieId = ? AND s.id = sm.starId";
-                ps = connection.prepareStatement(temp);
+                ps = dbcon.prepareStatement(temp);
                 ps.setString(1, id);
                 res = ps.executeQuery();
                 String stars = "";
@@ -127,7 +132,7 @@ public class SearchHelper {
             
             resultSet.close();
             statement.close();
-            connection.close();
+            dbcon.close();
         } catch (Exception e) {
             /*
              * After you deploy the WAR file through tomcat manager webpage,

@@ -8,11 +8,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
+
 import login.User;
 
 @WebServlet(name = "ConfirmationServlet", urlPatterns = "/confirmation")
@@ -35,14 +39,15 @@ public class ConfirmationServlet extends HttpServlet {
         out.println("<script src=\"movielist.js\"></script>");
         out.println("</head>");
         
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
-        
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            // create database connection
-            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
             
             // prepare query     
             String userID = ((User) session.getAttribute("user")).getUserID();
@@ -63,7 +68,7 @@ public class ConfirmationServlet extends HttpServlet {
             out.println("<tbody>");
         
             String query = "SELECT MAX(id) AS id FROM sales WHERE customerId = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = dbcon.prepareStatement(query);
             statement.setString(1, userID);
             ResultSet rid = statement.executeQuery();
             int id = 0;
@@ -105,7 +110,7 @@ public class ConfirmationServlet extends HttpServlet {
             cart.clear();
             rid.close();
             statement.close();
-            connection.close();
+            dbcon.close();
             
         } catch (Exception e) {
             /*

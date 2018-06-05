@@ -3,24 +3,23 @@ package mainPage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 @WebServlet(name = "index", urlPatterns = "/index.html")
 public class IndexServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         // set response mime type
         response.setContentType("text/html"); 
@@ -60,12 +59,18 @@ public class IndexServlet extends HttpServlet {
         
         
         try {
-                Class.forName("com.mysql.jdbc.Driver").newInstance();
-                // create database connection
-                Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
+            
                 // prepare query  
                 String mqlQuery = "SELECT * FROM genres ORDER BY genres.name";                
-                PreparedStatement statement = connection.prepareStatement(mqlQuery);
+                PreparedStatement statement = dbcon.prepareStatement(mqlQuery);
                 // execute query
                 ResultSet resultSet = statement.executeQuery();
 
@@ -215,7 +220,7 @@ public class IndexServlet extends HttpServlet {
                 
                 resultSet.close();
                 statement.close();
-                connection.close();
+                dbcon.close();
                 
         } catch (Exception e) {
                 /*

@@ -4,16 +4,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 @WebServlet(urlPatterns = "/fabflix/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -51,31 +53,38 @@ public class DashboardServlet extends HttpServlet {
         out.println("</head>");
 
         out.println("<body>");
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            // create database connection
-            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-
             out.println("<body class=\"loginBackgroundColor\">");
             out.println("<h2 class=\"text-center\">Employee Dashboard</h2>");
             
-            out.println("<div class=\"container\">");
-            	out.println("<div class=\"row\">");
-            		out.println("<div class=\"col-lg-6\">");
-			            out.println("<h3 \">Add new movie</h3>");
-			            out.println("<form id=\"add_movie\" method=\"get\" action=\"\">");
-			            out.println("<label><b>Title</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie title\" name=\"title\" required>");
-			            out.println("<br><label><b>Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter movie year\" name=\"year\" required>");
-			            out.println("<br><label><b>Director</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter director\" name=\"director\" required>");
-			            out.println("<br><label><b>Star</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie star\" name=\"mstar\" required>");
-			            out.println("<br><label><b>Genre</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie genre\" name=\"genre\" required>");
-			            out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
-			        out.println("</div>");
+			out.println("<div class=\"container\">");
+			out.println("<div class=\"row\">");
+			out.println("<div class=\"col-lg-6\">");
+			out.println("<h3 \">Add new movie</h3>");
+			out.println("<form id=\"add_movie\" method=\"get\" action=\"\">");
+			out.println(
+					"<label><b>Title</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie title\" name=\"title\" required>");
+			out.println(
+					"<br><label><b>Year</b></label><input class=\"form-control\" type=\"number\" placeholder=\"Enter movie year\" name=\"year\" required>");
+			out.println(
+					"<br><label><b>Director</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter director\" name=\"director\" required>");
+			out.println(
+					"<br><label><b>Star</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie star\" name=\"mstar\" required>");
+			out.println(
+					"<br><label><b>Genre</b></label><input class=\"form-control\" type=\"text\" placeholder=\"Enter movie genre\" name=\"genre\" required>");
+			out.println("<br><input class=\"btn btn-info\" type=\"submit\" value=\"add\"></form>");
+			out.println("</div>");
             
+			Context initCtx = new InitialContext();
+
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+			// Look up our data source
+			DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+			Connection dbcon = ds.getConnection();
+			
             String query = "";
             PreparedStatement statement = null;
             ResultSet res = null;
@@ -86,7 +95,7 @@ public class DashboardServlet extends HttpServlet {
             String mgenre = request.getParameter("genre");
             if (mtitle != null) {
                 query = "SELECT * FROM movies WHERE title = ? AND year = ? AND director = ?";
-                statement = connection.prepareStatement(query);
+                statement = dbcon.prepareStatement(query);
                 statement.setString(1, mtitle.trim());
                 statement.setString(2, myear.trim());
                 statement.setString(3, mdirector.trim());
@@ -95,15 +104,15 @@ public class DashboardServlet extends HttpServlet {
                     out.println("Movie already exist! Try to add a NEW one!");
                 } else { // add new movie
                     query = dropStoredProcedure();
-                    statement = connection.prepareStatement(query);
+                    statement = dbcon.prepareStatement(query);
                     statement.execute();
                     
                     query = createStoredProcedure();
-                    statement = connection.prepareStatement(query);
+                    statement = dbcon.prepareStatement(query);
                     statement.execute();
                     
                     query = "SELECT MAX(id) AS id FROM movies";
-                    statement = connection.prepareStatement(query);
+                    statement = dbcon.prepareStatement(query);
                     res = statement.executeQuery();
                     res.next();
                     String movieID = res.getString("id");
@@ -113,7 +122,7 @@ public class DashboardServlet extends HttpServlet {
                     System.out.println("movieID = " + movieID);
                     
                     query = "SELECT * FROM stars WHERE name = ?";
-                    statement = connection.prepareStatement(query);
+                    statement = dbcon.prepareStatement(query);
                     statement.setString(1, mstar);
                     res = statement.executeQuery();
                     String mstarID;
@@ -121,7 +130,7 @@ public class DashboardServlet extends HttpServlet {
                         mstarID = res.getString("id");
                     } else {
                         query = "SELECT MAX(id) AS id FROM stars";
-                        statement = connection.prepareStatement(query);
+                        statement = dbcon.prepareStatement(query);
                         res = statement.executeQuery();
                         res.next();
                         mstarID = res.getString("id");
@@ -130,7 +139,7 @@ public class DashboardServlet extends HttpServlet {
                         System.out.println(mstarID);
                     }
                     
-                    CallableStatement callStatement = connection.prepareCall("{call add_movie(?,?,?,?,?,?,?)}"); 
+                    CallableStatement callStatement = dbcon.prepareCall("{call add_movie(?,?,?,?,?,?,?)}"); 
                     callStatement.setString(1, movieID);
                     callStatement.setString(2, mtitle);
                     callStatement.setString(3, myear);
@@ -156,7 +165,7 @@ public class DashboardServlet extends HttpServlet {
             String birthYear = request.getParameter("birthyear");
             if (starName != null) {
                 query = "SELECT MAX(id) AS id FROM stars";
-                statement = connection.prepareStatement(query);
+                statement = dbcon.prepareStatement(query);
                 res = statement.executeQuery();
                 res.next();
                 String starID = res.getString("id");
@@ -166,7 +175,7 @@ public class DashboardServlet extends HttpServlet {
                 System.out.println(starID);
                 
                 query = "INSERT INTO stars (id, name, birthYear) VALUES(?, ?, ?)";
-                statement = connection.prepareStatement(query);
+                statement = dbcon.prepareStatement(query);
                 statement.setString(1, starID);
                 statement.setString(2, starName.trim());
                 if (birthYear.length() > 0) {
@@ -181,7 +190,7 @@ public class DashboardServlet extends HttpServlet {
 		    out.println("</div>");
 		    out.println("</div>");
             query = "SHOW tables";
-            statement = connection.prepareStatement(query);
+            statement = dbcon.prepareStatement(query);
             res = statement.executeQuery();
             ArrayList<String> tables = new ArrayList<>();
             while (res.next()) {
@@ -200,7 +209,7 @@ public class DashboardServlet extends HttpServlet {
                 out.println("<table id=\"resulttable\" class=\"table table-bordered table-hover table-striped\">");
     
                 query = "SHOW fields FROM " + table;
-                statement = connection.prepareStatement(query);
+                statement = dbcon.prepareStatement(query);
                 res = statement.executeQuery();
     
                 out.println(String.format("<h4>%s</h4>", table));
@@ -234,7 +243,7 @@ public class DashboardServlet extends HttpServlet {
 
             res.close();
             statement.close();
-            connection.close();
+            dbcon.close();
 
         } catch (Exception e) {
             /*
