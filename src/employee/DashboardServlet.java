@@ -81,7 +81,7 @@ public class DashboardServlet extends HttpServlet {
 			Context envCtx = (Context) initCtx.lookup("java:comp/env");
 
 			// Look up our data source
-			DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+			DataSource ds = (DataSource) envCtx.lookup("master/moviedb");
 
 			Connection dbcon = ds.getConnection();
 			
