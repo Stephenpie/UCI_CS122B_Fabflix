@@ -1,5 +1,6 @@
 package mainPage;
 
+import timer.WriteOut;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -51,6 +52,10 @@ public class AdvancedSearchServlet extends HttpServlet {
 //        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</head>");
         try {
+        	// for JDBC time
+        	WriteOut W = new WriteOut();
+        	W.TJstartTime = System.nanoTime();
+        	
             Context initCtx = new InitialContext();
 
             Context envCtx = (Context) initCtx.lookup("java:comp/env");
@@ -59,6 +64,12 @@ public class AdvancedSearchServlet extends HttpServlet {
             DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
 
             Connection dbcon = ds.getConnection();
+            
+            W.TJendTime= System.nanoTime();
+            W.writeTofileJdbc();
+            
+            // for query time
+            W.TSstartTime = System.nanoTime();
                 // prepare query
                 
                 String mqlQuery = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating "
@@ -253,6 +264,8 @@ public class AdvancedSearchServlet extends HttpServlet {
                 out.println("<script src=\"movielist.js\"></script>");
                 out.println("</body>");
                 
+                W.TSendTime = System.nanoTime();
+                W.writeTofileSearch();
                 resultSet.close();
                 statement.close();
                 dbcon.close();
