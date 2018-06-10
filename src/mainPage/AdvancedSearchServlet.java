@@ -27,6 +27,10 @@ public class AdvancedSearchServlet extends HttpServlet {
         
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
+        
+        WriteOut W = new WriteOut();
+        // for query time
+        W.TSstartTime = System.nanoTime();
 
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
@@ -53,7 +57,6 @@ public class AdvancedSearchServlet extends HttpServlet {
         out.println("</head>");
         try {
         	// for JDBC time
-        	WriteOut W = new WriteOut();
         	W.TJstartTime = System.nanoTime();
         	
             Context initCtx = new InitialContext();
@@ -65,11 +68,6 @@ public class AdvancedSearchServlet extends HttpServlet {
 
             Connection dbcon = ds.getConnection();
             
-            W.TJendTime= System.nanoTime();
-            W.writeTofileJdbc();
-            
-            // for query time
-            W.TSstartTime = System.nanoTime();
                 // prepare query
                 
                 String mqlQuery = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating "
@@ -148,6 +146,9 @@ public class AdvancedSearchServlet extends HttpServlet {
                 statement.setInt(j, offset);
                 // execute query
                 ResultSet resultSet = statement.executeQuery();
+                
+                W.TJendTime= System.nanoTime();
+                W.writeTofileJdbc();
 
                 out.println("<body class=\"loginBackgroundColor\">");
                 out.println("<div>");
@@ -264,11 +265,12 @@ public class AdvancedSearchServlet extends HttpServlet {
                 out.println("<script src=\"movielist.js\"></script>");
                 out.println("</body>");
                 
-                W.TSendTime = System.nanoTime();
-                W.writeTofileSearch();
                 resultSet.close();
                 statement.close();
                 dbcon.close();
+                
+                W.TSendTime = System.nanoTime();
+                W.writeTofileSearch();
                 
         } catch (Exception e) {
                 /*

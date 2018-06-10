@@ -22,7 +22,7 @@ public class WriteOut {
 	
 	public void writeTofileSearch(){
 		try {
-			p.print("TS: " + String.valueOf(this.TSendTime - this.TSstartTime) + "\n");
+			p.print(String.valueOf(this.TSendTime - this.TSstartTime) + "\n");
 			p.close();
 			out.close();
 		} catch(Exception e){
@@ -31,6 +31,6 @@ public class WriteOut {
 	}
 	
 	public void writeTofileJdbc(){
-		p.print("TJ: " + String.valueOf(this.TJendTime - this.TJstartTime) + "   ");	
+		p.print(String.valueOf(this.TJendTime - this.TJstartTime) + "   ");	
 	}
 }
