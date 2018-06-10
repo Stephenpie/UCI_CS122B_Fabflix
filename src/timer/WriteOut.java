@@ -8,17 +8,21 @@ public class WriteOut {
 	public long TSstartTime;
 	public long TJendTime;
 	public long TSendTime;
+	FileOutputStream out;
+	PrintStream p;
+	
+	public WriteOut() {
+		try {
+			out = new FileOutputStream("/home/ubuntu/log.txt",true);
+			p = new PrintStream(out);
+		} catch(Exception e){
+			System.out.println("error");
+		}
+	}
 	
 	public void writeTofileSearch(){
-		try{
-			FileOutputStream out = new FileOutputStream("/home/ubuntu/log.txt",true);
-			
-			PrintStream p = new PrintStream(out);
-			
-			p.print(this.TSendTime-this.TSstartTime+"\n");
-			
-			//p.print(this.TJendTime-this.TJstartTime+"\n");
-			
+		try {
+			p.print("TS: " + String.valueOf(this.TSendTime - this.TSstartTime) + "\n");
 			p.close();
 			out.close();
 		} catch(Exception e){
@@ -27,19 +31,6 @@ public class WriteOut {
 	}
 	
 	public void writeTofileJdbc(){
-		try{
-			FileOutputStream out = new FileOutputStream("/home/ubuntu/logJdbc.txt",true);
-			
-			PrintStream p = new PrintStream(out);
-			
-			p.print(this.TJendTime-this.TJstartTime+"\n");
-			
-			//p.print(this.TJendTime-this.TJstartTime+"\n");
-			
-			p.close();
-			out.close();
-		} catch(Exception e){
-			System.out.println("error");
-		}
+		p.print("TJ: " + String.valueOf(this.TJendTime - this.TJstartTime) + "   ");	
 	}
 }
