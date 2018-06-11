@@ -1,13 +1,16 @@
 package XMLparsing;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 public class InsertMovieData {
 	
@@ -38,19 +41,20 @@ public class InsertMovieData {
         HashMap<String, Movie> movieStars = movieStarParser.getMoviesStars();
         System.out.println("finishing parsing casts file: " + (double) (System.currentTimeMillis() - start) / 1000);
         
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
-        
         try {
-	        Class.forName("com.mysql.jdbc.Driver").newInstance();
-			// create database connection
-			Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
 			
 //			HashMap<String, String> starIds = new HashMap<>();
 			
 			query = "SELECT DISTINCT name, birthYear, id FROM stars";
-			statement = connection.prepareStatement(query);
+			statement = dbcon.prepareStatement(query);
 			ResultSet result = statement.executeQuery();
 			HashMap<String , HashSet<Integer>> existingStars = new HashMap<>();
 			while (result.next()) {
@@ -61,9 +65,9 @@ public class InsertMovieData {
 			System.out.println(existingStars.size());
 			
 			// Insert new stars
-			connection.setAutoCommit(false);
+			dbcon.setAutoCommit(false);
 			query = "SELECT MAX(id) AS id FROM stars";
-			statement = connection.prepareStatement(query);
+			statement = dbcon.prepareStatement(query);
 			resultSet = statement.executeQuery();
 			resultSet.next();
             String starID = resultSet.getString("id");
@@ -71,7 +75,7 @@ public class InsertMovieData {
             int back = Integer.parseInt(starID.substring(2, starID.length()));
 			
             query = "INSERT INTO stars (id, name, birthYear) VALUES(?, ?, ?)";
-            statement = connection.prepareStatement(query);
+            statement = dbcon.prepareStatement(query);
             int count = 0;
 			for (Star s : stars) {
 				if (existingStars.containsKey(s.getStarName()) && existingStars.get(s.getStarName()).contains(s.getBirthYear())) {
@@ -99,14 +103,14 @@ public class InsertMovieData {
 			}
 
 			statement.executeBatch();
-			connection.commit();
+			dbcon.commit();
 			System.out.println("finish inserting stars: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
 //			HashMap<String, String> movieIdTitle = new HashMap<>();
 			
 			HashMap<String, HashMap<String, Integer>> existingMovies = new HashMap<>();
 			query = "SELECT id, title, year, director FROM movies";
-			statement = connection.prepareStatement(query);
+			statement = dbcon.prepareStatement(query);
 			result = statement.executeQuery();
 			while (result.next()) {
 				HashMap<String, Integer> dmovies = existingMovies.getOrDefault(result.getString("director"), new HashMap<String, Integer>());
@@ -116,22 +120,22 @@ public class InsertMovieData {
 			}
 			System.out.println(existingMovies.size());
 			// Insert new genres, genres_in_movies, and movies
-			connection.setAutoCommit(false);
+			dbcon.setAutoCommit(false);
 			query = "INSERT INTO genres (name) SELECT * FROM (SELECT ?) AS tmp WHERE NOT EXISTS (SELECT name FROM genres WHERE name = ?)";
-			statement = connection.prepareStatement(query);
+			statement = dbcon.prepareStatement(query);
 			for (String genre : uniqueGenres) {
 				statement.setString(1, genre);
 				statement.setString(2, genre);
 				statement.addBatch();
 			}
 			statement.executeBatch();
-			connection.commit();
+			dbcon.commit();
 			System.out.println("finishing inserting new genres: " + uniqueGenres.size() + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
 			// Insert new movies
-			connection.setAutoCommit(false);
+			dbcon.setAutoCommit(false);
 			query = "SELECT MAX(id) AS id FROM movies";
-			statement = connection.prepareStatement(query);
+			statement = dbcon.prepareStatement(query);
 			resultSet = statement.executeQuery();
 			resultSet.next();
             String movieID = resultSet.getString("id");
@@ -139,11 +143,11 @@ public class InsertMovieData {
             back = Integer.parseInt(movieID.substring(2, movieID.length()));
             
             query = "INSERT INTO movies VALUES(?, ?, ?, ?)";
-            statement = connection.prepareStatement(query);
+            statement = dbcon.prepareStatement(query);
             
             String gQuery = "INSERT INTO genres_in_movies VALUES((SELECT id FROM genres WHERE name = ?), "
             		+ "(SELECT id FROM movies WHERE title = ? and year = ? AND director = ? LIMIT 1))";
-            PreparedStatement gStatement = connection.prepareStatement(gQuery);
+            PreparedStatement gStatement = dbcon.prepareStatement(gQuery);
             
             count = 0;
             for (Movie m : movies) {
@@ -178,12 +182,12 @@ public class InsertMovieData {
             }
 			statement.executeBatch();
 			gStatement.executeBatch();
-			connection.commit();
+			dbcon.commit();
 			System.out.println("finish inserting movies: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
 			// Trying something 
 			query = "SELECT DISTINCT name FROM stars";
-			statement = connection.prepareStatement(query);
+			statement = dbcon.prepareStatement(query);
 			result = statement.executeQuery();
 			HashSet<String> uniqueStars = new HashSet<>();
 			while (result.next()) {
@@ -192,21 +196,21 @@ public class InsertMovieData {
 			
 			
 			query = "SELECT MAX(id) AS id FROM stars";
-			statement = connection.prepareStatement(query);
+			statement = dbcon.prepareStatement(query);
 			resultSet = statement.executeQuery();
 			resultSet.next();
             starID = resultSet.getString("id");
             front = starID.substring(0, 2);
             back = Integer.parseInt(starID.substring(2, starID.length()));
             
-			connection.setAutoCommit(false);
+            dbcon.setAutoCommit(false);
 			String sQuery = "INSERT INTO stars VALUES(?, ?, ?)";
 //			query = "INSERT INTO stars_in_movies(starId, movieId) SELECT * FROM (SELECT (SELECT id FROM stars "
 //					+ "WHERE name = ? LIMIT 1), (SELECT id FROM movies WHERE title = ? AND director = ? LIMIT 1)) AS tmp WHERE EXISTS (SELECT id FROM movies WHERE title = ? AND director = ? LIMIT 1)";
 			query = "INSERT INTO stars_in_movies(starId, movieId)  VALUES((SELECT id FROM stars "
 					+ "WHERE name = ? LIMIT 1), (SELECT id FROM movies WHERE title = ? AND director = ? LIMIT 1))";
-			PreparedStatement sStatement = connection.prepareStatement(sQuery);
-			statement = connection.prepareStatement(query);
+			PreparedStatement sStatement = dbcon.prepareStatement(sQuery);
+			statement = dbcon.prepareStatement(query);
 			
 			count = 0;
 			for (String star : movieStars.keySet()) {
@@ -240,7 +244,7 @@ public class InsertMovieData {
 			}
 			sStatement.executeBatch();
 			statement.executeBatch();
-			connection.commit();
+			dbcon.commit();
 			
 			System.out.println("finish inserting stars_in_movies: " + count + " - " + (double) (System.currentTimeMillis() - start) / 1000);
 			
@@ -249,7 +253,7 @@ public class InsertMovieData {
 			
 	        resultSet.close();
 	        statement.close();
-            connection.close();
+	        dbcon.close();
             long end = System.currentTimeMillis();
             System.out.println(end - start);
             System.out.println(inconsistency);

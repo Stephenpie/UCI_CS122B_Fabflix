@@ -3,14 +3,16 @@ package checkout;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import com.google.gson.JsonObject;
 
@@ -61,18 +63,20 @@ public class CheckoutServlet extends HttpServlet{
         String expirationDate = request.getParameter("expiration");
         
         System.out.println(expirationDate);
-
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            // create database connection
-            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
+            
             // prepare query       
             String query = "SELECT * FROM creditcards c WHERE c.firstName = ? AND c.lastName = ? AND c.id = ? AND c.expiration = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = dbcon.prepareStatement(query);
             statement.setString(1, firstname);
             statement.setString(2, lastname);
             statement.setString(3, creditcard);
@@ -94,7 +98,7 @@ public class CheckoutServlet extends HttpServlet{
                 responseJsonObject.addProperty("status", "fail");
                 
                 query = "SELECT * FROM creditcards c WHERE c.id = ?";
-                statement = connection.prepareStatement(query);
+                statement = dbcon.prepareStatement(query);
                 statement.setString(1, creditcard);
                 resultSet = statement.executeQuery();
                 
@@ -113,7 +117,7 @@ public class CheckoutServlet extends HttpServlet{
             }
             resultSet.close();
             statement.close();
-            connection.close();
+            dbcon.close();
             
         } catch (Exception e) {
             /*

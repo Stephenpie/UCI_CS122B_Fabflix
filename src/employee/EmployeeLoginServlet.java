@@ -8,10 +8,13 @@ import login.User;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -68,18 +71,20 @@ public class EmployeeLoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String fullname = request.getParameter("fullname");
-
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            // create database connection
-            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
+            
             // prepare query       
             String query = "SELECT * FROM employees c WHERE email = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = dbcon.prepareStatement(query);
             statement.setString(1, email);
             
             // execute query
@@ -128,7 +133,7 @@ public class EmployeeLoginServlet extends HttpServlet {
             }
             resultSet.close();
             statement.close();
-            connection.close();
+            dbcon.close();
             
         } catch (Exception e) {
             /*

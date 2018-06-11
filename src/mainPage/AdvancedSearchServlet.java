@@ -1,32 +1,36 @@
 package mainPage;
 
+import timer.WriteOut;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 @WebServlet(name = "AdvancedSearchServlet", urlPatterns = "/advanced")
 public class AdvancedSearchServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         // set response mime type
         response.setContentType("text/html"); 
         
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
+        
+        WriteOut W = new WriteOut();
+        // for query time
+        W.TSstartTime = System.nanoTime();
 
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
@@ -52,9 +56,18 @@ public class AdvancedSearchServlet extends HttpServlet {
 //        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</head>");
         try {
-                Class.forName("com.mysql.jdbc.Driver").newInstance();
-                // create database connection
-                Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+        	// for JDBC time
+        	W.TJstartTime = System.nanoTime();
+        	
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
+            
                 // prepare query
                 
                 String mqlQuery = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating "
@@ -110,7 +123,7 @@ public class AdvancedSearchServlet extends HttpServlet {
                 }
                                 
                 System.out.println("MYSQL QUERY = " + mqlQuery);
-                PreparedStatement statement = connection.prepareStatement(mqlQuery);
+                PreparedStatement statement = dbcon.prepareStatement(mqlQuery);
                 int j = 1;
                 if (!title.isEmpty()) {
                     statement.setString(j, "%" + title + "%");
@@ -133,6 +146,9 @@ public class AdvancedSearchServlet extends HttpServlet {
                 statement.setInt(j, offset);
                 // execute query
                 ResultSet resultSet = statement.executeQuery();
+                
+                W.TJendTime= System.nanoTime();
+                W.writeTofileJdbc();
 
                 out.println("<body class=\"loginBackgroundColor\">");
                 out.println("<div>");
@@ -251,7 +267,10 @@ public class AdvancedSearchServlet extends HttpServlet {
                 
                 resultSet.close();
                 statement.close();
-                connection.close();
+                dbcon.close();
+                
+                W.TSendTime = System.nanoTime();
+                W.writeTofileSearch();
                 
         } catch (Exception e) {
                 /*

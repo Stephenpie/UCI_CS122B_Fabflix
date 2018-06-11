@@ -1,9 +1,12 @@
 package login;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
@@ -12,20 +15,24 @@ import com.google.gson.JsonObject;
 public class LoginVerifyUtils {
     
     public static JsonObject verifyUsernamePassword(String username, String password) {
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         JsonObject responseJsonObject = new JsonObject();
         
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            // create database connection
-            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-            // declare statement
+            // the following few lines are for connection pooling
+            // Obtain our environment naming context
+
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
                         
             String query = "SELECT id, email, password FROM customers WHERE email=?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = dbcon.prepareStatement(query);
             statement.setString(1, username);
             // execute query
             ResultSet resultSet = statement.executeQuery();
@@ -60,7 +67,7 @@ public class LoginVerifyUtils {
             }
             resultSet.close();
             statement.close();
-            connection.close();
+            dbcon.close();
         } catch (Exception e) {
             /*
              * After you deploy the WAR file through tomcat manager webpage,

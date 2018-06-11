@@ -1,0 +1,114 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    background-color: linen;
+}
+
+td {
+    border-top-style: solid;
+}
+</style>
+</head>
+<body>
+
+<table style="width:100%">
+  <tr style="font-weight:bold; background-color: orange">
+    <td width="300px">Single-instance version cases</td>
+    <td>Graph Results Screenshot</td>
+    <td>Average Query Time(ms)</td>
+    <td>Average Search Servlet Time(ms)</td>
+    <td>Average JDBC Time(ms)</td>
+    <td>Analysis</td>
+  </tr>
+  <tr>
+    <td>Case 1: HTTP/1 thread</td>
+    <td><img src="./Project5_Log_Graph/Single-instance cases/HTTP_1Thread.png" alt="Graph Results Screenshot Case 1" style="width:304px;height:228px;"></td>
+    <td>291</td>
+    <td>220.918</td>
+    <td>220.781</td>
+    <td>This is the simple basic case, and we compare the results of all other test cases with this one.</td>
+  </tr>
+  <tr>
+    <td>Case 2: HTTP/10 threads</td>
+    <td><img src="./Project5_Log_Graph/Single-instance cases/HTTP_10Threads.png" alt="Graph Results Screenshot Case 2" style="width:304px;height:228px;"></td>
+    <td>2202</td>
+    <td>220.548</td>
+    <td>220.407</td>
+    <td>The query time with 10 threads is much higher due to multi-threading. TJ and TS are slightly lower than 1 thread, but no big difference.</td>
+  </tr>
+  <tr>
+    <td>Case 3: HTTPS/10 threads</td>
+    <td><img src="./Project5_Log_Graph/Single-instance cases/HTTPS_10Threads.png" alt="Graph Results Screenshot Case 3" style="width:304px;height:228px;"></td>
+    <td>2216</td>
+    <td>221.829</td>
+    <td>221.687</td>
+    <td>This one uses HTTPS, and HTTPS is more secure with some overhead. Therefore, TJ and TS are a little bit higher than the previous case.</td>
+  </tr>
+  <tr>
+    <td>Case 4: HTTP/10 threads/No prepared statements</td>
+    <td><img src="./Project5_Log_Graph/Single-instance cases/HTTP_withoutPrepared.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>2243</td>
+    <td>224.715</td>
+    <td>224.489</td>
+    <td>The results for 10 threads HTTP without prepared statements are obviously slower. Using prepared statement does improve performance.</td>
+  </tr>
+  <tr>
+    <td>Case 5: HTTP/10 threads/No connection pooling</td>
+    <td><img src="./Project5_Log_Graph/Single-instance cases/HTTP_withoutPooling.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>2217</td>
+    <td>221.650</td>
+    <td>221.467</td>
+    <td>This one doesn't use connection pooling and the time is a little slower than the one with connection pooling.</td>
+  </tr>
+
+</table> 
+
+
+<table style="width:100%">
+  <tr style="font-weight:bold; background-color: orange">
+    <td width="300px">Scaled version cases</td>
+    <td>Graph Results Screenshot</td>
+    <td>Average Query Time(ms)</td>
+    <td>Average Search Servlet Time(ms)</td>
+    <td>Average JDBC Time(ms)</td>
+    <td>Analysis</td>
+  </tr>
+  <tr>
+    <td>Case 1: HTTP/1 thread</td>
+    <td><img src="./Project5_Log_Graph/Scaled-version cases/HTTP_1Thread.png" alt="Graph Results Screenshot Case 1" style="width:304px;height:228px;"></td>
+    <td>380</td>
+    <td>288.843</td>
+    <td>288.676</td>
+    <td>We think this one should be faster than case 1 in single-instance version, but apparently it't slower. The reason might be load balancing has to assign the remote communication to different database and hence increase communication time.</td>
+  </tr>
+  <tr>
+    <td>Case 2: HTTP/10 threads</td>
+    <td><img src="./Project5_Log_Graph/Scaled-version cases/HTTP_10Thread.png" alt="Graph Results Screenshot Case 2" style="width:304px;height:228px;"></td>
+    <td>1468</td>
+    <td>288.592</td>
+    <td>288.443</td>
+    <td>The query time is faster than that of the case 2 in single-instance probably due to load balancing. TS and Tj time have no much difference compared with the previous case.</td>
+  </tr>
+  <tr>
+    <td>Case 3: HTTP/10 threads/No prepared statements</td>
+    <td><img src="./Project5_Log_Graph/Scaled-version cases/HTTP_10Thread_withoutPrepared.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>1531</td>
+    <td>296.951</td>
+    <td>296.634</td>
+    <td>Again the query time is faster probably due to multithreading. This case also shows that the performance can be worse without prepared statements.</td>
+  </tr>
+  <tr>
+    <td>Case 4: HTTP/10 threads/No connection pooling</td>
+    <td><img src="./Project5_Log_Graph/Scaled-version cases/HTTP_10Thread_withoutPooling.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>1481</td>
+    <td>291.705</td>
+    <td>291.918</td>
+    <td>Without connection pooling, TJ and TS are a little bit slower compared with the one with connection pooling. Overall, due to load balancing, avg query time on scaled versions are faster, but TJ and TS are a little bit slower.</td>
+  </tr>
+
+</table> 
+
+</body>
+</html>

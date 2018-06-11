@@ -2,15 +2,17 @@ package mainPage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 // this annotation maps this Java Servlet Class to a URL
 @WebServlet(urlPatterns = "/movies")
@@ -23,10 +25,6 @@ public class SingleMoviePage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // change this to your own mysql username and password
-
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 		
         // set response mime type
         response.setContentType("text/html"); 
@@ -54,16 +52,22 @@ public class SingleMoviePage extends HttpServlet {
         out.println("<script type=\"text/javascript\" src=\"index.js\"></script>");
         out.println("</head>");
         try {
-        		Class.forName("com.mysql.jdbc.Driver").newInstance();
-        		// create database connection
-        		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+			Context initCtx = new InitialContext();
+
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+			// Look up our data source
+			DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+			Connection dbcon = ds.getConnection();
+			
         		// prepare query
         		String query = "SELECT m.id, m.title, m.year, m.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, GROUP_CONCAT(DISTINCT ' ', s.name) AS stars "
         		        + " from genres g, genres_in_movies gm, movies m, stars s, stars_in_movies sm "
                         + "WHERE m.title = ? AND g.id = gm.genreId AND m.id = sm.movieId AND s.id = sm.starId AND m.id = gm.movieId "
                         + "GROUP BY m.id";
         		
-        		PreparedStatement statement = connection.prepareStatement(query);
+        		PreparedStatement statement = dbcon.prepareStatement(query);
         		statement.setString(1, movieName);
         		
         		// execute query
@@ -156,7 +160,7 @@ public class SingleMoviePage extends HttpServlet {
         		
         		resultSet.close();
         		statement.close();
-        		connection.close();
+        		dbcon.close();
         		
         } catch (Exception e) {
         		/*

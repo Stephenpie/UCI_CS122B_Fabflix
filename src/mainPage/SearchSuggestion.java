@@ -6,11 +6,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -21,10 +24,6 @@ public class SearchSuggestion extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        String loginUser = "root";
-        String loginPasswd = "tangwang";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         // set response mime type
         response.setContentType("text/html"); 
@@ -45,9 +44,18 @@ public class SearchSuggestion extends HttpServlet {
                 return;
             }   
             
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            // create database connection
-            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+//            Class.forName("com.mysql.jdbc.Driver").newInstance();
+//            // create database connection
+//            Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+            Context initCtx = new InitialContext();
+
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/moviedb");
+
+            Connection dbcon = ds.getConnection();
+            
             // prepare query  
             String[] queries = query.split(" ");
             String arguments = "";
@@ -83,7 +91,7 @@ public class SearchSuggestion extends HttpServlet {
             String sqlQuery = String.format("SELECT title FROM ft WHERE MATCH (title) AGAINST (%s IN BOOLEAN MODE) OR "
                     + "(SELECT edrec(?, title, ?) = 1) LIMIT 10", arguments);
             System.out.println(sqlQuery);
-            PreparedStatement statement = connection.prepareStatement(sqlQuery);
+            PreparedStatement statement = dbcon.prepareStatement(sqlQuery);
             int i = 0;
             for (; i < queries.length; i++) {
                 statement.setString(i+1, "+" + queries[i] + "*");
@@ -115,7 +123,7 @@ public class SearchSuggestion extends HttpServlet {
             
             resultSet.close();
             statement.close();
-            connection.close();
+            dbcon.close();
             
             response.getWriter().write(jsonArray.toString());
             return;
