@@ -25,10 +25,10 @@ public class LoginServlet extends HttpServlet {
         
         try {
             if (!validated) {
-                String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-                System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+                //String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+                //System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
           
-                RecaptchaVerifyUtils.verify(gRecaptchaResponse, RecaptchaConstants.WEB_SECRET_KEY);
+                //RecaptchaVerifyUtils.verify(gRecaptchaResponse, RecaptchaConstants.WEB_SECRET_KEY);
                 validated = true;
             }
         } catch (Exception e) {
