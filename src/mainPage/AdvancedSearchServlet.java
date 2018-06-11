@@ -22,15 +22,15 @@ public class AdvancedSearchServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
+        WriteOut W = new WriteOut();
+        // for query time
+        W.TSstartTime = System.nanoTime();
+        
         // set response mime type
         response.setContentType("text/html"); 
         
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
-        
-        WriteOut W = new WriteOut();
-        // for query time
-        W.TSstartTime = System.nanoTime();
 
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
@@ -53,6 +53,7 @@ public class AdvancedSearchServlet extends HttpServlet {
         out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">");
         out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">");
         out.println("<script type=\"text/javascript\" src=\"index.js\"></script>");
+        
 //        out.println("<script type=\"text/javascript\" src=\"movielist.js\"></script>");
         out.println("</head>");
         try {
@@ -69,6 +70,7 @@ public class AdvancedSearchServlet extends HttpServlet {
             Connection dbcon = ds.getConnection();
             
                 // prepare query
+
                 
                 String mqlQuery = "SELECT m.id, m.title, m.year, m.director, m.genres, m.stars, r.rating "
                                 + "FROM (SELECT t2.id, t2.title, t2.year, t2.director, GROUP_CONCAT(DISTINCT ' ', g.name) AS genres, t2.stars "
@@ -122,11 +124,10 @@ public class AdvancedSearchServlet extends HttpServlet {
                     mqlQuery += " LIMIT ? OFFSET ?";
                 }
                                 
-                System.out.println("MYSQL QUERY = " + mqlQuery);
                 PreparedStatement statement = dbcon.prepareStatement(mqlQuery);
                 int j = 1;
                 if (!title.isEmpty()) {
-                    statement.setString(j, "%" + title + "%");
+                    statement.setString(j, title);
                     j++;
                 } 
                 if (!year.isEmpty()) {
@@ -134,11 +135,11 @@ public class AdvancedSearchServlet extends HttpServlet {
                     j++;
                 } 
                 if (!director.isEmpty()) {
-                    statement.setString(j, "%" + director + "%");
+                    statement.setString(j, director);
                     j++;
                 }
                 if (!star.isEmpty()) {
-                    statement.setString(j, "%" + star + "%");
+                    statement.setString(j, star);
                     j++;
                 }
                 statement.setInt(j, Integer.parseInt(limit));
@@ -238,10 +239,6 @@ public class AdvancedSearchServlet extends HttpServlet {
                     
                     out.println("<td>" + rating + "</td>");
                     String movie = movieID + "::" + mtitle;
-//                    if (movie.contains("&")) {
-//                    	movie = movie.replace("&", "@#");
-//                    }
-                    System.out.println("MOVIE: " + movie);
                     out.println("<td>" + "<button class=\"btn btn-info\" id=\"addTo\" onclick=\"addToCart('" + movie + "')\">Add to Cart</button></td>");
 
                     out.println("</tr>");
