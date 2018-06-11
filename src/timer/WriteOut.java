@@ -20,7 +20,7 @@ public class WriteOut {
 		}
 	}
 	
-	public void writeTofileSearch(){
+	public synchronized void writeTofileSearch(){
 		try {
 			p.print(String.valueOf(this.TSendTime - this.TSstartTime) + "\n");
 			p.close();
@@ -30,7 +30,7 @@ public class WriteOut {
 		}
 	}
 	
-	public void writeTofileJdbc(){
+	public synchronized void writeTofileJdbc(){
 		p.print(String.valueOf(this.TJendTime - this.TJstartTime) + "   ");	
 	}
 }
