@@ -127,15 +127,15 @@ public class AdvancedSearchServlet extends HttpServlet {
                 PreparedStatement statement = dbcon.prepareStatement(mqlQuery);
                 int j = 1;
                 if (!title.isEmpty()) {
-                    statement.setString(j, title);
+                    statement.setString(j, "%"+ title + "%");
                     j++;
                 } 
                 if (!year.isEmpty()) {
-                    statement.setString(j, year);
+                    statement.setInt(j, Integer.parseInt(year));
                     j++;
                 } 
                 if (!director.isEmpty()) {
-                    statement.setString(j, director);
+                    statement.setString(j, "%" + director + "%");
                     j++;
                 }
                 if (!star.isEmpty()) {
