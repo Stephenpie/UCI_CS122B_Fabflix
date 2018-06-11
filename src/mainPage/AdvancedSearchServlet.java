@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 public class AdvancedSearchServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected synchronized void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         WriteOut W = new WriteOut();
         // for query time
@@ -127,7 +127,7 @@ public class AdvancedSearchServlet extends HttpServlet {
                 PreparedStatement statement = dbcon.prepareStatement(mqlQuery);
                 int j = 1;
                 if (!title.isEmpty()) {
-                    statement.setString(j, "%" + title + "%");
+                    statement.setString(j, title);
                     j++;
                 } 
                 if (!year.isEmpty()) {
@@ -135,11 +135,11 @@ public class AdvancedSearchServlet extends HttpServlet {
                     j++;
                 } 
                 if (!director.isEmpty()) {
-                    statement.setString(j, "%" + director + "%");
+                    statement.setString(j, director);
                     j++;
                 }
                 if (!star.isEmpty()) {
-                    statement.setString(j, "%" + star + "%");
+                    statement.setString(j, star);
                     j++;
                 }
                 statement.setInt(j, Integer.parseInt(limit));
